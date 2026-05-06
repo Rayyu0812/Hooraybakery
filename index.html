@@ -300,7 +300,7 @@ function submitOrder() {
   const notes=document.getElementById('fNotes').value.trim();
   if(notes) lines.push(`Notes: ${notes}`);
   // Send to Google Sheets
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzzhpFaGgermwMnfhmtVxq-z0X8_I-77DGwgyNpkNkeUFcngblG19T1tI0EqeRVblST/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzVH5e_kEHW30ARD29GnXTOElSObJch4E8mAZWJXDm5njEP1Ic9XG4uef4YguzU1dAi/exec';
   const itemLines = Object.keys(cart).map(key => {
     const [idStr,viStr] = key.split('-');
     const item = MENU.find(m=>m.id==idStr);
@@ -313,7 +313,7 @@ function submitOrder() {
     return s+item.variants[+viStr].price*cart[key];
   },0);
 
-  const payload = {
+  const params = new URLSearchParams({
     name: name,
     phone: phone,
     date: date,
@@ -321,14 +321,9 @@ function submitOrder() {
     items: itemLines.join(' | '),
     total: '$' + grandTotal.toFixed(2),
     notes: document.getElementById('fNotes').value.trim()
-  };
-
-  fetch(SHEET_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
   });
+
+  fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
 
   cart={};
   update();
