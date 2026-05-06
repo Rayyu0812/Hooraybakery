@@ -299,7 +299,36 @@ function submitOrder() {
   lines.push(``,`Total: $${total.toFixed(2)}`);
   const notes=document.getElementById('fNotes').value.trim();
   if(notes) lines.push(`Notes: ${notes}`);
-  console.log(lines.join('\n'));
+  // Send to Google Sheets
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzzhpFaGgermwMnfhmtVxq-z0X8_I-77DGwgyNpkNkeUFcngblG19T1tI0EqeRVblST/exec';
+  const itemLines = Object.keys(cart).map(key => {
+    const [idStr,viStr] = key.split('-');
+    const item = MENU.find(m=>m.id==idStr);
+    const v = item.variants[+viStr];
+    return `${item.name} (${v.label}) x${cart[key]} = $${(v.price*cart[key]).toFixed(2)}`;
+  });
+  const grandTotal = Object.keys(cart).reduce((s,key)=>{
+    const [idStr,viStr]=key.split('-');
+    const item=MENU.find(m=>m.id==idStr);
+    return s+item.variants[+viStr].price*cart[key];
+  },0);
+
+  const payload = {
+    name: name,
+    phone: phone,
+    date: date,
+    time: document.getElementById('fTime').value || 'Flexible',
+    items: itemLines.join(' | '),
+    total: '$' + grandTotal.toFixed(2),
+    notes: document.getElementById('fNotes').value.trim()
+  };
+
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
 
   cart={};
   update();
