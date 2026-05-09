@@ -300,7 +300,7 @@ function submitOrder() {
   const notes=document.getElementById('fNotes').value.trim();
   if(notes) lines.push(`Notes: ${notes}`);
   // Send to Google Sheets
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzVH5e_kEHW30ARD29GnXTOElSObJch4E8mAZWJXDm5njEP1Ic9XG4uef4YguzU1dAi/exec';
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz84hXj1jUfp0dCSy5MYw32ORp10rDwl8NU8BgbaXUR7h3HsLu5m_r1uITpxwcb1d6I/exec';
   const itemLines = Object.keys(cart).map(key => {
     const [idStr,viStr] = key.split('-');
     const item = MENU.find(m=>m.id==idStr);
