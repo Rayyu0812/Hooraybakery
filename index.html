@@ -9,36 +9,28 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --cream: #fdf9f4;
-    --blush: #f4ddd0;
-    --rose: #e9a88e;
-    --deep-rose: #c96b50;
-    --charcoal: #2c2420;
-    --warm-gray: #7a6e68;
-    --white: #ffffff;
-    --shadow: rgba(44,36,32,0.07);
+    --cream: #fdf9f4; --blush: #f4ddd0; --rose: #e9a88e; --deep-rose: #c96b50;
+    --charcoal: #2c2420; --warm-gray: #7a6e68; --white: #ffffff; --shadow: rgba(44,36,32,0.07);
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; }
 
-  header {
-    background: var(--white);
-    border-bottom: 1px solid #f0e8e2;
-    padding: 16px 32px;
-    display: flex; align-items: center; justify-content: space-between;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--charcoal); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-  .logo-dot { width: 9px; height: 9px; background: var(--deep-rose); border-radius: 50%; display: inline-block; }
-  .logo-sub { font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 400; color: var(--warm-gray); letter-spacing: .12em; text-transform: uppercase; }
-  .cart-pill { background: var(--charcoal); color: white; border: none; border-radius: 100px; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background .2s; }
-  .cart-pill:hover { background: var(--deep-rose); }
-  #cartBadge { background: var(--rose); color: var(--charcoal); border-radius: 50%; width: 20px; height: 20px; font-size: .72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  /* CLOSED OVERLAY */
+  .closed-overlay { display:none; position:fixed; inset:0; background:rgba(253,249,244,0.97); z-index:999; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:32px; }
+  .closed-overlay.active { display:flex; }
+  .closed-icon { font-size:4rem; margin-bottom:20px; }
+  .closed-overlay h2 { font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:12px; color:var(--charcoal); }
+  .closed-overlay p { color:var(--warm-gray); font-size:0.95rem; line-height:1.7; max-width:380px; }
+  .closed-overlay a { color:var(--deep-rose); text-decoration:none; font-weight:500; }
 
-  .hero {
-    padding: 56px 32px 44px;
-    background: linear-gradient(155deg, #fef5ef 0%, #fdf9f4 55%, #f5ede4 100%);
-    text-align: center; position: relative; overflow: hidden;
-  }
+  header { background:var(--white); border-bottom:1px solid #f0e8e2; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+  .logo { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--charcoal); text-decoration:none; display:flex; align-items:center; gap:10px; }
+  .logo-dot { width:9px; height:9px; background:var(--deep-rose); border-radius:50%; display:inline-block; }
+  .logo-sub { font-family:'DM Sans',sans-serif; font-size:0.7rem; font-weight:400; color:var(--warm-gray); letter-spacing:.12em; text-transform:uppercase; }
+  .cart-pill { background:var(--charcoal); color:white; border:none; border-radius:100px; padding:10px 20px; font-family:'DM Sans',sans-serif; font-size:0.83rem; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background .2s; }
+  .cart-pill:hover { background:var(--deep-rose); }
+  #cartBadge { background:var(--rose); color:var(--charcoal); border-radius:50%; width:20px; height:20px; font-size:.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+
+  .hero { padding:56px 32px 44px; background:linear-gradient(155deg,#fef5ef 0%,#fdf9f4 55%,#f5ede4 100%); text-align:center; position:relative; overflow:hidden; }
   .hero::before { content:''; position:absolute; width:300px; height:300px; background:radial-gradient(circle,#f5d0be55 0%,transparent 70%); top:-80px; right:-60px; border-radius:50%; }
   .hero::after  { content:''; position:absolute; width:200px; height:200px; background:radial-gradient(circle,#d4e2cc44 0%,transparent 70%); bottom:-50px; left:-50px; border-radius:50%; }
   .hero-tag { display:inline-flex; align-items:center; gap:6px; background:var(--blush); color:var(--deep-rose); font-size:.75rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:6px 16px; border-radius:100px; margin-bottom:20px; }
@@ -66,6 +58,13 @@
   .product-body { flex:1; min-width:0; }
   .product-name { font-weight:500; font-size:.94rem; margin-bottom:3px; }
   .product-desc { font-size:.77rem; color:var(--warm-gray); line-height:1.45; margin-bottom:6px; }
+
+  /* SLICE OPTION */
+  .slice-option { display:flex; align-items:flex-start; gap:8px; margin-top:7px; background:var(--cream); border-radius:10px; padding:8px 10px; }
+  .slice-option input[type=checkbox] { margin-top:2px; accent-color:var(--deep-rose); cursor:pointer; flex-shrink:0; }
+  .slice-label { font-size:.76rem; color:var(--charcoal); cursor:pointer; }
+  .slice-note { display:block; font-size:.7rem; color:var(--warm-gray); margin-top:2px; line-height:1.4; }
+
   .size-picker { display:flex; gap:5px; }
   .size-opt { border:1.5px solid #e0d5ce; background:var(--cream); color:var(--charcoal); border-radius:8px; padding:3px 10px; font-size:.73rem; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
   .size-opt:hover { border-color:var(--rose); }
@@ -119,6 +118,14 @@
 </style>
 </head>
 <body>
+
+<!-- CLOSED OVERLAY -->
+<div class="closed-overlay" id="closedOverlay">
+  <div class="closed-icon">🍞</div>
+  <h2>We're Not Taking Orders Right Now</h2>
+  <p>We're currently closed for orders. Please check back soon or follow us on Instagram for updates!<br><br>
+  Questions? <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a></p>
+</div>
 
 <header>
   <a class="logo" href="https://www.hooraybakery.com" target="_blank">
@@ -195,18 +202,38 @@
 <div class="toast" id="toast">🎉 Order placed! We'll confirm via text soon.</div>
 
 <script>
+// ══════════════════════════════════════
+// SETTINGS — Edit these to control the store
+// ══════════════════════════════════════
+const STORE_OPEN = true;          // Set to false to show "We're closed" page
+const MIN_HOURS_AHEAD = 48;       // Minimum hours before pickup (48 = 2 days ahead)
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz84hXj1jUfp0dCSy5MYw32ORp10rDwl8NU8BgbaXUR7h3HsLu5m_r1uITpxwcb1d6I/exec';
+const PICKUP_ADDRESS = '7725 Gateway, Irvine, CA 92618';
+// ══════════════════════════════════════
+
+// Show closed overlay if store is closed
+if (!STORE_OPEN) {
+  document.getElementById('closedOverlay').classList.add('active');
+}
+
+// Set minimum pickup date (48 hours from now)
+const minDate = new Date();
+minDate.setHours(minDate.getHours() + MIN_HOURS_AHEAD);
+document.getElementById('fDate').min = minDate.toISOString().split('T')[0];
+
 const MENU = [
-  { id:1, cat:'bread', emoji:'🍞', name:'Classic Milk Loaf', desc:'15oz (430g) · Soft, pillowy Japanese-style milk bread', variants:[{label:'1 Loaf',price:10}] },
-  { id:2, cat:'bread', emoji:'🍵', name:'Matcha Milk Loaf', desc:'15oz (430g) · Earthy matcha swirled into our signature milk bread', variants:[{label:'1 Loaf',price:12}] },
-  { id:3, cat:'bread', emoji:'🫖', name:'Earl Grey Tea Milk Loaf', desc:'15oz (430g) · Fragrant bergamot tea baked right in', variants:[{label:'1 Loaf',price:12}] },
-  { id:4, cat:'cookie', emoji:'🍪', name:'Butter Cookies', desc:'Classic melt-in-your-mouth butter cookies', variants:[{label:'12 pcs',price:10}] },
-  { id:5, cat:'cookie', emoji:'⭐', name:'Jenny Cookies', desc:'Our signature cookie — ask us about the flavor!', variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
-  { id:6, cat:'pastry', emoji:'🟤', name:'Canelé', desc:'French custard pastry — crispy outside, custardy inside', variants:[{label:'Small 4pc',price:8},{label:'Large 4pc',price:15}] },
+  { id:1, cat:'bread', emoji:'🍞', name:'Classic Milk Loaf', desc:'15oz (430g) · Soft, pillowy Japanese-style milk bread', canSlice:true, variants:[{label:'1 Loaf',price:10}] },
+  { id:2, cat:'bread', emoji:'🍵', name:'Matcha Milk Loaf', desc:'15oz (430g) · Earthy matcha swirled into our signature milk bread', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
+  { id:3, cat:'bread', emoji:'🫖', name:'Earl Grey Tea Milk Loaf', desc:'15oz (430g) · Fragrant bergamot tea baked right in', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
+  { id:4, cat:'cookie', emoji:'🍪', name:'Butter Cookies', desc:'Classic melt-in-your-mouth butter cookies', canSlice:false, variants:[{label:'12 pcs',price:10}] },
+  { id:5, cat:'cookie', emoji:'⭐', name:'Jenny Cookies', desc:'Our signature cookie — ask us about the flavor!', canSlice:false, variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
+  { id:6, cat:'pastry', emoji:'🟤', name:'Canelé', desc:'French custard pastry — crispy outside, custardy inside', canSlice:false, variants:[{label:'Small 4pc',price:8},{label:'Large 4pc',price:15}] },
 ];
 
 let cart = {};
 let selVar = {};
-MENU.forEach(m => selVar[m.id] = 0);
+let sliceChoice = {}; // { itemId: true/false }
+MENU.forEach(m => { selVar[m.id] = 0; sliceChoice[m.id] = false; });
 let activeFilter = 'all';
 
 function filterMenu(cat, btn) {
@@ -225,21 +252,40 @@ function renderMenu() {
     const variant = item.variants[vi];
     const key = `${item.id}-${vi}`;
     const qty = cart[key] || 0;
+
     const sizePicker = item.variants.length > 1
       ? `<div class="size-picker">${item.variants.map((v,i)=>`<button class="size-opt ${i===vi?'selected':''}" onclick="selectVariant(${item.id},${i})">${v.label}</button>`).join('')}</div>`
       : '';
+
+    const slicePicker = item.canSlice
+      ? `<div class="slice-option">
+          <input type="checkbox" id="slice-${item.id}" ${sliceChoice[item.id]?'checked':''} onchange="toggleSlice(${item.id}, this.checked)">
+          <label class="slice-label" for="slice-${item.id}">
+            Sliced
+            <span class="slice-note">⚠️ Bread needs 2+ hrs to cool before slicing. Sliced loaves may be ready next morning or later in the day — not fresh out of the oven.</span>
+          </label>
+        </div>`
+      : '';
+
     const ctrl = qty === 0
       ? `<button class="add-btn" onclick="addItem(${item.id})">Add</button>`
       : `<div class="qty-row"><button class="qty-btn" onclick="changeQty('${key}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="changeQty('${key}',1)">+</button></div>`;
+
     const card = document.createElement('div');
     card.className = 'product-card';
     card.innerHTML = `<div class="product-emoji">${item.emoji}</div>
-      <div class="product-body"><div class="product-name">${item.name}</div><div class="product-desc">${item.desc}</div>${sizePicker}</div>
+      <div class="product-body">
+        <div class="product-name">${item.name}</div>
+        <div class="product-desc">${item.desc}</div>
+        ${sizePicker}
+        ${slicePicker}
+      </div>
       <div class="product-right"><div class="product-price">$${variant.price.toFixed(2)}</div>${ctrl}</div>`;
     grid.appendChild(card);
   });
 }
 
+function toggleSlice(id, val) { sliceChoice[id] = val; }
 function selectVariant(id, idx) { selVar[id] = idx; renderMenu(); }
 function addItem(id) { const key=`${id}-${selVar[id]??0}`; cart[key]=1; update(); }
 function changeQty(key,d) { cart[key]=(cart[key]||0)+d; if(cart[key]<=0)delete cart[key]; update(); }
@@ -269,7 +315,8 @@ function renderCart() {
     const v = item.variants[+viStr];
     const sub = v.price * cart[key];
     total += sub;
-    html += `<div class="order-item"><div><div class="oi-name">${item.name}</div><div class="oi-meta">${v.label} × ${cart[key]}</div></div>
+    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' · Sliced' : '';
+    html += `<div class="order-item"><div><div class="oi-name">${item.name}</div><div class="oi-meta">${v.label}${sliceTag} × ${cart[key]}</div></div>
       <div class="oi-right"><span class="oi-price">$${sub.toFixed(2)}</span><span class="oi-remove" onclick="removeItem('${key}')">✕</span></div></div>`;
   });
   container.innerHTML = html;
@@ -281,46 +328,72 @@ function renderCart() {
 
 function scrollToOrder() { document.getElementById('sidebar').scrollIntoView({behavior:'smooth',block:'start'}); }
 
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+}
+
 function submitOrder() {
   const name = document.getElementById('fName').value.trim();
   const phone = document.getElementById('fPhone').value.trim();
   const date = document.getElementById('fDate').value;
+  const time = document.getElementById('fTime').value || 'Flexible';
+  const notes = document.getElementById('fNotes').value.trim();
   if (!name||!phone||!date) { alert('Please fill in your name, phone number, and pickup date!'); return; }
-  let lines=[`🎉 New Order — HooRay Bakery`,``,`Name: ${name}`,`Phone: ${phone}`,`Date: ${date}`,`Time: ${document.getElementById('fTime').value||'Flexible'}`,``,`Items:`];
-  let total=0;
-  Object.keys(cart).forEach(key=>{
-    const [idStr,viStr]=key.split('-');
-    const item=MENU.find(m=>m.id==idStr);
-    const v=item.variants[+viStr];
-    const sub=v.price*cart[key];
-    total+=sub;
-    lines.push(`  • ${item.name} (${v.label}) × ${cart[key]} = $${sub.toFixed(2)}`);
-  });
-  lines.push(``,`Total: $${total.toFixed(2)}`);
-  const notes=document.getElementById('fNotes').value.trim();
-  if(notes) lines.push(`Notes: ${notes}`);
-  // Send to Google Sheets
-  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz84hXj1jUfp0dCSy5MYw32ORp10rDwl8NU8BgbaXUR7h3HsLu5m_r1uITpxwcb1d6I/exec';
+
+  // Build item lines with slice info
   const itemLines = Object.keys(cart).map(key => {
     const [idStr,viStr] = key.split('-');
     const item = MENU.find(m=>m.id==idStr);
     const v = item.variants[+viStr];
-    return `${item.name} (${v.label}) x${cart[key]} = $${(v.price*cart[key]).toFixed(2)}`;
+    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' (Sliced)' : '';
+    return `${item.name}${sliceTag} (${v.label}) x${cart[key]} = $${(v.price*cart[key]).toFixed(2)}`;
   });
+
   const grandTotal = Object.keys(cart).reduce((s,key)=>{
     const [idStr,viStr]=key.split('-');
     const item=MENU.find(m=>m.id==idStr);
     return s+item.variants[+viStr].price*cart[key];
   },0);
 
+  // Build confirmation email body (sent to customer via reply)
+  const itemListForEmail = Object.keys(cart).map(key => {
+    const [idStr,viStr] = key.split('-');
+    const item = MENU.find(m=>m.id==idStr);
+    const v = item.variants[+viStr];
+    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' (Sliced)' : '';
+    return `  • ${cart[key]}x ${item.name}${sliceTag} (${v.label})`;
+  }).join('\n');
+
+  const confirmationEmail =
+`Hi ${name},
+
+This is HooRay Bakery confirming your order! 🎉
+
+📦 Order Summary:
+${itemListForEmail}
+
+💰 Total: $${grandTotal.toFixed(2)}
+
+📅 Pickup: ${formatDate(date)} at ${time}
+📍 Address: ${PICKUP_ADDRESS}
+
+If you have any questions, feel free to reply to this email or text us at (949) 449-5962.
+
+Thank you so much for your support! We can't wait for you to enjoy your bread. 🍞
+
+With love,
+HooRay Bakery 🧡`;
+
   const params = new URLSearchParams({
     name: name,
     phone: phone,
     date: date,
-    time: document.getElementById('fTime').value || 'Flexible',
+    time: time,
     items: itemLines.join(' | '),
     total: '$' + grandTotal.toFixed(2),
-    notes: document.getElementById('fNotes').value.trim()
+    notes: notes,
+    confirmationEmail: confirmationEmail
   });
 
   fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
@@ -334,7 +407,6 @@ function submitOrder() {
   setTimeout(()=>toast.classList.remove('show'),3800);
 }
 
-document.getElementById('fDate').min = new Date().toISOString().split('T')[0];
 renderMenu();
 </script>
 </body>
