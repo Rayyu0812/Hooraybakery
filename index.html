@@ -3,411 +3,505 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HooRay Bakery — Order</title>
+<title>HooRay Bakery — Small-Batch Bread, Irvine CA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --cream: #fdf9f4; --blush: #f4ddd0; --rose: #e9a88e; --deep-rose: #c96b50;
-    --charcoal: #2c2420; --warm-gray: #7a6e68; --white: #ffffff; --shadow: rgba(44,36,32,0.07);
-  }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1410;
+  --cream:#f8f4ee;
+  --warm:#f0e8da;
+  --gold:#b5843a;
+  --gold-light:#d4a85a;
+  --muted:#7a6e62;
+  --white:#ffffff;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
 
-  /* CLOSED OVERLAY */
-  .closed-overlay { display:none; position:fixed; inset:0; background:rgba(253,249,244,0.97); z-index:999; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:32px; }
-  .closed-overlay.active { display:flex; }
-  .closed-icon { font-size:4rem; margin-bottom:20px; }
-  .closed-overlay h2 { font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:12px; color:var(--charcoal); }
-  .closed-overlay p { color:var(--warm-gray); font-size:0.95rem; line-height:1.7; max-width:380px; }
-  .closed-overlay a { color:var(--deep-rose); text-decoration:none; font-weight:500; }
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,backdrop-filter .4s}
+nav.scrolled{background:rgba(248,244,238,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(181,132,58,.15)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--ink);text-decoration:none;letter-spacing:.04em}
+.nav-logo em{font-style:italic;color:var(--gold)}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{font-size:.78rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;opacity:.75;transition:opacity .2s}
+.nav-links a:hover{opacity:1}
+.nav-order{background:var(--ink);color:var(--cream);padding:9px 22px;border-radius:2px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:background .2s;opacity:1!important}
+.nav-order:hover{background:var(--gold)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.nav-hamburger span{width:24px;height:1.5px;background:var(--ink);display:block;transition:all .3s}
 
-  header { background:var(--white); border-bottom:1px solid #f0e8e2; padding:16px 32px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Playfair Display',serif; font-size:1.4rem; color:var(--charcoal); text-decoration:none; display:flex; align-items:center; gap:10px; }
-  .logo-dot { width:9px; height:9px; background:var(--deep-rose); border-radius:50%; display:inline-block; }
-  .logo-sub { font-family:'DM Sans',sans-serif; font-size:0.7rem; font-weight:400; color:var(--warm-gray); letter-spacing:.12em; text-transform:uppercase; }
-  .cart-pill { background:var(--charcoal); color:white; border:none; border-radius:100px; padding:10px 20px; font-family:'DM Sans',sans-serif; font-size:0.83rem; font-weight:500; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background .2s; }
-  .cart-pill:hover { background:var(--deep-rose); }
-  #cartBadge { background:var(--rose); color:var(--charcoal); border-radius:50%; width:20px; height:20px; font-size:.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+/* ── HERO ── */
+.hero{height:100vh;min-height:640px;position:relative;display:flex;align-items:flex-end;overflow:hidden}
+.hero-img{position:absolute;inset:0;background:url('hero.jpg') center/cover no-repeat;transform:scale(1.05);transition:transform 8s ease-out}
+.hero-img.loaded{transform:scale(1)}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,20,16,.72) 0%,rgba(26,20,16,.2) 50%,transparent 100%)}
+.hero-content{position:relative;padding:0 48px 72px;max-width:760px}
+.hero-tag{display:inline-block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.25);padding:5px 14px;border-radius:1px;margin-bottom:24px}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:var(--white);line-height:1.05;margin-bottom:20px}
+.hero h1 em{font-style:italic;color:var(--gold-light)}
+.hero-sub{font-size:.9rem;font-weight:300;color:rgba(255,255,255,.75);letter-spacing:.06em;line-height:1.7;max-width:440px;margin-bottom:36px}
+.hero-cta{display:inline-flex;align-items:center;gap:12px;background:var(--gold);color:var(--white);padding:14px 32px;text-decoration:none;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;transition:background .2s}
+.hero-cta:hover{background:var(--gold-light)}
+.hero-cta-ghost{display:inline-flex;align-items:center;gap:8px;color:rgba(255,255,255,.8);text-decoration:none;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;transition:color .2s;margin-left:28px}
+.hero-cta-ghost:hover{color:white}
+.hero-scroll{position:absolute;bottom:28px;right:48px;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.4);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase}
+.hero-scroll-line{width:1px;height:48px;background:rgba(255,255,255,.25);position:relative;overflow:hidden}
+.hero-scroll-line::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:rgba(255,255,255,.6);animation:scrollline 2s ease-in-out infinite}
+@keyframes scrollline{0%{top:-100%}100%{top:100%}}
 
-  .hero { padding:56px 32px 44px; background:linear-gradient(155deg,#fef5ef 0%,#fdf9f4 55%,#f5ede4 100%); text-align:center; position:relative; overflow:hidden; }
-  .hero::before { content:''; position:absolute; width:300px; height:300px; background:radial-gradient(circle,#f5d0be55 0%,transparent 70%); top:-80px; right:-60px; border-radius:50%; }
-  .hero::after  { content:''; position:absolute; width:200px; height:200px; background:radial-gradient(circle,#d4e2cc44 0%,transparent 70%); bottom:-50px; left:-50px; border-radius:50%; }
-  .hero-tag { display:inline-flex; align-items:center; gap:6px; background:var(--blush); color:var(--deep-rose); font-size:.75rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; padding:6px 16px; border-radius:100px; margin-bottom:20px; }
-  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4.5vw,2.9rem); line-height:1.2; color:var(--charcoal); margin-bottom:14px; position:relative; z-index:1; }
-  .hero h1 em { color:var(--deep-rose); font-style:italic; }
-  .hero p { color:var(--warm-gray); font-size:.93rem; line-height:1.7; max-width:390px; margin:0 auto; position:relative; z-index:1; }
-  .hero-badges { display:flex; justify-content:center; gap:10px; margin-top:20px; flex-wrap:wrap; position:relative; z-index:1; }
-  .badge { background:white; border-radius:100px; padding:5px 13px; font-size:.76rem; color:var(--warm-gray); border:1px solid #eedfd6; }
+/* ── MARQUEE ── */
+.marquee-wrap{background:var(--gold);padding:12px 0;overflow:hidden}
+.marquee-track{display:flex;gap:0;white-space:nowrap;animation:marquee 20s linear infinite}
+.marquee-item{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--white);padding:0 32px;opacity:.9}
+.marquee-dot{color:rgba(255,255,255,.5);padding:0 8px}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-  .layout { max-width:1060px; margin:0 auto; padding:44px 24px 64px; display:grid; grid-template-columns:1fr 340px; gap:36px; align-items:start; }
-  @media(max-width:760px){ .layout{grid-template-columns:1fr;} .sidebar{position:static!important;} }
+/* ── SECTIONS ── */
+section{padding:96px 48px}
+.section-eyebrow{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:300;line-height:1.15;color:var(--ink)}
+.section-title em{font-style:italic}
 
-  .section-label { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:6px; }
-  .section-sub { font-size:.82rem; color:var(--warm-gray); margin-bottom:22px; }
+/* ── ABOUT / STORY ── */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1200px;margin:0 auto}
+.story-img-wrap{position:relative}
+.story-img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.story-img-accent{position:absolute;bottom:-24px;right:-24px;width:55%;aspect-ratio:1;object-fit:cover;border:6px solid var(--cream)}
+.story-text{padding:20px 0}
+.story-text p{font-size:.95rem;font-weight:300;line-height:1.85;color:var(--muted);margin-top:24px}
+.story-text p + p{margin-top:16px}
+.story-signature{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:var(--gold);margin-top:32px}
 
-  .tabs { display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
-  .tab { border:1.5px solid #e8ddd6; background:white; color:var(--warm-gray); border-radius:100px; padding:7px 18px; font-size:.82rem; font-weight:500; cursor:pointer; transition:all .18s; font-family:'DM Sans',sans-serif; }
-  .tab:hover { border-color:var(--rose); color:var(--deep-rose); }
-  .tab.active { background:var(--charcoal); color:white; border-color:var(--charcoal); }
+/* ── PRODUCTS ── */
+.products-section{background:var(--warm);padding:96px 48px}
+.products-header{max-width:1200px;margin:0 auto 56px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
+.products-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.product-item{background:var(--white);position:relative;overflow:hidden;cursor:pointer}
+.product-item.featured{grid-column:span 2}
+.product-img-wrap{overflow:hidden;aspect-ratio:4/3}
+.product-item.featured .product-img-wrap{aspect-ratio:16/9}
+.product-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.product-item:hover .product-img-wrap img{transform:scale(1.04)}
+.product-info{padding:24px 28px 28px}
+.product-cat{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.product-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--ink);margin-bottom:8px}
+.product-desc{font-size:.82rem;font-weight:300;color:var(--muted);line-height:1.6}
+.product-price{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold);margin-top:14px}
+.products-cta{max-width:1200px;margin:40px auto 0;text-align:center}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);padding:14px 36px;text-decoration:none;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;transition:background .2s;border:none;cursor:pointer;font-family:'Jost',sans-serif}
+.btn-primary:hover{background:var(--gold)}
+.btn-outline{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--ink);color:var(--ink);padding:13px 36px;text-decoration:none;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;transition:all .2s}
+.btn-outline:hover{background:var(--ink);color:var(--cream)}
 
-  .menu-grid { display:flex; flex-direction:column; gap:13px; }
-  .product-card { background:var(--white); border-radius:18px; display:flex; align-items:center; gap:16px; padding:17px 19px; box-shadow:0 1px 12px var(--shadow); transition:box-shadow .2s,transform .2s; }
-  .product-card:hover { box-shadow:0 4px 24px rgba(44,36,32,.11); transform:translateY(-2px); }
-  .product-emoji { font-size:2.4rem; width:60px; height:60px; background:linear-gradient(135deg,var(--blush),#faeee6); border-radius:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .product-body { flex:1; min-width:0; }
-  .product-name { font-weight:500; font-size:.94rem; margin-bottom:3px; }
-  .product-desc { font-size:.77rem; color:var(--warm-gray); line-height:1.45; margin-bottom:6px; }
+/* ── PROCESS ── */
+.process-section{padding:96px 48px;background:var(--ink);color:var(--cream)}
+.process-inner{max-width:1200px;margin:0 auto}
+.process-inner .section-eyebrow{color:var(--gold-light)}
+.process-inner .section-title{color:var(--cream)}
+.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
+.process-card{position:relative;overflow:hidden;aspect-ratio:3/4}
+.process-card img{width:100%;height:100%;object-fit:cover;opacity:.7;transition:opacity .4s,transform .6s}
+.process-card:hover img{opacity:.9;transform:scale(1.04)}
+.process-label{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;background:linear-gradient(to top,rgba(26,20,16,.9),transparent)}
+.process-num{font-family:'Cormorant Garamond',serif;font-size:.85rem;font-style:italic;color:var(--gold-light);margin-bottom:6px}
+.process-label h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--white)}
+.process-label p{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.6);margin-top:4px;line-height:1.5}
 
-  /* SLICE OPTION */
-  .slice-option { display:flex; align-items:flex-start; gap:8px; margin-top:7px; background:var(--cream); border-radius:10px; padding:8px 10px; }
-  .slice-option input[type=checkbox] { margin-top:2px; accent-color:var(--deep-rose); cursor:pointer; flex-shrink:0; }
-  .slice-label { font-size:.76rem; color:var(--charcoal); cursor:pointer; }
-  .slice-note { display:block; font-size:.7rem; color:var(--warm-gray); margin-top:2px; line-height:1.4; }
+/* ── VALUES ── */
+.values-section{padding:96px 48px}
+.values-inner{max-width:1200px;margin:0 auto}
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:48px;margin-top:56px}
+.value-item{}
+.value-num{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;font-style:italic;color:var(--gold);opacity:.3;line-height:1;margin-bottom:16px}
+.value-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--ink);margin-bottom:10px}
+.value-desc{font-size:.82rem;font-weight:300;color:var(--muted);line-height:1.75}
 
-  .size-picker { display:flex; gap:5px; }
-  .size-opt { border:1.5px solid #e0d5ce; background:var(--cream); color:var(--charcoal); border-radius:8px; padding:3px 10px; font-size:.73rem; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
-  .size-opt:hover { border-color:var(--rose); }
-  .size-opt.selected { background:var(--charcoal); color:white; border-color:var(--charcoal); }
-  .product-right { display:flex; flex-direction:column; align-items:flex-end; gap:9px; flex-shrink:0; }
-  .product-price { font-family:'Playfair Display',serif; font-size:1rem; color:var(--deep-rose); white-space:nowrap; }
-  .qty-row { display:flex; align-items:center; background:var(--cream); border-radius:100px; padding:3px; }
-  .qty-btn { background:none; border:none; width:27px; height:27px; border-radius:50%; cursor:pointer; font-size:.95rem; color:var(--charcoal); display:flex; align-items:center; justify-content:center; transition:background .15s; }
-  .qty-btn:hover { background:var(--blush); }
-  .qty-num { font-size:.83rem; font-weight:600; min-width:22px; text-align:center; }
-  .add-btn { background:var(--charcoal); color:white; border:none; border-radius:100px; padding:7px 16px; font-size:.79rem; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background .15s; }
-  .add-btn:hover { background:var(--deep-rose); }
+/* ── INSTAGRAM ── */
+.instagram-section{padding:96px 48px;background:var(--warm)}
+.instagram-inner{max-width:1200px;margin:0 auto;text-align:center}
+.instagram-handle{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-top:12px;margin-bottom:48px;border-bottom:1px solid var(--gold);padding-bottom:2px}
+.instagram-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.insta-placeholder{aspect-ratio:1;background:var(--warm);border:1px dashed rgba(181,132,58,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gold);opacity:.5}
+.insta-placeholder svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5}
+.insta-placeholder span{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
 
-  .sidebar { position:sticky; top:76px; }
-  .order-card { background:var(--white); border-radius:22px; padding:24px; box-shadow:0 2px 20px var(--shadow); }
-  .order-card-title { font-family:'Playfair Display',serif; font-size:1.18rem; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
-  .clear-all { font-family:'DM Sans',sans-serif; font-size:.74rem; color:var(--warm-gray); font-weight:400; cursor:pointer; }
-  .clear-all:hover { color:var(--deep-rose); }
-  .empty-state { text-align:center; padding:26px 0; color:var(--warm-gray); font-size:.83rem; }
-  .empty-state .ei { font-size:2rem; display:block; margin-bottom:8px; }
-  .order-item { display:flex; justify-content:space-between; align-items:flex-start; padding:9px 0; border-bottom:1px solid #f3ebe5; font-size:.84rem; animation:pop .2s ease; }
-  @keyframes pop { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
-  .oi-name { font-weight:500; margin-bottom:2px; }
-  .oi-meta { font-size:.74rem; color:var(--warm-gray); }
-  .oi-right { display:flex; align-items:center; gap:7px; }
-  .oi-price { color:var(--deep-rose); font-weight:600; }
-  .oi-remove { cursor:pointer; color:#ccc; font-size:.82rem; }
-  .oi-remove:hover { color:var(--deep-rose); }
-  .order-divider { border:none; border-top:1.5px dashed #edddd5; margin:13px 0; }
-  .order-subtotal { display:flex; justify-content:space-between; font-size:.83rem; color:var(--warm-gray); margin-bottom:5px; }
-  .order-total { display:flex; justify-content:space-between; font-weight:600; font-size:.93rem; }
-  .tot-price { font-family:'Playfair Display',serif; font-size:1.08rem; color:var(--deep-rose); }
+/* ── PICKUP / INFO ── */
+.info-section{padding:96px 48px;border-top:1px solid rgba(181,132,58,.2)}
+.info-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.info-block h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--ink);margin-bottom:20px}
+.info-block p{font-size:.88rem;font-weight:300;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.info-detail{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+.info-row{display:flex;gap:16px;align-items:flex-start}
+.info-row-label{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);min-width:80px;padding-top:2px}
+.info-row-val{font-size:.88rem;font-weight:300;color:var(--ink);line-height:1.6}
 
-  .form-section { margin-top:20px; }
-  .form-divider { font-size:.71rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; color:var(--warm-gray); margin-bottom:13px; }
-  .form-row { margin-bottom:11px; }
-  .form-row label { display:block; font-size:.77rem; font-weight:500; margin-bottom:5px; }
-  .form-row input,.form-row select,.form-row textarea { width:100%; border:1.5px solid #e8ddd6; border-radius:10px; padding:9px 13px; font-family:'DM Sans',sans-serif; font-size:.84rem; background:var(--cream); color:var(--charcoal); outline:none; transition:border-color .2s; }
-  .form-row input:focus,.form-row select:focus,.form-row textarea:focus { border-color:var(--rose); background:white; }
-  .form-row textarea { resize:vertical; min-height:64px; }
-  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
-  .submit-btn { width:100%; margin-top:16px; background:var(--deep-rose); color:white; border:none; border-radius:12px; padding:14px; font-family:'DM Sans',sans-serif; font-size:.91rem; font-weight:600; cursor:pointer; transition:background .2s,transform .15s; }
-  .submit-btn:hover:not(:disabled) { background:#b85f50; transform:translateY(-1px); }
-  .submit-btn:disabled { background:#ddd; color:#bbb; cursor:not-allowed; }
+/* ── FOOTER ── */
+footer{background:var(--ink);color:var(--cream);padding:56px 48px 32px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--cream);font-style:italic}
+.footer-logo em{color:var(--gold-light)}
+.footer-tagline{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.08em}
+.footer-links{display:flex;flex-direction:column;gap:10px}
+.footer-links a{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold-light)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;flex-wrap:wrap;gap:16px}
+.footer-copy{font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:.06em}
+.footer-social a{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+.footer-social a:hover{color:var(--gold-light)}
 
-  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--charcoal); color:white; padding:13px 28px; border-radius:100px; font-size:.86rem; font-weight:500; z-index:999; transition:transform .4s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; box-shadow:0 8px 24px rgba(0,0,0,.2); }
-  .toast.show { transform:translateX(-50%) translateY(0); }
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-left{opacity:0;transform:translateX(-32px);transition:opacity .8s ease,transform .8s ease}
+.reveal-left.visible{opacity:1;transform:none}
+.reveal-right{opacity:0;transform:translateX(32px);transition:opacity .8s ease,transform .8s ease}
+.reveal-right.visible{opacity:1;transform:none}
 
-  footer { text-align:center; padding:28px; font-size:.77rem; color:var(--warm-gray); border-top:1px solid #f0e8e2; }
-  footer a { color:var(--deep-rose); text-decoration:none; }
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  .nav-hamburger{display:flex}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--cream);align-items:center;justify-content:center;gap:32px;z-index:99}
+  .nav-links.open a{font-size:1.1rem}
+  section,footer{padding:64px 24px}
+  .hero-content{padding:0 24px 56px}
+  .hero-scroll{right:24px}
+  .story{grid-template-columns:1fr;gap:40px}
+  .story-img-accent{display:none}
+  .products-grid{grid-template-columns:1fr;gap:2px}
+  .product-item.featured{grid-column:span 1}
+  .process-grid{grid-template-columns:1fr;gap:2px}
+  .process-card{aspect-ratio:16/9}
+  .values-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .instagram-grid{grid-template-columns:repeat(2,1fr)}
+  .info-inner{grid-template-columns:1fr;gap:48px}
+  .footer-top{flex-direction:column}
+  .products-section{padding:64px 24px}
+}
 </style>
 </head>
 <body>
 
-<!-- CLOSED OVERLAY -->
-<div class="closed-overlay" id="closedOverlay">
-  <div class="closed-icon">🍞</div>
-  <h2>We're Not Taking Orders Right Now</h2>
-  <p>We're currently closed for orders. Please check back soon or follow us on Instagram for updates!<br><br>
-  Questions? <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a></p>
-</div>
-
-<header>
-  <a class="logo" href="https://www.hooraybakery.com" target="_blank">
-    <span class="logo-dot"></span>HooRay<span class="logo-sub">Bakery</span>
-  </a>
-  <button class="cart-pill" onclick="scrollToOrder()">
-    🛒 My Order <span id="cartBadge">0</span>
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#"><em>Hoo</em>Ray Bakery</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#story">Our Story</a>
+    <a href="#menu">Menu</a>
+    <a href="#process">Process</a>
+    <a href="#contact">Visit</a>
+    <a href="order.html" class="nav-order">Order Now</a>
+  </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
   </button>
-</header>
+</nav>
 
-<div class="hero">
-  <div class="hero-tag">🍞 Irvine, California</div>
-  <h1>Small-Batch Bread,<br>Baked with <em>Heart</em></h1>
-  <p>A cozy home kitchen making fresh bread and treats in small batches — made to be shared.</p>
-  <div class="hero-badges">
-    <span class="badge">🥛 No Preservatives</span>
-    <span class="badge">🏡 Home Bakery</span>
-    <span class="badge">✨ Made to Order</span>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-img" id="heroImg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Small Batch · Home Kitchen · Irvine, CA</div>
+    <h1>Baked with<br><em>Love &amp; Intention</em></h1>
+    <p class="hero-sub">Japanese-style milk breads, artisan cookies, and seasonal pastries — made in small batches, crafted to share.</p>
+    <a href="order.html" class="hero-cta">Order Now</a>
+    <a href="#menu" class="hero-cta-ghost">View Menu</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Classic Milk Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Matcha Milk Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Earl Grey Tea Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Butter Cookies</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Jenny Cookies</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Canelé</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Classic Milk Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Matcha Milk Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Earl Grey Tea Loaf</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Butter Cookies</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Jenny Cookies</span><span class="marquee-dot">·</span>
+    <span class="marquee-item">Canelé</span><span class="marquee-dot">·</span>
   </div>
 </div>
 
-<div class="layout">
-  <div>
-    <div class="section-label">Our Menu</div>
-    <div class="section-sub">Pick your favorites and add them to your order</div>
-    <div class="tabs">
-      <button class="tab active" onclick="filterMenu('all',this)">All</button>
-      <button class="tab" onclick="filterMenu('bread',this)">🍞 Breads</button>
-      <button class="tab" onclick="filterMenu('cookie',this)">🍪 Cookies</button>
-      <button class="tab" onclick="filterMenu('pastry',this)">🧁 Pastries</button>
+<!-- STORY -->
+<section id="story">
+  <div class="story">
+    <div class="story-img-wrap reveal-left">
+      <img class="story-img" src="market.jpg" alt="HooRay Bakery at market">
+      <img class="story-img-accent" src="cookies.jpg" alt="Jenny Cookies">
     </div>
-    <div class="menu-grid" id="menuGrid"></div>
+    <div class="story-text reveal-right">
+      <p class="section-eyebrow">Our Story</p>
+      <h2 class="section-title">Made in a<br><em>Home Kitchen</em></h2>
+      <p>HooRay Bakery started with a simple belief — that the best things are made with care, in small batches, for the people you love.</p>
+      <p>Based in Irvine, CA, we bake Japanese-style milk breads and artisan treats using quality ingredients, no preservatives, and a whole lot of heart. Every loaf is made to order.</p>
+      <p style="color:var(--ink);font-style:italic">— [Your story here. Tell customers who you are, what inspired you, and why you bake.]</p>
+      <div class="story-signature">HooRay Bakery</div>
+    </div>
   </div>
+</section>
 
-  <div class="sidebar" id="sidebar">
-    <div class="order-card">
-      <div class="order-card-title">
-        Your Order 🧡
-        <span class="clear-all" onclick="clearCart()">Clear all</span>
+<!-- PRODUCTS -->
+<section class="products-section" id="menu">
+  <div class="products-header">
+    <div class="reveal">
+      <p class="section-eyebrow">What We Make</p>
+      <h2 class="section-title">Our <em>Menu</em></h2>
+    </div>
+    <a href="order.html" class="btn-outline reveal">Place an Order →</a>
+  </div>
+  <div class="products-grid">
+    <div class="product-item featured reveal">
+      <div class="product-img-wrap">
+        <img src="classic.jpg" alt="Classic Milk Loaf">
       </div>
-      <div class="order-items" id="orderItems">
-        <div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div>
+      <div class="product-info">
+        <p class="product-cat">Signature Bread</p>
+        <h3 class="product-name">Classic Cloudy Milk Loaf</h3>
+        <p class="product-desc">15oz · Our signature Japanese-style shokupan. Pillowy soft, lightly sweet, made with organic whole milk, heavy cream and butter. Perfect for toast or straight from the bag.</p>
+        <div class="product-price">$10</div>
       </div>
-      <div id="orderSummary" style="display:none">
-        <hr class="order-divider">
-        <div class="order-subtotal"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
-        <div class="order-total"><span>Total</span><span class="tot-price" id="totalPrice">$0.00</span></div>
+    </div>
+    <div class="product-item reveal">
+      <div class="product-img-wrap">
+        <img src="matcha.jpg" alt="Matcha Milk Loaf">
       </div>
-      <div class="form-section">
-        <div class="form-divider">Pickup Details</div>
-        <div class="form-row"><label>Your Name *</label><input type="text" id="fName" placeholder="e.g. Jessica Chen"></div>
-        <div class="form-row"><label>Phone Number *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
-        <div class="form-grid">
-          <div class="form-row"><label>Pickup Date *</label><input type="date" id="fDate"></div>
-          <div class="form-row"><label>Pickup Time</label>
-            <select id="fTime">
-              <option value="">Any</option>
-              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
-              <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
-              <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option>
-            </select>
-          </div>
+      <div class="product-info">
+        <p class="product-cat">Specialty Bread</p>
+        <h3 class="product-name">Matcha Milk Loaf</h3>
+        <p class="product-desc">15oz · Earthy ceremonial matcha swirled into our signature milk bread dough.</p>
+        <div class="product-price">$12</div>
+      </div>
+    </div>
+    <div class="product-item reveal">
+      <div class="product-img-wrap">
+        <img src="classic.jpg" alt="Earl Grey Milk Loaf" style="filter:sepia(.15)">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Specialty Bread</p>
+        <h3 class="product-name">Earl Grey Tea Milk Loaf</h3>
+        <p class="product-desc">15oz · Fragrant bergamot Earl Grey steeped into every bite.</p>
+        <div class="product-price">$12</div>
+      </div>
+    </div>
+    <div class="product-item reveal">
+      <div class="product-img-wrap">
+        <img src="cookies.jpg" alt="Jenny Cookies">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Cookies</p>
+        <h3 class="product-name">Jenny Cookies</h3>
+        <p class="product-desc">Our signature piped butter cookies — delicate, melt-in-your-mouth, and beautiful. 4pc or 8pc.</p>
+        <div class="product-price">From $6</div>
+      </div>
+    </div>
+    <div class="product-item reveal">
+      <div class="product-img-wrap">
+        <img src="market.jpg" alt="Butter Cookies &amp; More">
+      </div>
+      <div class="product-info">
+        <p class="product-cat">Cookies &amp; Pastries</p>
+        <h3 class="product-name">Butter Cookies &amp; Canelé</h3>
+        <p class="product-desc">Classic butter cookies (12pc) and French canelé — crispy caramelized shell, custardy center. Small or large.</p>
+        <div class="product-price">From $8</div>
+      </div>
+    </div>
+  </div>
+  <div class="products-cta reveal">
+    <a href="order.html" class="btn-primary">Order Now — Pickup in Irvine</a>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="process-inner">
+    <p class="section-eyebrow reveal">How We Bake</p>
+    <h2 class="section-title reveal">From <em>Dough to Door</em></h2>
+    <div class="process-grid">
+      <div class="process-card reveal">
+        <img src="process1.jpg" alt="Preparing the dough">
+        <div class="process-label">
+          <p class="process-num">01 — Prepare</p>
+          <h3>The Dough</h3>
+          <p>Quality ingredients, slow fermentation</p>
         </div>
-        <div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
-        <button class="submit-btn" id="submitBtn" disabled onclick="submitOrder()">Place Order →</button>
+      </div>
+      <div class="process-card reveal">
+        <img src="process2.jpg" alt="Proofing the loaves">
+        <div class="process-label">
+          <p class="process-num">02 — Proof</p>
+          <h3>Rest &amp; Rise</h3>
+          <p>Each loaf proofed to perfection</p>
+        </div>
+      </div>
+      <div class="process-card reveal">
+        <img src="matcha_dough.jpg" alt="Fresh baked loaves">
+        <div class="process-label">
+          <p class="process-num">03 — Bake</p>
+          <h3>Fresh Every Time</h3>
+          <p>Made to order, baked the same day</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
+<!-- VALUES -->
+<section class="values-section">
+  <div class="values-inner">
+    <p class="section-eyebrow reveal">Why HooRay</p>
+    <h2 class="section-title reveal">What We <em>Believe In</em></h2>
+    <div class="values-grid">
+      <div class="value-item reveal">
+        <div class="value-num">01</div>
+        <h3 class="value-title">No Preservatives</h3>
+        <p class="value-desc">Real ingredients only. No shortcuts, no additives — just flour, milk, butter, and care.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">02</div>
+        <h3 class="value-title">Made to Order</h3>
+        <p class="value-desc">We bake when you order. Nothing sits on a shelf. Every loaf is fresh for you.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">03</div>
+        <h3 class="value-title">Small Batch</h3>
+        <p class="value-desc">Quality over quantity. We keep batches small so every loaf gets the attention it deserves.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-num">04</div>
+        <h3 class="value-title">Made with Love</h3>
+        <p class="value-desc">A home kitchen passion project turned community favorite — baked with heart, every single time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram-section">
+  <div class="instagram-inner">
+    <p class="section-eyebrow">Follow Along</p>
+    <h2 class="section-title">Find us on <em>Instagram</em></h2>
+    <a href="https://www.instagram.com/hooraysbakery/" target="_blank" class="instagram-handle">@hooraysbakery</a>
+    <div class="instagram-grid">
+      <div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
+      <div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
+      <div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
+      <div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO / CONTACT -->
+<section class="info-section" id="contact">
+  <div class="info-inner">
+    <div class="info-block reveal-left">
+      <h3>Pickup &amp; <em style="font-family:'Cormorant Garamond',serif;font-style:italic">Orders</em></h3>
+      <p>All orders are pickup only from our home kitchen in Irvine, CA. Please order at least 48 hours in advance to allow time for baking.</p>
+      <div class="info-detail">
+        <div class="info-row">
+          <span class="info-row-label">Location</span>
+          <span class="info-row-val">7725 Gateway, Irvine, CA 92618</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Hours</span>
+          <span class="info-row-val">By appointment — pickup times selected at checkout</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Lead Time</span>
+          <span class="info-row-val">Minimum 48 hours advance notice required</span>
+        </div>
+        <div class="info-row">
+          <span class="info-row-label">Contact</span>
+          <span class="info-row-val"><a href="tel:9494495962" style="color:var(--ink)">(949) 449-5962</a><br><a href="mailto:hooraybakery@gmail.com" style="color:var(--gold)">hooraybakery@gmail.com</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="info-block reveal-right">
+      <h3>Ready to <em style="font-family:'Cormorant Garamond',serif;font-style:italic">Order?</em></h3>
+      <p>Browse our full menu and place your order online. We'll confirm via text or email with your pickup details.</p>
+      <p style="margin-top:8px">Questions? Reach out on Instagram or send us an email — we're always happy to chat about custom orders and upcoming flavors.</p>
+      <div style="margin-top:32px;display:flex;flex-direction:column;gap:14px">
+        <a href="order.html" class="btn-primary">Place an Order</a>
+        <a href="https://www.instagram.com/hooraysbakery/" target="_blank" class="btn-outline">@hooraysbakery on Instagram</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  Questions? <a href="tel:9494495962">(949) 449-5962</a> · <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo"><em>Hoo</em>Ray Bakery</div>
+        <div class="footer-tagline">Small-batch bread & treats · Irvine, CA · Made with love</div>
+      </div>
+      <div class="footer-links">
+        <a href="#story">Our Story</a>
+        <a href="#menu">Menu</a>
+        <a href="order.html">Order Now</a>
+        <a href="#contact">Contact</a>
+        <a href="https://www.instagram.com/hooraysbakery/" target="_blank">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 HooRay Bakery · All rights reserved</span>
+      <div class="footer-social"><a href="https://www.instagram.com/hooraysbakery/" target="_blank">@hooraysbakery</a></div>
+    </div>
+  </div>
 </footer>
-<div class="toast" id="toast">🎉 Order placed! We'll confirm via text soon.</div>
 
 <script>
-// ══════════════════════════════════════
-// SETTINGS — Edit these to control the store
-// ══════════════════════════════════════
-const STORE_OPEN = true;          // Set to false to show "We're closed" page
-const MIN_HOURS_AHEAD = 48;       // Minimum hours before pickup (48 = 2 days ahead)
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
-const PICKUP_ADDRESS = '7725 Gateway, Irvine, CA 92618';
-// ══════════════════════════════════════
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
 
-// Show closed overlay if store is closed
-if (!STORE_OPEN) {
-  document.getElementById('closedOverlay').classList.add('active');
-}
+// Hero image load animation
+const heroImg = document.getElementById('heroImg');
+heroImg.style.backgroundImage = "url('hero.jpg')";
+setTimeout(() => heroImg.classList.add('loaded'), 100);
 
-// Set minimum pickup date (48 hours from now)
-const minDate = new Date();
-minDate.setHours(minDate.getHours() + MIN_HOURS_AHEAD);
-document.getElementById('fDate').min = minDate.toISOString().split('T')[0];
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
+});
 
-const MENU = [
-  { id:1, cat:'bread', emoji:'🍞', name:'Classic Milk Loaf', desc:'15oz (430g) · Soft, pillowy Japanese-style milk bread', canSlice:true, variants:[{label:'1 Loaf',price:10}] },
-  { id:2, cat:'bread', emoji:'🍵', name:'Matcha Milk Loaf', desc:'15oz (430g) · Earthy matcha swirled into our signature milk bread', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
-  { id:3, cat:'bread', emoji:'🫖', name:'Earl Grey Tea Milk Loaf', desc:'15oz (430g) · Fragrant bergamot tea baked right in', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
-  { id:4, cat:'cookie', emoji:'🍪', name:'Butter Cookies', desc:'Classic melt-in-your-mouth butter cookies', canSlice:false, variants:[{label:'12 pcs',price:10}] },
-  { id:5, cat:'cookie', emoji:'⭐', name:'Jenny Cookies', desc:'Our signature cookie — ask us about the flavor!', canSlice:false, variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
-  { id:6, cat:'pastry', emoji:'🟤', name:'Canelé', desc:'French custard pastry — crispy outside, custardy inside', canSlice:false, variants:[{label:'Small 4pc',price:8},{label:'Large 4pc',price:15}] },
-];
-
-let cart = {};
-let selVar = {};
-let sliceChoice = {}; // { itemId: true/false }
-MENU.forEach(m => { selVar[m.id] = 0; sliceChoice[m.id] = false; });
-let activeFilter = 'all';
-
-function filterMenu(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderMenu();
-}
-
-function renderMenu() {
-  const grid = document.getElementById('menuGrid');
-  const items = activeFilter === 'all' ? MENU : MENU.filter(m => m.cat === activeFilter);
-  grid.innerHTML = '';
-  items.forEach(item => {
-    const vi = selVar[item.id] ?? 0;
-    const variant = item.variants[vi];
-    const key = `${item.id}-${vi}`;
-    const qty = cart[key] || 0;
-
-    const sizePicker = item.variants.length > 1
-      ? `<div class="size-picker">${item.variants.map((v,i)=>`<button class="size-opt ${i===vi?'selected':''}" onclick="selectVariant(${item.id},${i})">${v.label}</button>`).join('')}</div>`
-      : '';
-
-    const slicePicker = item.canSlice
-      ? `<div class="slice-option">
-          <input type="checkbox" id="slice-${item.id}" ${sliceChoice[item.id]?'checked':''} onchange="toggleSlice(${item.id}, this.checked)">
-          <label class="slice-label" for="slice-${item.id}">
-            Sliced
-            <span class="slice-note">⚠️ Bread needs 2+ hrs to cool before slicing. Sliced loaves may be ready next morning or later in the day — not fresh out of the oven.</span>
-          </label>
-        </div>`
-      : '';
-
-    const ctrl = qty === 0
-      ? `<button class="add-btn" onclick="addItem(${item.id})">Add</button>`
-      : `<div class="qty-row"><button class="qty-btn" onclick="changeQty('${key}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="changeQty('${key}',1)">+</button></div>`;
-
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `<div class="product-emoji">${item.emoji}</div>
-      <div class="product-body">
-        <div class="product-name">${item.name}</div>
-        <div class="product-desc">${item.desc}</div>
-        ${sizePicker}
-        ${slicePicker}
-      </div>
-      <div class="product-right"><div class="product-price">$${variant.price.toFixed(2)}</div>${ctrl}</div>`;
-    grid.appendChild(card);
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Stagger children
+      const children = e.target.querySelectorAll('.reveal, .product-item, .process-card, .value-item');
+      children.forEach((c, i) => {
+        setTimeout(() => c.classList.add('visible'), i * 100);
+      });
+    }
   });
-}
+}, { threshold: 0.1 });
 
-function toggleSlice(id, val) { sliceChoice[id] = val; }
-function selectVariant(id, idx) { selVar[id] = idx; renderMenu(); }
-function addItem(id) { const key=`${id}-${selVar[id]??0}`; cart[key]=1; update(); }
-function changeQty(key,d) { cart[key]=(cart[key]||0)+d; if(cart[key]<=0)delete cart[key]; update(); }
-function removeItem(key) { delete cart[key]; update(); }
-function clearCart() { cart={}; update(); }
-
-function update() {
-  renderMenu();
-  renderCart();
-  document.getElementById('cartBadge').textContent = Object.values(cart).reduce((a,b)=>a+b,0);
-}
-
-function renderCart() {
-  const container = document.getElementById('orderItems');
-  const summary = document.getElementById('orderSummary');
-  const keys = Object.keys(cart);
-  if (!keys.length) {
-    container.innerHTML = `<div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div>`;
-    summary.style.display = 'none';
-    document.getElementById('submitBtn').disabled = true;
-    return;
-  }
-  let html='', total=0;
-  keys.forEach(key => {
-    const [idStr,viStr] = key.split('-');
-    const item = MENU.find(m=>m.id==idStr);
-    const v = item.variants[+viStr];
-    const sub = v.price * cart[key];
-    total += sub;
-    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' · Sliced' : '';
-    html += `<div class="order-item"><div><div class="oi-name">${item.name}</div><div class="oi-meta">${v.label}${sliceTag} × ${cart[key]}</div></div>
-      <div class="oi-right"><span class="oi-price">$${sub.toFixed(2)}</span><span class="oi-remove" onclick="removeItem('${key}')">✕</span></div></div>`;
-  });
-  container.innerHTML = html;
-  summary.style.display = 'block';
-  document.getElementById('subtotalPrice').textContent = `$${total.toFixed(2)}`;
-  document.getElementById('totalPrice').textContent = `$${total.toFixed(2)}`;
-  document.getElementById('submitBtn').disabled = false;
-}
-
-function scrollToOrder() { document.getElementById('sidebar').scrollIntoView({behavior:'smooth',block:'start'}); }
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T12:00:00');
-  return d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-}
-
-function submitOrder() {
-  const name = document.getElementById('fName').value.trim();
-  const phone = document.getElementById('fPhone').value.trim();
-  const date = document.getElementById('fDate').value;
-  const time = document.getElementById('fTime').value || 'Flexible';
-  const notes = document.getElementById('fNotes').value.trim();
-  if (!name||!phone||!date) { alert('Please fill in your name, phone number, and pickup date!'); return; }
-
-  // Build item lines with slice info
-  const itemLines = Object.keys(cart).map(key => {
-    const [idStr,viStr] = key.split('-');
-    const item = MENU.find(m=>m.id==idStr);
-    const v = item.variants[+viStr];
-    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' (Sliced)' : '';
-    return `${item.name}${sliceTag} (${v.label}) x${cart[key]} = $${(v.price*cart[key]).toFixed(2)}`;
-  });
-
-  const grandTotal = Object.keys(cart).reduce((s,key)=>{
-    const [idStr,viStr]=key.split('-');
-    const item=MENU.find(m=>m.id==idStr);
-    return s+item.variants[+viStr].price*cart[key];
-  },0);
-
-  // Build confirmation email body (sent to customer via reply)
-  const itemListForEmail = Object.keys(cart).map(key => {
-    const [idStr,viStr] = key.split('-');
-    const item = MENU.find(m=>m.id==idStr);
-    const v = item.variants[+viStr];
-    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' (Sliced)' : '';
-    return `  • ${cart[key]}x ${item.name}${sliceTag} (${v.label})`;
-  }).join('\n');
-
-  const confirmationEmail =
-`Hi ${name},
-
-This is HooRay Bakery confirming your order! 🎉
-
-📦 Order Summary:
-${itemListForEmail}
-
-💰 Total: $${grandTotal.toFixed(2)}
-
-📅 Pickup: ${formatDate(date)} at ${time}
-📍 Address: ${PICKUP_ADDRESS}
-
-If you have any questions, feel free to reply to this email or text us at (949) 449-5962.
-
-Thank you so much for your support! We can't wait for you to enjoy your bread. 🍞
-
-With love,
-HooRay Bakery 🧡`;
-
-  const params = new URLSearchParams({
-    name: name,
-    phone: phone,
-    date: date,
-    time: time,
-    items: itemLines.join(' | '),
-    total: '$' + grandTotal.toFixed(2),
-    notes: notes,
-    confirmationEmail: confirmationEmail
-  });
-
-  fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
-
-  cart={};
-  update();
-  ['fName','fPhone','fDate','fNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fTime').value='';
-  const toast=document.getElementById('toast');
-  toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'),3800);
-}
-
-renderMenu();
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
