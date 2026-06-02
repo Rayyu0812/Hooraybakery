@@ -218,18 +218,18 @@ footer a{color:var(--gold);text-decoration:none}
         <div class="form-divider">Your Details</div>
         <div class="form-row"><label>Name *</label><input type="text" id="fName" placeholder="Jessica Chen"></div>
         <div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
-        <div class="form-divider" style="margin-top:16px">Pickup Details</div>
-        <div class="form-grid">
-          <div class="form-row"><label>Date *</label><input type="date" id="fDate"></div>
-          <div class="form-row"><label>Time</label>
-            <select id="fTime">
-              <option value="">Any</option>
-              <option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option>
-              <option>12:00 PM</option><option>1:00 PM</option><option>2:00 PM</option>
-              <option>3:00 PM</option><option>4:00 PM</option><option>5:00 PM</option>
-            </select>
-          </div>
+        <div class="form-divider" style="margin-top:16px">Pickup / Delivery Slot</div>
+        <div class="form-row">
+          <label>Select Your Day *</label>
+          <select id="fSlot" onchange="updateSlotInfo()">
+            <option value="">— Choose a day —</option>
+            <option value="tuesday">Tuesday — 6:00 PM · 7725 Gateway, Irvine</option>
+            <option value="saturday">Saturday — 3:00 PM · Meadowood Park, Irvine</option>
+          </select>
         </div>
+        <div id="slotInfo" style="display:none;font-size:.82rem;padding:10px 14px;margin:6px 0 10px;background:rgba(181,132,58,.07);border-left:3px solid var(--gold);line-height:1.8;color:var(--ink)"></div>
+        <input type="hidden" id="fDate" value="">
+        <input type="hidden" id="fTime" value="">
         <div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
         <button class="submit-btn" id="submitBtn" disabled onclick="submitOrder()">Place Order</button>
       </div>
@@ -281,10 +281,42 @@ if (S.noticeText) {
   b.classList.add('active');
 }
 
-// Min date
-const minDate = new Date();
-minDate.setHours(minDate.getHours() + MIN_HOURS_AHEAD);
-document.getElementById('fDate').min = minDate.toISOString().split('T')[0];
+// ── SLOT LOGIC ──
+function getNextSlotDate(weekday) {
+  const now = new Date();
+  const minDate = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+  let d = new Date(minDate);
+  d.setHours(0, 0, 0, 0);
+  while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
+  return d;
+}
+function formatSlotDate(d) {
+  return d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+}
+function updateSlotInfo() {
+  const slot = document.getElementById('fSlot').value;
+  const infoEl = document.getElementById('slotInfo');
+  if (!slot) {
+    infoEl.style.display = 'none';
+    document.getElementById('fDate').value = '';
+    document.getElementById('fTime').value = '';
+    renderCart();
+    return;
+  }
+  const isTuesday = slot === 'tuesday';
+  const weekday = isTuesday ? 2 : 6;
+  const time = isTuesday ? '6:00 PM' : '3:00 PM';
+  const location = isTuesday
+    ? '7725 Gateway, Irvine, CA 92618'
+    : 'Meadowood Park, Irvine, CA';
+  const nextDate = getNextSlotDate(weekday);
+  const dateStr = nextDate.toISOString().split('T')[0];
+  document.getElementById('fDate').value = dateStr;
+  document.getElementById('fTime').value = time;
+  infoEl.style.display = 'block';
+  infoEl.innerHTML = `📅 <strong>${formatSlotDate(nextDate)}</strong> at <strong>${time}</strong><br>📍 ${location}`;
+  renderCart();
+}
 
 const MENU = [
   { id:1, cat:'bread', emoji:'🍞', name:'Classic Milk Loaf', desc:'15oz · Soft, pillowy Japanese-style milk bread', canSlice:true, variants:[{label:'1 Loaf',price:10}] },
@@ -487,7 +519,8 @@ function submitOrder() {
   const date = document.getElementById('fDate').value;
   const time = document.getElementById('fTime').value || 'Flexible';
   const notes = document.getElementById('fNotes').value.trim();
-  if (!name||!phone||!date) { alert('Please fill in your name, phone, and pickup date!'); return; }
+  const slot = document.getElementById('fSlot').value;
+  if (!name||!phone||!slot) { alert('Please fill in your name, phone, and select a pickup day!'); return; }
 
   const subtotal = getSubtotal();
   const isFreeDelivery = deliveryMethod === 'delivery' && subtotal >= S.freeDeliveryMin;
@@ -520,7 +553,7 @@ ${Object.keys(cart).map(key=>{
 💰 Subtotal: $${subtotal.toFixed(2)}${deliveryMethod==='delivery'?`\n🚗 Delivery fee: ${isFreeDelivery?'Free':'$'+fee.toFixed(2)}\n💳 Total: $${grandTotal.toFixed(2)}`:''}
 
 📅 ${deliveryMethod==='pickup'?'Pickup':'Delivery'}: ${formatDate(date)} at ${time}
-📍 ${deliveryMethod==='pickup'?'7725 Gateway, Irvine, CA 92618':deliveryAddr}
+📍 ${deliveryMethod==='pickup'?(slot==='tuesday'?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA'):deliveryAddr}
 
 Thank you so much! We'll text you to confirm. 🍞
 
@@ -530,7 +563,7 @@ HooRay Bakery 🧡`;
   const params = new URLSearchParams({
     name, phone, date, time,
     method: deliveryMethod,
-    address: deliveryMethod==='delivery' ? deliveryAddr : '7725 Gateway, Irvine, CA 92618',
+    address: deliveryMethod==='delivery' ? deliveryAddr : (slot === 'tuesday' ? '7725 Gateway, Irvine, CA 92618' : 'Meadowood Park, Irvine, CA'),
     items: itemLines.join(' | '),
     subtotal: '$'+subtotal.toFixed(2),
     deliveryFee: deliveryMethod==='delivery' ? (isFreeDelivery?'Free':'$'+fee.toFixed(2)) : 'N/A',
