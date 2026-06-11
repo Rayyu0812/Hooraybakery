@@ -9,68 +9,56 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --ink:#1a1410;--cream:#f8f4ee;--warm:#f0e8da;--gold:#b5843a;
-  --gold-light:#d4a85a;--muted:#7a6e62;--white:#fff;--rose:#c96b50;
-  --shadow:rgba(26,20,16,0.07);
+--ink:#1a1410;--cream:#f8f4ee;--warm:#f0e8da;--gold:#b5843a;
+--gold-light:#d4a85a;--muted:#7a6e62;--white:#fff;--rose:#c96b50;
+--shadow:rgba(26,20,16,0.07);
 }
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
-
-/* CLOSED OVERLAY */
 .closed-overlay{display:none;position:fixed;inset:0;background:rgba(248,244,238,0.97);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:32px}
 .closed-overlay.active{display:flex}
 .closed-icon{font-size:4rem;margin-bottom:20px}
 .closed-overlay h2{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px}
 .closed-overlay p{color:var(--muted);font-size:.95rem;line-height:1.7;max-width:380px}
 .closed-overlay a{color:var(--gold);text-decoration:none;font-weight:500}
-
-/* NAV */
 nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--ink);text-decoration:none}
 .nav-logo em{font-style:italic;color:var(--gold)}
 .nav-back{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
 .nav-back:hover{color:var(--gold)}
-
-/* HERO */
 .page-hero{background:linear-gradient(155deg,#fef5ef,#fdf9f4 55%,#f5ede4);padding:48px 32px 36px;text-align:center}
 .page-hero-tag{display:inline-block;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(181,132,58,.3);padding:5px 14px;border-radius:1px;margin-bottom:16px}
 .page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;line-height:1.2;margin-bottom:10px}
 .page-hero h1 em{font-style:italic;color:var(--gold)}
 .page-hero p{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto}
-
-/* NOTICE BANNER */
 .notice-banner{background:var(--gold);color:white;text-align:center;padding:10px 24px;font-size:.8rem;letter-spacing:.06em;display:none}
 .notice-banner.active{display:block}
-
-/* LAYOUT */
 .layout{max-width:1080px;margin:0 auto;padding:44px 24px 64px;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start}
 @media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{position:static!important}}
-
-/* SECTION LABELS */
 .section-label{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:6px;font-weight:400}
 .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:22px}
-
-/* TABS */
 .tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
 .tab{border:1.5px solid #e8ddd6;background:white;color:var(--muted);border-radius:2px;padding:7px 18px;font-size:.78rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .18s;font-family:'Jost',sans-serif}
 .tab:hover{border-color:var(--gold);color:var(--gold)}
 .tab.active{background:var(--ink);color:white;border-color:var(--ink)}
-
-/* PRODUCT CARDS */
 .menu-grid{display:flex;flex-direction:column;gap:12px}
-.product-card{background:var(--white);border:1px solid rgba(181,132,58,.12);display:flex;align-items:center;gap:16px;padding:18px 20px;transition:box-shadow .2s,transform .2s;cursor:default}
+.product-card{background:var(--white);border:1px solid rgba(181,132,58,.12);display:flex;align-items:flex-start;gap:16px;padding:18px 20px;transition:box-shadow .2s,transform .2s;cursor:default}
 .product-card:hover{box-shadow:0 4px 24px rgba(26,20,16,.08);transform:translateY(-1px)}
 .product-emoji{font-size:2.2rem;width:58px;height:58px;background:linear-gradient(135deg,var(--warm),#faeee6);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .product-body{flex:1;min-width:0}
 .product-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;margin-bottom:3px}
-.product-desc{font-size:.77rem;color:var(--muted);line-height:1.45;margin-bottom:6px}
-.size-picker{display:flex;gap:5px;flex-wrap:wrap}
-.size-opt{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:3px 10px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
-.size-opt:hover{border-color:var(--gold)}
-.size-opt.selected{background:var(--ink);color:white;border-color:var(--ink)}
-.slice-option{display:flex;align-items:flex-start;gap:8px;margin-top:7px;background:var(--cream);padding:8px 10px;border-left:2px solid var(--gold)}
-.slice-option input[type=checkbox]{margin-top:2px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
-.slice-label{font-size:.76rem;color:var(--ink);cursor:pointer}
-.slice-note{display:block;font-size:.69rem;color:var(--muted);margin-top:2px;line-height:1.4}
+.product-desc{font-size:.77rem;color:var(--muted);line-height:1.45;margin-bottom:8px}
+.options-group{margin-top:8px;display:flex;flex-direction:column;gap:7px}
+.opt-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.opt-label.required::after{content:' *';color:var(--rose)}
+.pill-row{display:flex;gap:5px;flex-wrap:wrap}
+.pill{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:4px 11px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
+.pill:hover{border-color:var(--gold)}
+.pill.selected{background:var(--ink);color:white;border-color:var(--ink)}
+.slice-row{display:flex;gap:5px;margin-top:2px}
+.slice-pill{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:4px 11px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
+.slice-pill:hover{border-color:var(--gold)}
+.slice-pill.selected{background:var(--ink);color:white;border-color:var(--ink)}
+.slice-note-text{font-size:.69rem;color:var(--muted);margin-top:4px;line-height:1.4;padding-left:2px}
 .product-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex-shrink:0}
 .product-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);white-space:nowrap}
 .qty-row{display:flex;align-items:center;background:var(--cream);border:1px solid #e8ddd6;padding:3px}
@@ -78,9 +66,8 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .qty-btn:hover{background:var(--warm)}
 .qty-num{font-size:.83rem;font-weight:500;min-width:22px;text-align:center}
 .add-btn{background:var(--ink);color:white;border:none;padding:7px 16px;font-size:.75rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;transition:background .15s}
-.add-btn:hover{background:var(--gold)}
-
-/* SIDEBAR */
+.add-btn:hover:not(:disabled){background:var(--gold)}
+.add-btn:disabled{background:#ccc;cursor:not-allowed}
 .sidebar{position:sticky;top:76px}
 .order-card{background:var(--white);border:1px solid rgba(181,132,58,.15);padding:26px}
 .order-card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;font-weight:400}
@@ -97,8 +84,6 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .oi-remove{cursor:pointer;color:#ccc;font-size:.82rem}
 .oi-remove:hover{color:var(--rose)}
 .order-divider{border:none;border-top:1px dashed rgba(181,132,58,.3);margin:14px 0}
-
-/* DELIVERY SECTION */
 .delivery-section{margin:16px 0}
 .delivery-toggle{display:flex;gap:0;border:1px solid #e8ddd6;overflow:hidden;margin-bottom:14px}
 .delivery-opt{flex:1;padding:9px;text-align:center;font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:white;border:none;font-family:'Jost',sans-serif;color:var(--muted);transition:all .15s}
@@ -112,15 +97,11 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .check-btn:hover{background:var(--gold)}
 .delivery-result{margin-top:10px;font-size:.8rem;padding:10px 12px;border-left:3px solid var(--gold);background:rgba(181,132,58,.06)}
 .delivery-result.error{border-left-color:var(--rose);background:rgba(201,107,80,.06);color:var(--rose)}
-
-/* ORDER SUMMARY */
 .summary-row{display:flex;justify-content:space-between;font-size:.83rem;color:var(--muted);margin-bottom:5px}
 .summary-row.delivery{color:var(--ink)}
 .summary-row.free-delivery{color:#5a9a5a}
 .summary-total{display:flex;justify-content:space-between;font-weight:500;font-size:.95rem;padding-top:10px;border-top:1px solid var(--warm);margin-top:6px}
 .summary-total-price{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gold)}
-
-/* FORM */
 .form-section{margin-top:22px}
 .form-divider{font-size:.68rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(181,132,58,.2)}
 .form-row{margin-bottom:11px}
@@ -132,11 +113,10 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .submit-btn{width:100%;margin-top:18px;background:var(--gold);color:white;border:none;padding:15px;font-family:'Jost',sans-serif;font-size:.82rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .submit-btn:hover:not(:disabled){background:var(--ink)}
 .submit-btn:disabled{background:#ddd;color:#bbb;cursor:not-allowed}
-
-/* TOAST */
+.away-notice{font-size:.78rem;color:var(--gold);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:8px 12px;margin-top:8px;line-height:1.6;display:none}
+.away-notice.active{display:block}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:white;padding:13px 28px;font-size:.86rem;font-weight:400;letter-spacing:.06em;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .toast.show{transform:translateX(-50%) translateY(0)}
-
 footer{text-align:center;padding:28px;font-size:.77rem;color:var(--muted);border-top:1px solid rgba(181,132,58,.15)}
 footer a{color:var(--gold);text-decoration:none}
 </style>
@@ -144,448 +124,499 @@ footer a{color:var(--gold);text-decoration:none}
 <body>
 
 <div class="closed-overlay" id="closedOverlay">
-  <div class="closed-icon">🍞</div>
-  <h2>We're Not Taking Orders Right Now</h2>
-  <p>We're currently closed. Please check back soon or follow us on Instagram for updates!<br><br>
-  <a href="https://www.instagram.com/hooraysbakery/" target="_blank">@hooraysbakery</a> · <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a></p>
+<div class="closed-icon">🍞</div>
+<h2>We're Not Taking Orders Right Now</h2>
+<p>We're currently closed. Please check back soon or follow us on Instagram for updates!<br><br>
+<a href="https://www.instagram.com/hooraysbakery/" target="_blank">@hooraysbakery</a> &middot; <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a></p>
 </div>
 
 <nav>
-  <a class="nav-logo" href="index.html"><em>Hoo</em>Ray Bakery</a>
-  <a class="nav-back" href="index.html">← Back to Home</a>
+<a class="nav-logo" href="index.html"><em>Hoo</em>Ray Bakery</a>
+<a class="nav-back" href="index.html">&larr; Back to Home</a>
 </nav>
 
 <div class="notice-banner" id="noticeBanner"></div>
 
 <div class="page-hero">
-  <div class="page-hero-tag">Pickup · Irvine, CA</div>
-  <h1>Place Your <em>Order</em></h1>
-  <p>All items are made fresh to order. Orders placed today will be ready on the next available bake day — we'll confirm via text.</p>
+<div class="page-hero-tag">Pickup &middot; Irvine, CA</div>
+<h1>Place Your <em>Order</em></h1>
+<p>All items are made fresh to order. Orders placed today will be ready on the next available bake day &mdash; we'll confirm via text.</p>
 </div>
 
 <div class="layout">
-  <div>
-    <div class="section-label">Our Menu</div>
-    <div class="section-sub">Select your items and add them to your order</div>
-    <div class="tabs">
-      <button class="tab active" onclick="filterMenu('all',this)">All</button>
-      <button class="tab" onclick="filterMenu('bread',this)">Breads</button>
-      <button class="tab" onclick="filterMenu('cookie',this)">Cookies</button>
-      <button class="tab" onclick="filterMenu('pastry',this)">Pastries</button>
-    </div>
-    <div class="menu-grid" id="menuGrid"></div>
-  </div>
+<div>
+<div class="section-label">Our Menu</div>
+<div class="section-sub">Select your items and add them to your order</div>
+<div class="tabs">
+<button class="tab active" onclick="filterMenu('all',this)">All</button>
+<button class="tab" onclick="filterMenu('bread',this)">Breads</button>
+<button class="tab" onclick="filterMenu('cookie',this)">Cookies</button>
+</div>
+<div class="menu-grid" id="menuGrid"></div>
+</div>
 
-  <div class="sidebar" id="sidebar">
-    <div class="order-card">
-      <div class="order-card-title">Your Order <span class="clear-all" onclick="clearCart()">Clear all</span></div>
+<div class="sidebar" id="sidebar">
+<div class="order-card">
+<div class="order-card-title">Your Order <span class="clear-all" onclick="clearCart()">Clear all</span></div>
 
-      <div id="orderItems"><div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div></div>
+<div id="orderItems"><div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div></div>
 
-      <!-- DELIVERY TOGGLE -->
-      <div class="delivery-section" id="deliverySection" style="display:none">
-        <hr class="order-divider">
-        <div class="delivery-toggle">
-          <button class="delivery-opt active" id="optPickup" onclick="setMethod('pickup')">Pickup</button>
-          <button class="delivery-opt" id="optDelivery" onclick="setMethod('delivery')">Delivery</button>
-        </div>
-        <div class="delivery-address-wrap" id="addressWrap">
-          <div class="address-input-row">
-            <input type="text" id="deliveryAddress" placeholder="Enter your address...">
-            <button class="check-btn" onclick="checkDelivery()">Check</button>
-          </div>
-          <div id="deliveryResult"></div>
-        </div>
-      </div>
+<div class="delivery-section" id="deliverySection" style="display:none">
+<hr class="order-divider">
+<div class="delivery-toggle">
+<button class="delivery-opt active" id="optPickup" onclick="setMethod('pickup')">Pickup</button>
+<button class="delivery-opt" id="optDelivery" onclick="setMethod('delivery')">Delivery</button>
+</div>
+<div class="delivery-address-wrap" id="addressWrap">
+<div class="address-input-row">
+<input type="text" id="deliveryAddress" placeholder="Enter your address...">
+<button class="check-btn" onclick="checkDelivery()">Check</button>
+</div>
+<div id="deliveryResult"></div>
+</div>
+</div>
 
-      <div id="orderSummary" style="display:none">
-        <hr class="order-divider">
-        <div class="summary-row"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
-        <div class="summary-row delivery" id="deliveryRow" style="display:none">
-          <span id="deliveryLabel">Delivery fee</span>
-          <span id="deliveryFee">$0.00</span>
-        </div>
-        <div class="summary-row free-delivery" id="freeDeliveryRow" style="display:none">
-          <span>🎉 Free delivery</span><span>$0.00</span>
-        </div>
-        <div class="summary-total">
-          <span>Total</span>
-          <span class="summary-total-price" id="totalPrice">$0.00</span>
-        </div>
-      </div>
+<div id="orderSummary" style="display:none">
+<hr class="order-divider">
+<div class="summary-row"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
+<div class="summary-row delivery" id="deliveryRow" style="display:none">
+<span id="deliveryLabel">Delivery fee</span>
+<span id="deliveryFee">$0.00</span>
+</div>
+<div class="summary-row free-delivery" id="freeDeliveryRow" style="display:none">
+<span>🎉 Free delivery</span><span>$0.00</span>
+</div>
+<div class="summary-total">
+<span>Total</span>
+<span class="summary-total-price" id="totalPrice">$0.00</span>
+</div>
+</div>
 
-      <div class="form-section">
-        <div class="form-divider">Your Details</div>
-        <div class="form-row"><label>Name *</label><input type="text" id="fName" placeholder="Jessica Chen"></div>
-        <div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
-        <div class="form-divider" style="margin-top:16px">Pickup / Delivery Slot</div>
-        <div class="form-row">
-          <label>Select Your Day *</label>
-          <select id="fSlot" onchange="updateSlotInfo()">
-            <option value="">— Choose a day —</option>
-            <option value="tuesday">Tuesday — 6:00 PM · 7725 Gateway, Irvine</option>
-            <option value="saturday">Saturday — 3:00 PM · Meadowood Park, Irvine</option>
-          </select>
-        </div>
-        <div id="slotInfo" style="display:none;font-size:.82rem;padding:10px 14px;margin:6px 0 10px;background:rgba(181,132,58,.07);border-left:3px solid var(--gold);line-height:1.8;color:var(--ink)"></div>
-        <input type="hidden" id="fDate" value="">
-        <input type="hidden" id="fTime" value="">
-        <div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
-        <button class="submit-btn" id="submitBtn" disabled onclick="submitOrder()">Place Order</button>
-      </div>
-    </div>
-  </div>
+<div class="form-section">
+<div class="form-divider">Your Details</div>
+<div class="form-row"><label>Name *</label><input type="text" id="fName" placeholder="Jessica Chen"></div>
+<div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
+<div class="form-divider" style="margin-top:16px">Pickup / Delivery Slot</div>
+<div class="form-row">
+<label>Select Your Day *</label>
+<select id="fSlot" onchange="updateSlotInfo()">
+<option value="">&#8212; Choose a day &#8212;</option>
+<option value="tuesday">Tuesday &mdash; 6:00 PM &middot; 7725 Gateway, Irvine</option>
+<option value="saturday">Saturday &mdash; 3:00 PM &middot; Meadowood Park, Irvine</option>
+</select>
+<div class="away-notice" id="awayNotice">✈️ We're Away &mdash; pickup dates below are after our return.</div>
+</div>
+<div id="slotInfo" style="display:none;font-size:.82rem;padding:10px 14px;margin:6px 0 10px;background:rgba(181,132,58,.07);border-left:3px solid var(--gold);line-height:1.8;color:var(--ink)"></div>
+<input type="hidden" id="fDate" value="">
+<input type="hidden" id="fTime" value="">
+<div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
+<button class="submit-btn" id="submitBtn" disabled onclick="submitOrder()">Place Order</button>
+</div>
+</div>
+</div>
 </div>
 
 <footer>
-  <a href="index.html">← Back to HooRay Bakery</a> &nbsp;·&nbsp;
-  <a href="tel:9494495962">(949) 449-5962</a> &nbsp;·&nbsp;
-  <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a>
+<a href="index.html">&larr; Back to HooRay Bakery</a> &nbsp;&middot;&nbsp;
+<a href="tel:9494495962">(949) 449-5962</a> &nbsp;&middot;&nbsp;
+<a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a>
 </footer>
 <div class="toast" id="toast">🎉 Order placed! We'll confirm via text soon.</div>
 
 <script>
-// ══════════════════════════════
-// CONFIG — loaded from admin settings
-// ══════════════════════════════
 const GOOGLE_MAPS_KEY = 'AIzaSyBpIRFypFocZ6wLCFPAHyWob5tuJm3glVE';
 const STORE_ADDRESS = '7725 Gateway, Irvine, CA 92618';
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
-const MIN_HOURS_AHEAD = 48;
 
-// Load admin settings from localStorage
 function getSettings() {
-  const defaults = {
-    storeOpen: true,
-    noticeText: '',
-    deliveryEnabled: true,
-    ratePerMile: 1.00,
-    maxMiles: 20,
-    freeDeliveryMin: 20,
-    bakeDay1: 3, // Wednesday
-    bakeDay2: 6, // Saturday
-  };
-  try {
-    const saved = JSON.parse(localStorage.getItem('hooray_settings') || '{}');
-    return { ...defaults, ...saved };
-  } catch { return defaults; }
+const defaults = {
+storeOpen: true, noticeText: '',
+deliveryEnabled: true, ratePerMile: 1.00,
+maxMiles: 20, freeDeliveryMin: 20,
+awayStart: '', awayEnd: '',
+};
+try {
+const saved = JSON.parse(localStorage.getItem('hooray_settings') || '{}');
+return { ...defaults, ...saved };
+} catch { return defaults; }
 }
-
 const S = getSettings();
 
-// Apply settings
 if (!S.storeOpen) document.getElementById('closedOverlay').classList.add('active');
 if (S.noticeText) {
-  const b = document.getElementById('noticeBanner');
-  b.textContent = S.noticeText;
-  b.classList.add('active');
+const b = document.getElementById('noticeBanner');
+b.textContent = S.noticeText;
+b.classList.add('active');
 }
 
-// ── SLOT LOGIC ──
+// Away period helper
+function isAway() {
+if (!S.awayStart || !S.awayEnd) return false;
+const today = new Date(); today.setHours(0,0,0,0);
+const start = new Date(S.awayStart + 'T00:00:00');
+const end = new Date(S.awayEnd + 'T00:00:00');
+return today <= end && start <= end;
+}
+function getReturnDate() {
+const end = new Date(S.awayEnd + 'T00:00:00');
+end.setDate(end.getDate() + 1);
+return end;
+}
+
+// Slot logic: if away, push first available date past return date
 function getNextSlotDate(weekday) {
-  const now = new Date();
-  const minDate = new Date(now.getTime() + 48 * 60 * 60 * 1000);
-  let d = new Date(minDate);
-  d.setHours(0, 0, 0, 0);
-  while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
-  return d;
+const now = new Date();
+const minDate = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+let d = new Date(minDate); d.setHours(0,0,0,0);
+while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
+if (isAway()) {
+const ret = getReturnDate();
+if (d < ret) {
+d = new Date(ret);
+while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
+}
+}
+return d;
 }
 function formatSlotDate(d) {
-  return d.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+return d.toLocaleDateString('en-US', {weekday:'long',month:'long',day:'numeric'});
 }
 function updateSlotInfo() {
-  const slot = document.getElementById('fSlot').value;
-  const infoEl = document.getElementById('slotInfo');
-  if (!slot) {
-    infoEl.style.display = 'none';
-    document.getElementById('fDate').value = '';
-    document.getElementById('fTime').value = '';
-    renderCart();
-    return;
-  }
-  const isTuesday = slot === 'tuesday';
-  const weekday = isTuesday ? 2 : 6;
-  const time = isTuesday ? '6:00 PM' : '3:00 PM';
-  const location = isTuesday
-    ? '7725 Gateway, Irvine, CA 92618'
-    : 'Meadowood Park, Irvine, CA';
-  const nextDate = getNextSlotDate(weekday);
-  const dateStr = nextDate.toISOString().split('T')[0];
-  document.getElementById('fDate').value = dateStr;
-  document.getElementById('fTime').value = time;
-  infoEl.style.display = 'block';
-  infoEl.innerHTML = `📅 <strong>${formatSlotDate(nextDate)}</strong> at <strong>${time}</strong><br>📍 ${location}`;
-  renderCart();
+const slot = document.getElementById('fSlot').value;
+const infoEl = document.getElementById('slotInfo');
+if (!slot) { infoEl.style.display='none'; document.getElementById('fDate').value=''; document.getElementById('fTime').value=''; renderCart(); return; }
+const isTue = slot === 'tuesday';
+const weekday = isTue ? 2 : 6;
+const time = isTue ? '6:00 PM' : '3:00 PM';
+const location = isTue ? '7725 Gateway, Irvine, CA 92618' : 'Meadowood Park, Irvine, CA';
+const nextDate = getNextSlotDate(weekday);
+document.getElementById('fDate').value = nextDate.toISOString().split('T')[0];
+document.getElementById('fTime').value = time;
+infoEl.style.display = 'block';
+infoEl.innerHTML = '📅 <strong>' + formatSlotDate(nextDate) + '</strong> at <strong>' + time + '</strong><br>📍 ' + location;
+renderCart();
 }
 
+// Show away notice if currently away
+if (isAway()) {
+document.getElementById('awayNotice').classList.add('active');
+}
+
+// ── MENU ──
+// Merged SKUs: Milk Loaf (1 SKU, required flavor + required slice)
+// Butter Cookies (1 SKU, required flavor + required size)
+// Canele removed
 const MENU = [
-  { id:1, cat:'bread', emoji:'🍞', name:'Classic Milk Loaf', desc:'15oz · Soft, pillowy Japanese-style milk bread', canSlice:true, variants:[{label:'1 Loaf',price:10}] },
-  { id:2, cat:'bread', emoji:'🍵', name:'Matcha Milk Loaf', desc:'15oz · Earthy matcha swirled into our signature milk bread', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
-  { id:3, cat:'bread', emoji:'🫖', name:'Earl Grey Tea Milk Loaf', desc:'15oz · Fragrant bergamot tea baked right in', canSlice:true, variants:[{label:'1 Loaf',price:12}] },
-  { id:4, cat:'cookie', emoji:'🍪', name:'Butter Cookie — Original', desc:'Classic piped butter cookies in a clear plastic box, melt-in-your-mouth', canSlice:false, variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
-  { id:5, cat:'cookie', emoji:'🍵', name:'Butter Cookie — Matcha', desc:'Piped matcha butter cookies in a clear plastic box', canSlice:false, variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
-  { id:'5b', cat:'cookie', emoji:'🍫', name:'Butter Cookie — Chocolate', desc:'Piped chocolate butter cookies in a clear plastic box', canSlice:false, variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
-  { id:6, cat:'pastry', emoji:'🟤', name:'Canelé', desc:'French custard pastry — crispy outside, custardy inside', canSlice:false, variants:[{label:'Small 4pc',price:8},{label:'Large 4pc',price:15}] },
+{
+id: 'milkloaf', cat: 'bread', emoji: '🍞', name: 'Milk Loaf',
+desc: '15oz · Soft, pillowy Japanese-style milk bread',
+requireFlavor: true,
+requireSlice: true,
+flavors: [
+{label: 'Classic', price: 10},
+{label: 'Matcha', price: 12},
+{label: 'Earl Grey', price: 12},
+],
+},
+{
+id: 'cookies', cat: 'cookie', emoji: '🍪', name: 'Butter Cookies',
+desc: 'Piped butter cookies in a clear box · melt-in-your-mouth',
+requireFlavor: true,
+requireSlice: false,
+flavors: [
+{label: 'Original Butter', price: null},
+{label: 'Matcha', price: null},
+{label: 'Chocolate', price: null},
+],
+variants: [
+{label: '4 pcs', price: 6},
+{label: '8 pcs', price: 10},
+],
+},
 ];
 
-let cart = {}, selVar = {}, sliceChoice = {};
+// Per-item state
+let itemState = {};
+MENU.forEach(m => {
+itemState[m.id] = {
+flavor: null,
+slice: null,   // 'sliced' | 'whole' | null
+variant: 0,    // index into variants (cookies only)
+};
+});
+
+let cart = {};
 let deliveryMethod = 'pickup', deliveryFeeAmount = 0, deliveryChecked = false;
 let activeFilter = 'all';
-MENU.forEach(m => { selVar[m.id] = 0; sliceChoice[m.id] = false; });
 
 function filterMenu(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderMenu();
+activeFilter = cat;
+document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+btn.classList.add('active');
+renderMenu();
+}
+
+function canAdd(item) {
+const st = itemState[item.id];
+if (item.requireFlavor && st.flavor === null) return false;
+if (item.requireSlice && st.slice === null) return false;
+return true;
+}
+
+function getCartKey(item) {
+const st = itemState[item.id];
+const flv = st.flavor !== null ? st.flavor : 0;
+const slc = item.requireSlice ? (st.slice || 'whole') : 'noslice';
+const vrt = item.variants ? st.variant : 0;
+return item.id + '|' + flv + '|' + slc + '|' + vrt;
+}
+
+function getItemPrice(item) {
+const st = itemState[item.id];
+if (item.variants) {
+return item.variants[st.variant].price;
+}
+if (item.requireFlavor && st.flavor !== null) {
+return item.flavors[st.flavor].price;
+}
+return item.flavors[0].price;
 }
 
 function renderMenu() {
-  const grid = document.getElementById('menuGrid');
-  const items = activeFilter === 'all' ? MENU : MENU.filter(m => m.cat === activeFilter);
-  grid.innerHTML = '';
-  items.forEach(item => {
-    const vi = selVar[item.id] ?? 0;
-    const variant = item.variants[vi];
-    const key = `${item.id}-${vi}`;
-    const qty = cart[key] || 0;
-    const sizePicker = item.variants.length > 1
-      ? `<div class="size-picker">${item.variants.map((v,i)=>`<button class="size-opt ${i===vi?'selected':''}" onclick="selectVariant(${item.id},${i})">${v.label} — $${v.price}</button>`).join('')}</div>`
-      : '';
-    const slicePicker = item.canSlice
-      ? `<div class="slice-option">
-          <input type="checkbox" id="slice-${item.id}" ${sliceChoice[item.id]?'checked':''} onchange="toggleSlice(${item.id},this.checked)">
-          <label class="slice-label" for="slice-${item.id}">Sliced
-            <span class="slice-note">⚠️ Bread needs 2+ hrs to cool before slicing. Sliced loaves may be ready next morning — not fresh out of the oven.</span>
-          </label>
-        </div>` : '';
-    const ctrl = qty === 0
-      ? `<button class="add-btn" onclick="addItem(${item.id})">Add</button>`
-      : `<div class="qty-row"><button class="qty-btn" onclick="changeQty('${key}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="changeQty('${key}',1)">+</button></div>`;
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `<div class="product-emoji">${item.emoji}</div>
-      <div class="product-body"><div class="product-name">${item.name}</div><div class="product-desc">${item.desc}</div>${sizePicker}${slicePicker}</div>
-      <div class="product-right"><div class="product-price">$${variant.price.toFixed(2)}</div>${ctrl}</div>`;
-    grid.appendChild(card);
-  });
+const grid = document.getElementById('menuGrid');
+const items = activeFilter === 'all' ? MENU : MENU.filter(m => m.cat === activeFilter);
+grid.innerHTML = '';
+items.forEach(item => {
+const st = itemState[item.id];
+const key = getCartKey(item);
+const qty = cart[key] || 0;
+const price = getItemPrice(item);
+const ready = canAdd(item);
+
+// Build flavor pills
+let flavorHTML = '';
+if (item.flavors && item.flavors.length > 0) {
+flavorHTML = '<div><div class="opt-label required">Flavor</div><div class="pill-row">' +
+item.flavors.map((f, i) =>
+'<button class="pill' + (st.flavor === i ? ' selected' : '') + '" onclick="selectFlavor('' + item.id + '',' + i + ')">' + f.label + (f.price ? ' — $' + f.price : '') + '</button>'
+).join('') + '</div></div>';
 }
 
-function toggleSlice(id, val) { sliceChoice[id] = val; renderCart(); }
-function selectVariant(id, idx) { selVar[id] = idx; renderMenu(); }
-function addItem(id) { const key=`${id}-${selVar[id]??0}`; cart[key]=1; update(); }
-function changeQty(key,d) { cart[key]=(cart[key]||0)+d; if(cart[key]<=0)delete cart[key]; update(); }
+// Build size pills (cookies)
+let sizeHTML = '';
+if (item.variants) {
+sizeHTML = '<div><div class="opt-label required">Size</div><div class="pill-row">' +
+item.variants.map((v, i) =>
+'<button class="pill' + (st.variant === i ? ' selected' : '') + '" onclick="selectVariant('' + item.id + '',' + i + ')">' + v.label + ' — $' + v.price + '</button>'
+).join('') + '</div></div>';
+}
+
+// Build slice pills (milk loaf)
+let sliceHTML = '';
+if (item.requireSlice) {
+sliceHTML = '<div><div class="opt-label required">Sliced or Whole?</div>' +
+'<div class="slice-row">' +
+'<button class="slice-pill' + (st.slice === 'whole' ? ' selected' : '') + '" onclick="selectSlice('' + item.id + '','whole')">Whole</button>' +
+'<button class="slice-pill' + (st.slice === 'sliced' ? ' selected' : '') + '" onclick="selectSlice('' + item.id + '','sliced')">Sliced</button>' +
+'</div>' +
+(st.slice === 'sliced' ? '<div class="slice-note-text">⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.</div>' : '') +
+'</div>';
+}
+
+const ctrl = qty === 0
+? '<button class="add-btn" ' + (ready ? '' : 'disabled') + ' onclick="addItem('' + item.id + '')">Add</button>'
+: '<div class="qty-row"><button class="qty-btn" onclick="changeQty('' + key + '',-1)">&#8722;</button><span class="qty-num">' + qty + '</span><button class="qty-btn" onclick="changeQty('' + key + '',1)">+</button></div>';
+
+const card = document.createElement('div');
+card.className = 'product-card';
+card.innerHTML =
+'<div class="product-emoji">' + item.emoji + '</div>' +
+'<div class="product-body">' +
+'<div class="product-name">' + item.name + '</div>' +
+'<div class="product-desc">' + item.desc + '</div>' +
+'<div class="options-group">' + flavorHTML + sizeHTML + sliceHTML + '</div>' +
+'</div>' +
+'<div class="product-right"><div class="product-price">$' + price.toFixed(2) + '</div>' + ctrl + '</div>';
+grid.appendChild(card);
+});
+}
+
+function selectFlavor(id, idx) {
+itemState[id].flavor = idx;
+renderMenu();
+}
+function selectVariant(id, idx) {
+itemState[id].variant = idx;
+renderMenu();
+}
+function selectSlice(id, val) {
+itemState[id].slice = val;
+renderMenu();
+}
+
+function addItem(id) {
+const item = MENU.find(m => m.id === id);
+if (!canAdd(item)) return;
+const key = getCartKey(item);
+cart[key] = 1;
+update();
+}
+function changeQty(key, d) {
+cart[key] = (cart[key] || 0) + d;
+if (cart[key] <= 0) delete cart[key];
+update();
+}
 function removeItem(key) { delete cart[key]; update(); }
-function clearCart() { cart={}; deliveryChecked=false; deliveryFeeAmount=0; update(); }
+function clearCart() { cart = {}; deliveryChecked = false; deliveryFeeAmount = 0; update(); }
+
+function parseKey(key) {
+const parts = key.split('|');
+const id = parts[0], flavorIdx = parseInt(parts[1]), slice = parts[2], variantIdx = parseInt(parts[3]);
+const item = MENU.find(m => m.id === id);
+let price;
+if (item.variants) price = item.variants[variantIdx].price;
+else price = item.flavors[flavorIdx].price;
+return { item, flavorIdx, slice, variantIdx, price };
+}
 
 function getSubtotal() {
-  return Object.keys(cart).reduce((s,key) => {
-    const [idStr,viStr]=key.split('-');
-    const item=MENU.find(m=>m.id==idStr);
-    return s+item.variants[+viStr].price*cart[key];
-  },0);
+return Object.keys(cart).reduce((s, key) => {
+const { price } = parseKey(key);
+return s + price * cart[key];
+}, 0);
 }
 
-function update() {
-  renderMenu();
-  renderCart();
-  document.getElementById('cartBadge') && (document.getElementById('cartBadge').textContent = Object.values(cart).reduce((a,b)=>a+b,0));
-}
+function update() { renderMenu(); renderCart(); }
 
 function setMethod(method) {
-  deliveryMethod = method;
-  deliveryChecked = false;
-  deliveryFeeAmount = 0;
-  document.getElementById('optPickup').classList.toggle('active', method==='pickup');
-  document.getElementById('optDelivery').classList.toggle('active', method==='delivery');
-  document.getElementById('addressWrap').classList.toggle('show', method==='delivery');
-  document.getElementById('deliveryResult').innerHTML = '';
-  renderCart();
+deliveryMethod = method;
+deliveryChecked = false; deliveryFeeAmount = 0;
+document.getElementById('optPickup').classList.toggle('active', method==='pickup');
+document.getElementById('optDelivery').classList.toggle('active', method==='delivery');
+document.getElementById('addressWrap').classList.toggle('show', method==='delivery');
+document.getElementById('deliveryResult').innerHTML = '';
+renderCart();
 }
 
 async function checkDelivery() {
-  const addr = document.getElementById('deliveryAddress').value.trim();
-  const resultEl = document.getElementById('deliveryResult');
-  if (!addr) { resultEl.innerHTML = '<div class="delivery-result error">Please enter your address.</div>'; return; }
-
-  resultEl.innerHTML = '<div class="delivery-result">Checking distance...</div>';
-
-  try {
-    const subtotal = getSubtotal();
-    // Use Geocoding API to get coordinates
-    const geoRes = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(addr)}&key=${GOOGLE_MAPS_KEY}`);
-    const geoData = await geoRes.json();
-    if (!geoData.results || geoData.results.length === 0) throw new Error('Address not found');
-
-    const destCoords = geoData.results[0].geometry.location;
-    const destFmt = geoData.results[0].formatted_address;
-
-    // Distance Matrix
-    const distRes = await fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(STORE_ADDRESS)}&destinations=${destCoords.lat},${destCoords.lng}&units=imperial&key=${GOOGLE_MAPS_KEY}`);
-    const distData = await distRes.json();
-    const element = distData.rows?.[0]?.elements?.[0];
-    if (!element || element.status !== 'OK') throw new Error('Could not calculate distance');
-
-    const miles = element.distance.value / 1609.34;
-    const milesRounded = Math.round(miles * 10) / 10;
-
-    if (miles > S.maxMiles) {
-      deliveryChecked = false;
-      deliveryFeeAmount = 0;
-      resultEl.innerHTML = `<div class="delivery-result error">Sorry, ${milesRounded} miles is outside our delivery range (max ${S.maxMiles} miles). Please select pickup instead.</div>`;
-    } else {
-      const rawFee = miles * S.ratePerMile;
-      const fee = subtotal >= S.freeDeliveryMin ? 0 : Math.round(rawFee * 100) / 100;
-      deliveryFeeAmount = fee;
-      deliveryChecked = true;
-      const feeText = fee === 0 ? '🎉 Free (order over $' + S.freeDeliveryMin + ')' : '$' + fee.toFixed(2);
-      resultEl.innerHTML = `<div class="delivery-result">
-        📍 ${destFmt}<br>
-        📏 ${milesRounded} miles away<br>
-        🚗 Delivery fee: <strong>${feeText}</strong>
-      </div>`;
-    }
-    renderCart();
-  } catch(e) {
-    resultEl.innerHTML = `<div class="delivery-result error">Could not find address. Please try again with a full address including city and state.</div>`;
-    deliveryChecked = false;
-  }
+const addr = document.getElementById('deliveryAddress').value.trim();
+const resultEl = document.getElementById('deliveryResult');
+if (!addr) { resultEl.innerHTML = '<div class="delivery-result error">Please enter your address.</div>'; return; }
+resultEl.innerHTML = '<div class="delivery-result">Checking distance...</div>';
+try {
+const subtotal = getSubtotal();
+const geoRes = await fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(addr) + '&key=' + GOOGLE_MAPS_KEY);
+const geoData = await geoRes.json();
+if (!geoData.results || geoData.results.length === 0) throw new Error('Address not found');
+const destCoords = geoData.results[0].geometry.location;
+const destFmt = geoData.results[0].formatted_address;
+const distRes = await fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins=' + encodeURIComponent(STORE_ADDRESS) + '&destinations=' + destCoords.lat + ',' + destCoords.lng + '&units=imperial&key=' + GOOGLE_MAPS_KEY);
+const distData = await distRes.json();
+const element = distData.rows?.[0]?.elements?.[0];
+if (!element || element.status !== 'OK') throw new Error('Could not calculate distance');
+const miles = element.distance.value / 1609.34;
+const milesRounded = Math.round(miles * 10) / 10;
+if (miles > S.maxMiles) {
+deliveryChecked = false; deliveryFeeAmount = 0;
+resultEl.innerHTML = '<div class="delivery-result error">Sorry, ' + milesRounded + ' miles is outside our delivery range (max ' + S.maxMiles + ' miles). Please select pickup instead.</div>';
+} else {
+const rawFee = miles * S.ratePerMile;
+const fee = subtotal >= S.freeDeliveryMin ? 0 : Math.round(rawFee * 100) / 100;
+deliveryFeeAmount = fee; deliveryChecked = true;
+const feeText = fee === 0 ? '🎉 Free (order over $' + S.freeDeliveryMin + ')' : '$' + fee.toFixed(2);
+resultEl.innerHTML = '<div class="delivery-result">📍 ' + destFmt + '<br>📏 ' + milesRounded + ' miles away<br>🚗 Delivery fee: <strong>' + feeText + '</strong></div>';
+}
+renderCart();
+} catch(e) {
+resultEl.innerHTML = '<div class="delivery-result error">Could not find address. Please try again with a full address including city and state.</div>';
+deliveryChecked = false;
+}
 }
 
 function renderCart() {
-  const container = document.getElementById('orderItems');
-  const summary = document.getElementById('orderSummary');
-  const delivSection = document.getElementById('deliverySection');
-  const submitBtn = document.getElementById('submitBtn');
-  const keys = Object.keys(cart);
-
-  if (!keys.length) {
-    container.innerHTML = `<div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div>`;
-    summary.style.display = 'none';
-    delivSection.style.display = 'none';
-    submitBtn.disabled = true;
-    return;
-  }
-
-  let html='', total=0;
-  keys.forEach(key => {
-    const [idStr,viStr]=key.split('-');
-    const item=MENU.find(m=>m.id==idStr);
-    const v=item.variants[+viStr];
-    const sub=v.price*cart[key];
-    total+=sub;
-    const sliceTag = item.canSlice && sliceChoice[item.id] ? ' · Sliced' : '';
-    html+=`<div class="order-item"><div><div class="oi-name">${item.name}</div><div class="oi-meta">${v.label}${sliceTag} × ${cart[key]}</div></div>
-      <div class="oi-right"><span class="oi-price">$${sub.toFixed(2)}</span><span class="oi-remove" onclick="removeItem('${key}')">✕</span></div></div>`;
-  });
-  container.innerHTML = html;
-  delivSection.style.display = 'block';
-  summary.style.display = 'block';
-
-  // Delivery fee display
-  const delivRow = document.getElementById('deliveryRow');
-  const freeRow = document.getElementById('freeDeliveryRow');
-  let grandTotal = total;
-
-  if (deliveryMethod === 'delivery' && deliveryChecked) {
-    const isFree = total >= S.freeDeliveryMin;
-    delivRow.style.display = isFree ? 'none' : 'flex';
-    freeRow.style.display = isFree ? 'flex' : 'none';
-    if (!isFree) {
-      deliveryFeeAmount = Math.round(deliveryFeeAmount * 100) / 100;
-      document.getElementById('deliveryFee').textContent = '$' + deliveryFeeAmount.toFixed(2);
-      grandTotal += deliveryFeeAmount;
-    }
-  } else {
-    delivRow.style.display = 'none';
-    freeRow.style.display = 'none';
-  }
-
-  document.getElementById('subtotalPrice').textContent = '$' + total.toFixed(2);
-  document.getElementById('totalPrice').textContent = '$' + grandTotal.toFixed(2);
-
-  const canSubmit = deliveryMethod === 'pickup' || (deliveryMethod === 'delivery' && deliveryChecked);
-  submitBtn.disabled = !canSubmit;
+const container = document.getElementById('orderItems');
+const summary = document.getElementById('orderSummary');
+const delivSection = document.getElementById('deliverySection');
+const submitBtn = document.getElementById('submitBtn');
+const keys = Object.keys(cart);
+if (!keys.length) {
+container.innerHTML = '<div class="empty-state"><span class="ei">🍞</span>Pick something from the menu!</div>';
+summary.style.display = 'none'; delivSection.style.display = 'none'; submitBtn.disabled = true; return;
+}
+let html = '', total = 0;
+keys.forEach(key => {
+const { item, flavorIdx, slice, variantIdx, price } = parseKey(key);
+const sub = price * cart[key]; total += sub;
+const flavorName = item.flavors ? item.flavors[flavorIdx].label : '';
+const variantName = item.variants ? item.variants[variantIdx].label : '';
+const sliceName = item.requireSlice && slice === 'sliced' ? ' · Sliced' : (item.requireSlice ? ' · Whole' : '');
+const meta = [flavorName, variantName].filter(Boolean).join(' · ') + sliceName;
+html += '<div class="order-item"><div><div class="oi-name">' + item.name + '</div><div class="oi-meta">' + meta + ' × ' + cart[key] + '</div></div>' +
+'<div class="oi-right"><span class="oi-price">$' + sub.toFixed(2) + '</span><span class="oi-remove" onclick="removeItem('' + key + '')">✕</span></div></div>';
+});
+container.innerHTML = html;
+delivSection.style.display = 'block'; summary.style.display = 'block';
+const delivRow = document.getElementById('deliveryRow');
+const freeRow = document.getElementById('freeDeliveryRow');
+let grandTotal = total;
+if (deliveryMethod === 'delivery' && deliveryChecked) {
+const isFree = total >= S.freeDeliveryMin;
+delivRow.style.display = isFree ? 'none' : 'flex';
+freeRow.style.display = isFree ? 'flex' : 'none';
+if (!isFree) { document.getElementById('deliveryFee').textContent = '$' + deliveryFeeAmount.toFixed(2); grandTotal += deliveryFeeAmount; }
+} else { delivRow.style.display = 'none'; freeRow.style.display = 'none'; }
+document.getElementById('subtotalPrice').textContent = '$' + total.toFixed(2);
+document.getElementById('totalPrice').textContent = '$' + grandTotal.toFixed(2);
+const canSubmit = deliveryMethod === 'pickup' || (deliveryMethod === 'delivery' && deliveryChecked);
+submitBtn.disabled = !canSubmit;
 }
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T12:00:00');
-  return d.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+const d = new Date(dateStr + 'T12:00:00');
+return d.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
 
 function submitOrder() {
-  const name = document.getElementById('fName').value.trim();
-  const phone = document.getElementById('fPhone').value.trim();
-  const date = document.getElementById('fDate').value;
-  const time = document.getElementById('fTime').value || 'Flexible';
-  const notes = document.getElementById('fNotes').value.trim();
-  const slot = document.getElementById('fSlot').value;
-  if (!name||!phone||!slot) { alert('Please fill in your name, phone, and select a pickup day!'); return; }
-
-  const subtotal = getSubtotal();
-  const isFreeDelivery = deliveryMethod === 'delivery' && subtotal >= S.freeDeliveryMin;
-  const fee = deliveryMethod === 'delivery' && !isFreeDelivery ? deliveryFeeAmount : 0;
-  const grandTotal = subtotal + fee;
-  const deliveryAddr = document.getElementById('deliveryAddress').value.trim();
-
-  const itemLines = Object.keys(cart).map(key => {
-    const [idStr,viStr]=key.split('-');
-    const item=MENU.find(m=>m.id==idStr);
-    const v=item.variants[+viStr];
-    const sliceTag=item.canSlice&&sliceChoice[item.id]?' (Sliced)':'';
-    return `${item.name}${sliceTag} (${v.label}) x${cart[key]} = $${(v.price*cart[key]).toFixed(2)}`;
-  });
-
-  const confirmationEmail =
-`Hi ${name},
-
-This is HooRay Bakery confirming your order! 🎉
-
-📦 Order Summary:
-${Object.keys(cart).map(key=>{
-  const [idStr,viStr]=key.split('-');
-  const item=MENU.find(m=>m.id==idStr);
-  const v=item.variants[+viStr];
-  const sliceTag=item.canSlice&&sliceChoice[item.id]?' (Sliced)':'';
-  return `  • ${cart[key]}x ${item.name}${sliceTag} (${v.label})`;
-}).join('\n')}
-
-💰 Subtotal: $${subtotal.toFixed(2)}${deliveryMethod==='delivery'?`\n🚗 Delivery fee: ${isFreeDelivery?'Free':'$'+fee.toFixed(2)}\n💳 Total: $${grandTotal.toFixed(2)}`:''}
-
-📅 ${deliveryMethod==='pickup'?'Pickup':'Delivery'}: ${formatDate(date)} at ${time}
-📍 ${deliveryMethod==='pickup'?(slot==='tuesday'?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA'):deliveryAddr}
-
-Thank you so much! We'll text you to confirm. 🍞
-
-With love,
-HooRay Bakery 🧡`;
-
-  const params = new URLSearchParams({
-    name, phone, date, time,
-    method: deliveryMethod,
-    address: deliveryMethod==='delivery' ? deliveryAddr : (slot === 'tuesday' ? '7725 Gateway, Irvine, CA 92618' : 'Meadowood Park, Irvine, CA'),
-    items: itemLines.join(' | '),
-    subtotal: '$'+subtotal.toFixed(2),
-    deliveryFee: deliveryMethod==='delivery' ? (isFreeDelivery?'Free':'$'+fee.toFixed(2)) : 'N/A',
-    total: '$'+grandTotal.toFixed(2),
-    notes, confirmationEmail
-  });
-
-  fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
-
-  cart={};
-  deliveryChecked=false;
-  deliveryFeeAmount=0;
-  update();
-  ['fName','fPhone','fDate','fNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fTime').value='';
-  document.getElementById('deliveryAddress').value='';
-  document.getElementById('deliveryResult').innerHTML='';
-  setMethod('pickup');
-
-  const toast=document.getElementById('toast');
-  toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'),3800);
+const name = document.getElementById('fName').value.trim();
+const phone = document.getElementById('fPhone').value.trim();
+const date = document.getElementById('fDate').value;
+const time = document.getElementById('fTime').value || 'Flexible';
+const notes = document.getElementById('fNotes').value.trim();
+const slot = document.getElementById('fSlot').value;
+if (!name || !phone || !slot) { alert('Please fill in your name, phone, and select a pickup day!'); return; }
+const subtotal = getSubtotal();
+const isFreeDelivery = deliveryMethod === 'delivery' && subtotal >= S.freeDeliveryMin;
+const fee = deliveryMethod === 'delivery' && !isFreeDelivery ? deliveryFeeAmount : 0;
+const grandTotal = subtotal + fee;
+const deliveryAddr = document.getElementById('deliveryAddress').value.trim();
+const itemLines = Object.keys(cart).map(key => {
+const { item, flavorIdx, slice, variantIdx, price } = parseKey(key);
+const flavorName = item.flavors ? item.flavors[flavorIdx].label : '';
+const variantName = item.variants ? item.variants[variantIdx].label : '';
+const sliceTag = item.requireSlice ? (slice === 'sliced' ? ' (Sliced)' : ' (Whole)') : '';
+const desc = [flavorName, variantName].filter(Boolean).join(' / ');
+return item.name + ' — ' + desc + sliceTag + ' x' + cart[key] + ' = $' + (price * cart[key]).toFixed(2);
+});
+const params = new URLSearchParams({
+name, phone, date, time,
+method: deliveryMethod,
+address: deliveryMethod === 'delivery' ? deliveryAddr : (slot === 'tuesday' ? '7725 Gateway, Irvine, CA 92618' : 'Meadowood Park, Irvine, CA'),
+items: itemLines.join(' | '),
+subtotal: '$' + subtotal.toFixed(2),
+deliveryFee: deliveryMethod === 'delivery' ? (isFreeDelivery ? 'Free' : '$' + fee.toFixed(2)) : 'N/A',
+total: '$' + grandTotal.toFixed(2),
+notes,
+});
+fetch(SHEET_URL + '?' + params.toString(), { mode: 'no-cors' });
+cart = {}; deliveryChecked = false; deliveryFeeAmount = 0; update();
+['fName','fPhone','fDate','fNotes'].forEach(id => document.getElementById(id).value = '');
+document.getElementById('fTime').value = '';
+document.getElementById('deliveryAddress').value = '';
+document.getElementById('deliveryResult').innerHTML = '';
+setMethod('pickup');
+const toast = document.getElementById('toast');
+toast.classList.add('show');
+setTimeout(() => toast.classList.remove('show'), 3800);
 }
 
 renderMenu();
