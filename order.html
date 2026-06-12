@@ -111,6 +111,8 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .submit-btn{width:100%;margin-top:18px;background:var(--gold);color:white;border:none;padding:15px;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .submit-btn:hover:not(:disabled){background:var(--ink)}
 .submit-btn:disabled{background:#ddd;color:#bbb;cursor:not-allowed}
+.custom-info-box{background:rgba(181,132,58,.07);border-left:3px solid var(--gold);padding:10px 13px;margin-top:8px;font-size:.78rem;color:var(--ink);line-height:1.65;display:none}
+.custom-info-box.show{display:block}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:white;padding:13px 28px;font-size:.86rem;letter-spacing:.06em;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 footer{text-align:center;padding:28px;font-size:.77rem;color:var(--muted);border-top:1px solid rgba(181,132,58,.15)}
@@ -138,9 +140,9 @@ footer a{color:var(--gold);text-decoration:none}
 </nav>
 <div class="notice-banner" id="noticeBanner"></div>
 <div class="page-hero">
-<div class="page-hero-tag">Pickup &middot; Irvine, CA</div>
+<div class="page-hero-tag">Pickup &amp; Delivery &middot; Irvine, CA</div>
 <h1>Place Your <em>Order</em></h1>
-<p>All items are made fresh to order. Orders placed today will be ready on the next available bake day &mdash; we'll confirm via text.</p>
+<p>All items are made fresh to order. Select your preferred date and we'll confirm the details via text.</p>
 </div>
 <div class="layout">
 <div>
@@ -164,8 +166,9 @@ footer a{color:var(--gold);text-decoration:none}
 <button class="delivery-opt" id="optDelivery">Delivery</button>
 </div>
 <div class="delivery-address-wrap" id="addressWrap">
+<div style="font-size:.77rem;color:var(--muted);margin-bottom:8px;line-height:1.5">Delivery is available Tuesday &amp; Saturday. Delivery time will be confirmed via text after your order.</div>
 <div class="address-input-row">
-<input type="text" id="deliveryAddress" placeholder="Enter your address...">
+<input type="text" id="deliveryAddress" placeholder="Enter your full address...">
 <button class="check-btn" id="checkBtn">Check</button>
 </div>
 <div id="deliveryResult"></div>
@@ -182,20 +185,22 @@ footer a{color:var(--gold);text-decoration:none}
 <div class="form-divider">Your Details</div>
 <div class="form-row"><label>Name *</label><input type="text" id="fName" placeholder="Jessica Chen"></div>
 <div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
-<div class="form-divider" style="margin-top:16px">Pickup / Delivery Slot</div>
-<div class="form-row">
-<label>Select Your Day *</label>
+<div class="form-divider" style="margin-top:16px">Select Your Date</div>
+<div class="form-row" id="slotSection">
+<label id="slotLabel">Pickup Date *</label>
 <select id="fSlot">
-<option value="">&#8212; Choose a day &#8212;</option>
-<option value="tuesday">Tuesday &#8212; 6:00 PM &#183; 7725 Gateway, Irvine</option>
-<option value="saturday">Saturday &#8212; 6:00 PM &#183; Meadowood Park, Irvine</option>
+<option value="">&#8212; Choose a date &#8212;</option>
 </select>
-<div id="awaySlotNotice" style="display:none;font-size:.75rem;color:var(--gold);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:7px 11px;margin-top:7px;line-height:1.6">&#9992;&#65039; We're Away Right Now &#8212; dates shown are after our return.</div>
+<div id="awaySlotNotice" style="display:none;font-size:.75rem;color:var(--gold);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:7px 11px;margin-top:7px;line-height:1.6">&#9992;&#65039; We're Away Right Now &mdash; dates shown are after our return.</div>
 </div>
 <div id="slotInfo" style="display:none;font-size:.82rem;padding:10px 14px;margin:6px 0 10px;background:rgba(181,132,58,.07);border-left:3px solid var(--gold);line-height:1.8;color:var(--ink)"></div>
+<div class="custom-info-box" id="customInfoBox">
+&#128221; For custom date/time requests, please describe your preferred date and time below. We'll reach out via text to confirm availability.<br><br>
+<strong style="color:var(--gold)">Note on timing:</strong> For same-day baking, please select <em>after 3:00 PM</em> for pickup. Bread needs at least 3 hours to cool before slicing &mdash; earlier pickups may need to be rescheduled to the next morning.
+</div>
 <input type="hidden" id="fDate" value="">
 <input type="hidden" id="fTime" value="">
-<div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
+<div class="form-row"><label id="notesLabel">Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, custom date/time requests..."></textarea></div>
 <button class="submit-btn" id="submitBtn" disabled>Place Order</button>
 </div>
 </div>
@@ -207,185 +212,412 @@ footer a{color:var(--gold);text-decoration:none}
 <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a>
 </footer>
 <div class="toast" id="toast">&#127881; Order placed! We'll confirm via text soon.</div>
-
 <script>
 (function(){
 var MAPS_KEY='AIzaSyBpIRFypFocZ6wLCFPAHyWob5tuJm3glVE';
 var STORE='7725 Gateway, Irvine, CA 92618';
 var SHEET='https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
-function getS(){var d={storeOpen:true,noticeText:'',deliveryEnabled:true,ratePerMile:1,maxMiles:20,freeDeliveryMin:30,awayStart:'',awayEnd:''};try{var s=JSON.parse(localStorage.getItem('hooray_settings')||'{}');return Object.assign({},d,s);}catch(e){return d;}}
+
+function getS(){
+var d={storeOpen:true,noticeText:'',deliveryEnabled:true,ratePerMile:1,maxMiles:20,freeDeliveryMin:30,awayStart:'',awayEnd:''};
+try{var s=JSON.parse(localStorage.getItem('hooray_settings')||'{}');return Object.assign({},d,s);}
+catch(e){return d;}
+}
 var S=getS();
+
 if(!S.storeOpen)document.getElementById('closedOverlay').classList.add('active');
 if(S.noticeText){var b=document.getElementById('noticeBanner');b.textContent=S.noticeText;b.classList.add('active');}
-function isAway(){if(!S.awayStart||!S.awayEnd)return false;var t=new Date();t.setHours(0,0,0,0);var s=new Date(S.awayStart+'T00:00:00'),e=new Date(S.awayEnd+'T00:00:00');return t>=s&&t<=e;}
-function retDate(){var e=new Date(S.awayEnd+'T00:00:00');e.setDate(e.getDate()+1);return e;}
+
+function isAway(){
+if(!S.awayStart||!S.awayEnd)return false;
+var t=new Date();t.setHours(0,0,0,0);
+var s=new Date(S.awayStart+'T00:00:00'),e=new Date(S.awayEnd+'T00:00:00');
+return t>=s&&t<=e;
+}
+function awayReturnDate(){
+var e=new Date(S.awayEnd+'T00:00:00');
+e.setDate(e.getDate()+1);
+return e;
+}
 if(isAway()){
-  var bnr=document.getElementById('awayBanner');bnr.classList.add('active');
-  var rd=retDate();
-  var rf=rd.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  document.getElementById('awayReturnLabel').textContent='Estimated Return: '+rf;
-  document.getElementById('awaySlotNotice').style.display='block';
+var bnr=document.getElementById('awayBanner');bnr.classList.add('active');
+var rd=awayReturnDate();
+var rf=rd.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+document.getElementById('awayReturnLabel').textContent='Estimated Return: '+rf;
+document.getElementById('awaySlotNotice').style.display='block';
 }
-function nextSlot(wd){
-  var d=new Date(Date.now()+48*3600000);d.setHours(0,0,0,0);
-  while(d.getDay()!==wd)d.setDate(d.getDate()+1);
-  if(isAway()){var r=retDate();if(d<r){d=new Date(r);while(d.getDay()!==wd)d.setDate(d.getDate()+1);}}
-  return d;
+
+// Build upcoming Tue/Sat slots (up to 8 each = 16 total)
+// Returns array of {value, label, date, time, isDelivery, weekday}
+function buildSlots(isDelivery){
+var slots=[];
+var now=new Date();
+// Min 48h ahead for standard, 0h for just showing options
+var minDate=new Date(now.getTime()+48*3600000);
+minDate.setHours(0,0,0,0);
+// If away, shift minDate to after return
+if(isAway()){
+var ret=awayReturnDate();
+if(minDate<ret)minDate=new Date(ret);
 }
-function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
-var fSlot=document.getElementById('fSlot');
-fSlot.addEventListener('change',function(){updateSlot();});
-function updateSlot(){
-  var v=fSlot.value,info=document.getElementById('slotInfo');
-  if(!v){info.style.display='none';document.getElementById('fDate').value='';document.getElementById('fTime').value='';renderCart();return;}
-  var isTue=v==='tuesday',wd=isTue?2:6,time='6:00 PM';
-  var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
-  var nd=nextSlot(wd);
-  document.getElementById('fDate').value=nd.toISOString().split('T')[0];
-  document.getElementById('fTime').value=time;
-  info.style.display='block';
-  info.innerHTML='&#128197; <strong>'+fmtDate(nd)+'</strong> at <strong>'+time+'</strong><br>&#128205; '+loc;
-  renderCart();
+// Generate next 8 Tuesdays and 8 Saturdays
+var days=[];
+var d=new Date(minDate);
+var tueCnt=0,satCnt=0;
+for(var i=0;i<200&&(tueCnt<8||satCnt<8);i++){
+var wd=d.getDay();
+if(wd===2&&tueCnt<8){days.push({date:new Date(d),wd:2});tueCnt++;}
+else if(wd===6&&satCnt<8){days.push({date:new Date(d),wd:6});satCnt++;}
+d.setDate(d.getDate()+1);
 }
+// Sort by date
+days.sort(function(a,b){return a.date-b.date;});
+// Build slot objects
+days.forEach(function(day){
+var isTue=day.wd===2;
+var dateStr=day.date.toISOString().split('T')[0];
+var time=isDelivery?'':(isTue?'6:00 PM':'6:00 PM');
+var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
+var label=day.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+if(!isDelivery)label+=' — '+time;
+label+=' · '+(isTue?'Irvine':'Meadowood Park');
+slots.push({
+value:dateStr+'|'+(isTue?'tuesday':'saturday'),
+label:label,
+date:dateStr,
+time:time,
+loc:loc,
+wd:isTue?'tuesday':'saturday'
+});
+});
+return slots;
+}
+
+// ---- Menu ----
 var MENU=[
-  {id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
-  {id:'cookies',cat:'cookie',emoji:'&#127850;',name:'Butter Cookies',desc:'Piped butter cookies in a clear box &#183; melt-in-your-mouth',requireFlavor:true,requireSlice:false,flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}],variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}]}
+{id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
+{id:'cookies',cat:'cookie',emoji:'&#127850;',name:'Butter Cookies',desc:'Piped butter cookies in a clear box &#183; melt-in-your-mouth',requireFlavor:true,requireSlice:false,flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}],variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}]}
 ];
 var state={};MENU.forEach(function(m){state[m.id]={flavor:null,slice:null,variant:0};});
-var cart={},method='pickup',fee=0,feeOk=false,filter='all';
-document.getElementById('tabBar').addEventListener('click',function(e){var t=e.target.closest('.tab');if(!t)return;filter=t.dataset.cat;document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');renderMenu();});
-document.getElementById('clearAllBtn').addEventListener('click',function(){cart={};feeOk=false;fee=0;update();});
+var cart={},method='pickup',fee=0,feeOk=false,filter='all',isCustom=false;
+
+// Build initial slot dropdown
+function populateSlots(){
+var sel=document.getElementById('fSlot');
+var current=sel.value;
+sel.innerHTML='<option value="">-- Choose a date --</option>';
+var slots=buildSlots(method==='delivery');
+slots.forEach(function(s){
+var opt=document.createElement('option');
+opt.value=s.value;
+opt.textContent=s.label;
+sel.appendChild(opt);
+});
+// Add custom option
+var customOpt=document.createElement('option');
+customOpt.value='custom';
+customOpt.textContent='Custom / Special Request — Contact me to arrange';
+sel.appendChild(customOpt);
+// Try to restore selection
+if(current)sel.value=current;
+}
+
+document.getElementById('tabBar').addEventListener('click',function(e){
+var t=e.target.closest('.tab');if(!t)return;
+filter=t.dataset.cat;
+document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+t.classList.add('active');renderMenu();
+});
+document.getElementById('clearAllBtn').addEventListener('click',function(){cart={};feeOk=false;fee=0;isCustom=false;update();});
 document.getElementById('optPickup').addEventListener('click',function(){setM('pickup');});
 document.getElementById('optDelivery').addEventListener('click',function(){setM('delivery');});
 document.getElementById('checkBtn').addEventListener('click',checkDel);
 document.getElementById('submitBtn').addEventListener('click',submit);
+
+var fSlot=document.getElementById('fSlot');
+fSlot.addEventListener('change',function(){updateSlot();});
+
+function setM(m){
+method=m;feeOk=false;fee=0;
+document.getElementById('optPickup').classList.toggle('active',m==='pickup');
+document.getElementById('optDelivery').classList.toggle('active',m==='delivery');
+document.getElementById('addressWrap').classList.toggle('show',m==='delivery');
+document.getElementById('deliveryResult').innerHTML='';
+// Update label
+document.getElementById('slotLabel').textContent=m==='delivery'?'Delivery Date *':'Pickup Date *';
+// Rebuild slots for correct mode (delivery=no time shown)
+populateSlots();
+fSlot.value='';
+document.getElementById('slotInfo').style.display='none';
+document.getElementById('fDate').value='';
+document.getElementById('fTime').value='';
+document.getElementById('customInfoBox').classList.remove('show');
+document.getElementById('notesLabel').textContent='Special Requests';
+isCustom=false;
+renderCart();
+}
+
+function updateSlot(){
+var v=fSlot.value;
+var info=document.getElementById('slotInfo');
+var customBox=document.getElementById('customInfoBox');
+var notesLabel=document.getElementById('notesLabel');
+isCustom=false;
+
+if(!v){
+info.style.display='none';
+document.getElementById('fDate').value='';
+document.getElementById('fTime').value='';
+customBox.classList.remove('show');
+notesLabel.textContent='Special Requests';
+renderCart();
+return;
+}
+if(v==='custom'){
+info.style.display='none';
+document.getElementById('fDate').value='custom';
+document.getElementById('fTime').value='TBD';
+customBox.classList.add('show');
+notesLabel.textContent='Special Requests * (required for custom orders)';
+isCustom=true;
+renderCart();
+return;
+}
+customBox.classList.remove('show');
+notesLabel.textContent='Special Requests';
+var parts=v.split('|'),dateStr=parts[0],wd=parts[1];
+var isTue=wd==='tuesday';
+var time=method==='delivery'?'TBD (confirmed via text)':(isTue?'6:00 PM':'6:00 PM');
+var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
+document.getElementById('fDate').value=dateStr;
+document.getElementById('fTime').value=time;
+var dateObj=new Date(dateStr+'T12:00:00');
+var fmt=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+var infoHTML='&#128197; <strong>'+fmt+'</strong>';
+if(method==='delivery'){
+infoHTML+='<br>&#128663; Delivery — time confirmed via text';
+}else{
+infoHTML+=' at <strong>'+time+'</strong>';
+}
+infoHTML+='<br>&#128205; '+loc;
+info.style.display='block';
+info.innerHTML=infoHTML;
+renderCart();
+}
+
 function canAdd(item){var s=state[item.id];if(item.requireFlavor&&s.flavor===null)return false;if(item.requireSlice&&s.slice===null)return false;return true;}
 function key(item){var s=state[item.id];return item.id+'|'+(s.flavor!==null?s.flavor:0)+'|'+(item.requireSlice?(s.slice||'whole'):'ns')+'|'+(item.variants?s.variant:0);}
 function price(item){var s=state[item.id];if(item.variants)return item.variants[s.variant].price;if(item.requireFlavor&&s.flavor!==null)return item.flavors[s.flavor].price;return item.flavors[0].price;}
 function mk(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+
 function renderMenu(){
-  var g=document.getElementById('menuGrid');g.innerHTML='';
-  var items=filter==='all'?MENU:MENU.filter(function(m){return m.cat===filter;});
-  items.forEach(function(item){
-    var s=state[item.id],k=key(item),q=cart[k]||0,p=price(item),ready=canAdd(item);
-    var card=mk('div','product-card');
-    var em=mk('div','product-emoji');em.innerHTML=item.emoji;card.appendChild(em);
-    var body=mk('div','product-body');
-    var nm=mk('div','product-name',item.name);body.appendChild(nm);
-    var dc=mk('div','product-desc');dc.innerHTML=item.desc;body.appendChild(dc);
-    var og=mk('div','options-group');
-    if(item.flavors&&item.flavors.length){
-      var fd=mk('div');fd.appendChild(mk('div','opt-label required','Flavor'));
-      var pr=mk('div','pill-row');
-      item.flavors.forEach(function(f,i){
-        var pl=mk('button','pill'+(s.flavor===i?' selected':''));
-        pl.textContent=f.label+(f.price?' — $'+f.price:'');
-        pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
-        pr.appendChild(pl);
-      });
-      fd.appendChild(pr);og.appendChild(fd);
-    }
-    if(item.variants){
-      var sd=mk('div');sd.appendChild(mk('div','opt-label required','Size'));
-      var sr=mk('div','pill-row');
-      item.variants.forEach(function(v,i){
-        var pl=mk('button','pill'+(s.variant===i?' selected':''));
-        pl.textContent=v.label+' — $'+v.price;
-        pl.addEventListener('click',(function(ii){return function(){state[item.id].variant=ii;renderMenu();};})(i));
-        sr.appendChild(pl);
-      });
-      sd.appendChild(sr);og.appendChild(sd);
-    }
-    if(item.requireSlice){
-      var sld=mk('div');sld.appendChild(mk('div','opt-label required','Sliced or Whole?'));
-      var slr=mk('div','slice-row');
-      ['whole','sliced'].forEach(function(v){
-        var pl=mk('button','slice-pill'+(s.slice===v?' selected':''));
-        pl.textContent=v.charAt(0).toUpperCase()+v.slice(1);
-        pl.addEventListener('click',(function(vv){return function(){state[item.id].slice=vv;renderMenu();};})(v));
-        slr.appendChild(pl);
-      });
-      sld.appendChild(slr);
-      if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
-      og.appendChild(sld);
-    }
-    body.appendChild(og);card.appendChild(body);
-    var rt=mk('div','product-right');
-    rt.appendChild(mk('div','product-price','$'+p.toFixed(2)));
-    if(q===0){var ab=mk('button','add-btn','Add');if(!ready)ab.disabled=true;ab.addEventListener('click',(function(it){return function(){if(!canAdd(it))return;cart[key(it)]=1;update();};})(item));rt.appendChild(ab);}
-    else{var qr=mk('div','qty-row'),mi=mk('button','qty-btn','−'),qn=mk('span','qty-num',String(q)),pl2=mk('button','qty-btn','+');
-      mi.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)-1;if(cart[kk]<=0)delete cart[kk];update();};})(k));
-      pl2.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)+1;update();};})(k));
-      qr.appendChild(mi);qr.appendChild(qn);qr.appendChild(pl2);rt.appendChild(qr);
-    }
-    card.appendChild(rt);g.appendChild(card);
-  });
+var g=document.getElementById('menuGrid');g.innerHTML='';
+var items=filter==='all'?MENU:MENU.filter(function(m){return m.cat===filter;});
+items.forEach(function(item){
+var s=state[item.id],k=key(item),q=cart[k]||0,p=price(item),ready=canAdd(item);
+var card=mk('div','product-card');
+var em=mk('div','product-emoji');em.innerHTML=item.emoji;card.appendChild(em);
+var body=mk('div','product-body');
+var nm=mk('div','product-name',item.name);body.appendChild(nm);
+var dc=mk('div','product-desc');dc.innerHTML=item.desc;body.appendChild(dc);
+var og=mk('div','options-group');
+if(item.flavors&&item.flavors.length){
+var fd=mk('div');fd.appendChild(mk('div','opt-label required','Flavor'));
+var pr=mk('div','pill-row');
+item.flavors.forEach(function(f,i){
+var pl=mk('button','pill'+(s.flavor===i?' selected':''));
+pl.textContent=f.label+(f.price?' — $'+f.price:'');
+pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
+pr.appendChild(pl);
+});
+fd.appendChild(pr);og.appendChild(fd);
 }
-function parseK(k){var p=k.split('|'),id=p[0],fi=parseInt(p[1]),sl=p[2],vi=parseInt(p[3]),item=MENU.find(function(m){return m.id===id;});var pr=item.variants?item.variants[vi].price:item.flavors[fi].price;return{item:item,fi:fi,sl:sl,vi:vi,pr:pr};}
+if(item.variants){
+var sd=mk('div');sd.appendChild(mk('div','opt-label required','Size'));
+var sr=mk('div','pill-row');
+item.variants.forEach(function(v,i){
+var pl=mk('button','pill'+(s.variant===i?' selected':''));
+pl.textContent=v.label+' — $'+v.price;
+pl.addEventListener('click',(function(ii){return function(){state[item.id].variant=ii;renderMenu();};})(i));
+sr.appendChild(pl);
+});
+sd.appendChild(sr);og.appendChild(sd);
+}
+if(item.requireSlice){
+var sld=mk('div');sld.appendChild(mk('div','opt-label required','Sliced or Whole?'));
+var slr=mk('div','slice-row');
+['whole','sliced'].forEach(function(v){
+var pl=mk('button','slice-pill'+(s.slice===v?' selected':''));
+pl.textContent=v.charAt(0).toUpperCase()+v.slice(1);
+pl.addEventListener('click',(function(vv){return function(){state[item.id].slice=vv;renderMenu();};})(v));
+slr.appendChild(pl);
+});
+sld.appendChild(slr);
+if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
+og.appendChild(sld);
+}
+body.appendChild(og);card.appendChild(body);
+var rt=mk('div','product-right');
+rt.appendChild(mk('div','product-price','$'+p.toFixed(2)));
+if(q===0){
+var ab=mk('button','add-btn','Add');
+if(!ready)ab.disabled=true;
+ab.addEventListener('click',(function(it){return function(){if(!canAdd(it))return;cart[key(it)]=1;update();};})(item));
+rt.appendChild(ab);
+}else{
+var qr=mk('div','qty-row'),mi=mk('button','qty-btn','−'),qn=mk('span','qty-num',String(q)),pl2=mk('button','qty-btn','+');
+mi.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)-1;if(cart[kk]<=0)delete cart[kk];update();};})(k));
+pl2.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)+1;update();};})(k));
+qr.appendChild(mi);qr.appendChild(qn);qr.appendChild(pl2);rt.appendChild(qr);
+}
+card.appendChild(rt);g.appendChild(card);
+});
+}
+
+function parseK(k){
+var p=k.split('|'),id=p[0],fi=parseInt(p[1]),sl=p[2],vi=parseInt(p[3]);
+var item=MENU.find(function(m){return m.id===id;});
+var pr=item.variants?item.variants[vi].price:item.flavors[fi].price;
+return{item:item,fi:fi,sl:sl,vi:vi,pr:pr};
+}
 function subtotal(){return Object.keys(cart).reduce(function(s,k){var d=parseK(k);return s+d.pr*cart[k];},0);}
 function update(){renderMenu();renderCart();}
-function setM(m){method=m;feeOk=false;fee=0;document.getElementById('optPickup').classList.toggle('active',m==='pickup');document.getElementById('optDelivery').classList.toggle('active',m==='delivery');document.getElementById('addressWrap').classList.toggle('show',m==='delivery');document.getElementById('deliveryResult').innerHTML='';renderCart();}
+
 function checkDel(){
-  var addr=document.getElementById('deliveryAddress').value.trim(),res=document.getElementById('deliveryResult');
-  if(!addr){res.innerHTML='<div class="delivery-result error">Please enter your address.</div>';return;}
-  res.innerHTML='<div class="delivery-result">Checking distance...</div>';
-  var sub=subtotal();
-  fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key='+MAPS_KEY)
-  .then(function(r){return r.json();}).then(function(g){
-    if(!g.results||!g.results.length)throw new Error('not found');
-    var c=g.results[0].geometry.location,fmt=g.results[0].formatted_address;
-    return fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+encodeURIComponent(STORE)+'&destinations='+c.lat+','+c.lng+'&units=imperial&key='+MAPS_KEY)
-    .then(function(r){return r.json();}).then(function(d){
-      var el=d.rows&&d.rows[0]&&d.rows[0].elements&&d.rows[0].elements[0];
-      if(!el||el.status!=='OK')throw new Error('dist fail');
-      var miles=el.distance.value/1609.34,mr=Math.round(miles*10)/10;
-      if(miles>S.maxMiles){feeOk=false;fee=0;res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';}
-      else{fee=sub>=S.freeDeliveryMin?0:Math.round(miles*S.ratePerMile*100)/100;feeOk=true;var ft=fee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+fee.toFixed(2);res.innerHTML='<div class="delivery-result">&#128205; '+fmt+'<br>&#128207; '+mr+' mi away<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text.</small></div>';}
-      renderCart();
-    });
-  }).catch(function(){res.innerHTML='<div class="delivery-result error">Could not find address. Try full address with city and state.</div>';feeOk=false;});
+var addr=document.getElementById('deliveryAddress').value.trim();
+var res=document.getElementById('deliveryResult');
+if(!addr){res.innerHTML='<div class="delivery-result error">Please enter your address.</div>';return;}
+res.innerHTML='<div class="delivery-result">Checking distance...</div>';
+var sub=subtotal();
+fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key='+MAPS_KEY)
+.then(function(r){return r.json();})
+.then(function(g){
+if(!g.results||!g.results.length)throw new Error('not found');
+var c=g.results[0].geometry.location,fmt=g.results[0].formatted_address;
+return fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+encodeURIComponent(STORE)+'&destinations='+c.lat+','+c.lng+'&units=imperial&key='+MAPS_KEY)
+.then(function(r){return r.json();})
+.then(function(d){
+var el=d.rows&&d.rows[0]&&d.rows[0].elements&&d.rows[0].elements[0];
+if(!el||el.status!=='OK')throw new Error('dist fail');
+var miles=el.distance.value/1609.34,mr=Math.round(miles*10)/10;
+if(miles>S.maxMiles){
+feeOk=false;fee=0;
+res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';
+}else{
+var calFee;
+if(sub>=S.freeDeliveryMin){
+calFee=0;
+}else{
+calFee=Math.round(miles*S.ratePerMile*100)/100;
 }
+fee=calFee;feeOk=true;
+var ft=calFee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+calFee.toFixed(2);
+res.innerHTML='<div class="delivery-result">&#128205; '+fmt+'<br>&#128207; '+mr+' mi away<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.</small></div>';
+}
+renderCart();
+});
+})
+.catch(function(){
+res.innerHTML='<div class="delivery-result error">Could not find address. Try full address with city and state.</div>';
+feeOk=false;
+});
+}
+
 function renderCart(){
-  var ci=document.getElementById('orderItems'),sm=document.getElementById('orderSummary'),ds=document.getElementById('deliverySection'),sb=document.getElementById('submitBtn');
-  var keys=Object.keys(cart);
-  if(!keys.length){ci.innerHTML='<div class="empty-state"><span class="ei">&#127838;</span>Pick something from the menu!</div>';sm.style.display='none';ds.style.display='none';sb.disabled=true;return;}
-  var frag=document.createDocumentFragment(),total=0;
-  keys.forEach(function(k){
-    var d=parseK(k),sub=d.pr*cart[k];total+=sub;
-    var fn=d.item.flavors?d.item.flavors[d.fi].label:'',vn=d.item.variants?d.item.variants[d.vi].label:'';
-    var sn=d.item.requireSlice&&d.sl==='sliced'?' &#183; Sliced':(d.item.requireSlice?' &#183; Whole':'');
-    var meta=[fn,vn].filter(Boolean).join(' &#183; ')+sn;
-    var row=mk('div','order-item'),lft=mk('div');
-    lft.appendChild(mk('div','oi-name',d.item.name));
-    var mt=mk('div','oi-meta');mt.innerHTML=meta+' &times; '+cart[k];lft.appendChild(mt);
-    var rgt=mk('div','oi-right'),pr=mk('span','oi-price','$'+sub.toFixed(2)),rm=mk('button','oi-remove','✕');
-    rm.addEventListener('click',(function(kk){return function(){delete cart[kk];update();};})(k));
-    rgt.appendChild(pr);rgt.appendChild(rm);row.appendChild(lft);row.appendChild(rgt);frag.appendChild(row);
-  });
-  ci.innerHTML='';ci.appendChild(frag);ds.style.display='block';sm.style.display='block';
-  var dr=document.getElementById('deliveryRow'),fr=document.getElementById('freeDeliveryRow'),gt=total;
-  if(method==='delivery'&&feeOk){var isFr=total>=S.freeDeliveryMin;dr.style.display=isFr?'none':'flex';fr.style.display=isFr?'flex':'none';if(!isFr){document.getElementById('deliveryFee').textContent='$'+fee.toFixed(2);gt+=fee;}}
-  else{dr.style.display='none';fr.style.display='none';}
-  document.getElementById('subtotalPrice').textContent='$'+total.toFixed(2);
-  document.getElementById('totalPrice').textContent='$'+gt.toFixed(2);
-  sb.disabled=!(method==='pickup'||(method==='delivery'&&feeOk));
+var ci=document.getElementById('orderItems');
+var sm=document.getElementById('orderSummary');
+var ds=document.getElementById('deliverySection');
+var sb=document.getElementById('submitBtn');
+var keys=Object.keys(cart);
+if(!keys.length){
+ci.innerHTML='<div class="empty-state"><span class="ei">&#127838;</span>Pick something from the menu!</div>';
+sm.style.display='none';ds.style.display='none';sb.disabled=true;
+return;
 }
+var frag=document.createDocumentFragment(),total=0;
+keys.forEach(function(k){
+var d=parseK(k),sub=d.pr*cart[k];total+=sub;
+var fn=d.item.flavors?d.item.flavors[d.fi].label:'';
+var vn=d.item.variants?d.item.variants[d.vi].label:'';
+var sn=d.item.requireSlice&&d.sl==='sliced'?' &#183; Sliced':(d.item.requireSlice?' &#183; Whole':'');
+var meta=[fn,vn].filter(Boolean).join(' &#183; ')+sn;
+var row=mk('div','order-item'),lft=mk('div');
+lft.appendChild(mk('div','oi-name',d.item.name));
+var mt=mk('div','oi-meta');mt.innerHTML=meta+' &times; '+cart[k];lft.appendChild(mt);
+var rgt=mk('div','oi-right');
+var pr2=mk('span','oi-price','$'+sub.toFixed(2));
+var rm=mk('button','oi-remove','✕');
+rm.addEventListener('click',(function(kk){return function(){delete cart[kk];update();};})(k));
+rgt.appendChild(pr2);rgt.appendChild(rm);row.appendChild(lft);row.appendChild(rgt);frag.appendChild(row);
+});
+ci.innerHTML='';ci.appendChild(frag);
+ds.style.display='block';sm.style.display='block';
+var dr=document.getElementById('deliveryRow'),fr=document.getElementById('freeDeliveryRow'),gt=total;
+if(method==='delivery'&&feeOk){
+var isFr=total>=S.freeDeliveryMin;
+dr.style.display=isFr?'none':'flex';
+fr.style.display=isFr?'flex':'none';
+if(!isFr){document.getElementById('deliveryFee').textContent='$'+fee.toFixed(2);gt+=fee;}
+}else{dr.style.display='none';fr.style.display='none';}
+document.getElementById('subtotalPrice').textContent='$'+total.toFixed(2);
+document.getElementById('totalPrice').textContent='$'+gt.toFixed(2);
+var dateVal=document.getElementById('fDate').value;
+var hasDate=dateVal&&dateVal.length>0;
+var hasDeliveryOk=method!=='delivery'||(method==='delivery'&&feeOk);
+var hasNotes=document.getElementById('fNotes').value.trim().length>0;
+var customOk=!isCustom||(isCustom&&hasNotes);
+sb.disabled=!(hasDate&&hasDeliveryOk&&customOk);
+}
+
 function submit(){
-  var name=document.getElementById('fName').value.trim(),phone=document.getElementById('fPhone').value.trim();
-  var date=document.getElementById('fDate').value,time=document.getElementById('fTime').value||'Flexible';
-  var notes=document.getElementById('fNotes').value.trim(),slot=fSlot.value;
-  if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a pickup day!');return;}
-  var sub=subtotal(),isFr=method==='delivery'&&sub>=S.freeDeliveryMin,f2=(method==='delivery'&&!isFr)?fee:0,gt=sub+f2;
-  var dAddr=document.getElementById('deliveryAddress').value.trim();
-  var pAddr=slot==='tuesday'?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA';
-  var lines=Object.keys(cart).map(function(k){var d=parseK(k),fn=d.item.flavors?d.item.flavors[d.fi].label:'',vn=d.item.variants?d.item.variants[d.vi].label:'',st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'',desc=[fn,vn].filter(Boolean).join(' / ');return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);});
-  fetch(SHEET+'?'+new URLSearchParams({name:name,phone:phone,date:date,time:time,method:method,address:method==='delivery'?dAddr:pAddr,items:lines.join(' | '),subtotal:'$'+sub.toFixed(2),deliveryFee:method==='delivery'?(isFr?'Free':'$'+f2.toFixed(2)):'N/A',total:'$'+gt.toFixed(2),notes:notes}).toString(),{mode:'no-cors'});
-  cart={};feeOk=false;fee=0;update();
-  ['fName','fPhone','fDate','fNotes'].forEach(function(id){document.getElementById(id).value='';});
-  document.getElementById('fTime').value='';document.getElementById('deliveryAddress').value='';document.getElementById('deliveryResult').innerHTML='';
-  setM('pickup');fSlot.value='';document.getElementById('slotInfo').style.display='none';
-  var t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3800);
+var name=document.getElementById('fName').value.trim();
+var phone=document.getElementById('fPhone').value.trim();
+var date=document.getElementById('fDate').value;
+var time=document.getElementById('fTime').value||'Flexible';
+var notes=document.getElementById('fNotes').value.trim();
+var slot=fSlot.value;
+if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a date!');return;}
+if(isCustom&&!notes){alert('Please describe your custom date/time request in the Special Requests field.');return;}
+var sub=subtotal();
+var isFr=method==='delivery'&&sub>=S.freeDeliveryMin;
+var f2=(method==='delivery'&&!isFr)?fee:0;
+var gt=sub+f2;
+var dAddr=document.getElementById('deliveryAddress').value.trim();
+var pAddr=slot.includes('tuesday')?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA';
+if(slot==='custom')pAddr='Custom/TBD';
+var lines=Object.keys(cart).map(function(k){
+var d=parseK(k);
+var fn=d.item.flavors?d.item.flavors[d.fi].label:'';
+var vn=d.item.variants?d.item.variants[d.vi].label:'';
+var st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'';
+var desc=[fn,vn].filter(Boolean).join(' / ');
+return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);
+});
+fetch(SHEET+'?'+new URLSearchParams({
+name:name,phone:phone,date:date,time:time,
+method:method,
+address:method==='delivery'?dAddr:pAddr,
+items:lines.join(' | '),
+subtotal:'$'+sub.toFixed(2),
+deliveryFee:method==='delivery'?(isFr?'Free':'$'+f2.toFixed(2)):'N/A',
+total:'$'+gt.toFixed(2),
+notes:notes
+}).toString(),{mode:'no-cors'});
+cart={};feeOk=false;fee=0;isCustom=false;update();
+['fName','fPhone','fDate','fNotes'].forEach(function(id){document.getElementById(id).value='';});
+document.getElementById('fTime').value='';
+document.getElementById('deliveryAddress').value='';
+document.getElementById('deliveryResult').innerHTML='';
+document.getElementById('customInfoBox').classList.remove('show');
+document.getElementById('notesLabel').textContent='Special Requests';
+setM('pickup');fSlot.value='';
+document.getElementById('slotInfo').style.display='none';
+var t=document.getElementById('toast');t.classList.add('show');
+setTimeout(function(){t.classList.remove('show');},3800);
 }
+
+// Initialize
+populateSlots();
 renderMenu();
 })();
 </script>
