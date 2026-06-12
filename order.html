@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HooRay Bakery &#8212; Order</title>
+<title>HooRay Bakery — Order</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ink:#1a1410;--cream:#f8f4ee;--warm:#f0e8da;--gold:#b5843a;--gold-light:#d4a85a;--muted:#7a6e62;--white:#fff;--rose:#c96b50;--shadow:rgba(26,20,16,0.07)}
+:root{--ink:#1a1410;--cream:#f8f4ee;--warm:#f0e8da;--gold:#b5843a;--gold-light:#d4a85a;--muted:#7a6e62;--white:#fff;--rose:#c96b50}
 body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
 .closed-overlay{display:none;position:fixed;inset:0;background:rgba(248,244,238,0.97);z-index:999;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:32px}
 .closed-overlay.active{display:flex}
@@ -28,12 +28,19 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .page-hero p{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto}
 .notice-banner{background:var(--gold);color:white;text-align:center;padding:10px 24px;font-size:.8rem;letter-spacing:.06em;display:none}
 .notice-banner.active{display:block}
+.away-banner{background:var(--warm);border-top:3px solid var(--gold);padding:20px 32px;display:none}
+.away-banner.active{display:block}
+.away-banner-inner{max-width:660px;margin:0 auto;text-align:center}
+.away-banner-icon{font-size:1.6rem;margin-bottom:6px}
+.away-banner-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--ink);margin-bottom:8px}
+.away-banner-msg{font-size:.84rem;color:var(--muted);line-height:1.75}
+.away-banner-return{display:inline-block;margin-top:12px;background:var(--gold);color:white;padding:7px 20px;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;font-family:'Jost',sans-serif;font-weight:500}
 .layout{max-width:1080px;margin:0 auto;padding:44px 24px 64px;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start}
 @media(max-width:780px){.layout{grid-template-columns:1fr}.sidebar{position:static!important}}
 .section-label{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:6px;font-weight:400}
 .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:22px}
 .tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
-.tab{border:1.5px solid #e8ddd6;background:white;color:var(--muted);border-radius:2px;padding:7px 18px;font-size:.78rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .18s;font-family:'Jost',sans-serif}
+.tab{border:1.5px solid #e8ddd6;background:white;color:var(--muted);border-radius:2px;padding:7px 18px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .18s;font-family:'Jost',sans-serif}
 .tab:hover{border-color:var(--gold);color:var(--gold)}
 .tab.active{background:var(--ink);color:white;border-color:var(--ink)}
 .menu-grid{display:flex;flex-direction:column;gap:12px}
@@ -47,13 +54,10 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .opt-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .opt-label.required::after{content:' *';color:var(--rose)}
 .pill-row{display:flex;gap:5px;flex-wrap:wrap}
-.pill{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:4px 11px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
-.pill:hover{border-color:var(--gold)}
-.pill.selected{background:var(--ink);color:white;border-color:var(--ink)}
+.pill,.slice-pill{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:4px 11px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
+.pill:hover,.slice-pill:hover{border-color:var(--gold)}
+.pill.selected,.slice-pill.selected{background:var(--ink);color:white;border-color:var(--ink)}
 .slice-row{display:flex;gap:5px}
-.slice-pill{border:1px solid #e0d5ce;background:var(--cream);color:var(--ink);border-radius:2px;padding:4px 11px;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .15s;font-family:'Jost',sans-serif}
-.slice-pill:hover{border-color:var(--gold)}
-.slice-pill.selected{background:var(--ink);color:white;border-color:var(--ink)}
 .slice-note-text{font-size:.69rem;color:var(--muted);margin-top:4px;line-height:1.4}
 .product-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex-shrink:0}
 .product-price{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);white-space:nowrap}
@@ -77,7 +81,7 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .oi-meta{font-size:.73rem;color:var(--muted)}
 .oi-right{display:flex;align-items:center;gap:7px}
 .oi-price{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1rem}
-.oi-remove{cursor:pointer;color:#ccc;font-size:.82rem}
+.oi-remove{cursor:pointer;color:#ccc;font-size:.82rem;background:none;border:none;font-family:'Jost',sans-serif;padding:0}
 .oi-remove:hover{color:var(--rose)}
 .order-divider{border:none;border-top:1px dashed rgba(181,132,58,.3);margin:14px 0}
 .delivery-section{margin:16px 0}
@@ -94,7 +98,6 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .delivery-result{margin-top:10px;font-size:.8rem;padding:10px 12px;border-left:3px solid var(--gold);background:rgba(181,132,58,.06)}
 .delivery-result.error{border-left-color:var(--rose);background:rgba(201,107,80,.06);color:var(--rose)}
 .summary-row{display:flex;justify-content:space-between;font-size:.83rem;color:var(--muted);margin-bottom:5px}
-.summary-row.delivery{color:var(--ink)}
 .summary-row.free-delivery{color:#5a9a5a}
 .summary-total{display:flex;justify-content:space-between;font-weight:500;font-size:.95rem;padding-top:10px;border-top:1px solid var(--warm);margin-top:6px}
 .summary-total-price{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--gold)}
@@ -108,8 +111,6 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .submit-btn{width:100%;margin-top:18px;background:var(--gold);color:white;border:none;padding:15px;font-family:'Jost',sans-serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s}
 .submit-btn:hover:not(:disabled){background:var(--ink)}
 .submit-btn:disabled{background:#ddd;color:#bbb;cursor:not-allowed}
-.away-notice{font-size:.78rem;color:var(--gold);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:8px 12px;margin-top:8px;line-height:1.6;display:none}
-.away-notice.active{display:block}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:white;padding:13px 28px;font-size:.86rem;letter-spacing:.06em;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.2)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 footer{text-align:center;padding:28px;font-size:.77rem;color:var(--muted);border-top:1px solid rgba(181,132,58,.15)}
@@ -120,8 +121,16 @@ footer a{color:var(--gold);text-decoration:none}
 <div class="closed-overlay" id="closedOverlay">
 <div class="closed-icon">&#127838;</div>
 <h2>We're Not Taking Orders Right Now</h2>
-<p>We're currently closed. Please check back soon or follow us on Instagram for updates!<br><br>
+<p>We're currently closed. Check back soon or follow us on Instagram!<br><br>
 <a href="https://www.instagram.com/hooraysbakery/" target="_blank">@hooraysbakery</a> &middot; <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a></p>
+</div>
+<div class="away-banner" id="awayBanner">
+<div class="away-banner-inner">
+<div class="away-banner-icon">&#9992;&#65039;</div>
+<div class="away-banner-title">We're Away Right Now</div>
+<div class="away-banner-msg">We're currently out of town and taking a short break from orders. We'll be back soon with fresh loaves and all your favorites &mdash; thank you so much for your patience and support!</div>
+<span class="away-banner-return" id="awayReturnLabel"></span>
+</div>
 </div>
 <nav>
 <a class="nav-logo" href="index.html"><em>Hoo</em>Ray Bakery</a>
@@ -137,27 +146,27 @@ footer a{color:var(--gold);text-decoration:none}
 <div>
 <div class="section-label">Our Menu</div>
 <div class="section-sub">Select your items and add them to your order</div>
-<div class="tabs">
-<button class="tab active" onclick="filterMenu('all',this)">All</button>
-<button class="tab" onclick="filterMenu('bread',this)">Breads</button>
-<button class="tab" onclick="filterMenu('cookie',this)">Cookies</button>
+<div class="tabs" id="tabBar">
+<button class="tab active" data-cat="all">All</button>
+<button class="tab" data-cat="bread">Breads</button>
+<button class="tab" data-cat="cookie">Cookies</button>
 </div>
 <div class="menu-grid" id="menuGrid"></div>
 </div>
-<div class="sidebar" id="sidebar">
+<div class="sidebar">
 <div class="order-card">
-<div class="order-card-title">Your Order <span class="clear-all" onclick="clearCart()">Clear all</span></div>
+<div class="order-card-title">Your Order <span class="clear-all" id="clearAllBtn">Clear all</span></div>
 <div id="orderItems"><div class="empty-state"><span class="ei">&#127838;</span>Pick something from the menu!</div></div>
 <div class="delivery-section" id="deliverySection" style="display:none">
 <hr class="order-divider">
 <div class="delivery-toggle">
-<button class="delivery-opt active" id="optPickup" onclick="setMethod('pickup')">Pickup</button>
-<button class="delivery-opt" id="optDelivery" onclick="setMethod('delivery')">Delivery</button>
+<button class="delivery-opt active" id="optPickup">Pickup</button>
+<button class="delivery-opt" id="optDelivery">Delivery</button>
 </div>
 <div class="delivery-address-wrap" id="addressWrap">
 <div class="address-input-row">
 <input type="text" id="deliveryAddress" placeholder="Enter your address...">
-<button class="check-btn" onclick="checkDelivery()">Check</button>
+<button class="check-btn" id="checkBtn">Check</button>
 </div>
 <div id="deliveryResult"></div>
 </div>
@@ -165,7 +174,7 @@ footer a{color:var(--gold);text-decoration:none}
 <div id="orderSummary" style="display:none">
 <hr class="order-divider">
 <div class="summary-row"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
-<div class="summary-row delivery" id="deliveryRow" style="display:none"><span id="deliveryLabel">Delivery fee</span><span id="deliveryFee">$0.00</span></div>
+<div class="summary-row" id="deliveryRow" style="display:none"><span>Delivery fee</span><span id="deliveryFee">$0.00</span></div>
 <div class="summary-row free-delivery" id="freeDeliveryRow" style="display:none"><span>&#127881; Free delivery</span><span>$0.00</span></div>
 <div class="summary-total"><span>Total</span><span class="summary-total-price" id="totalPrice">$0.00</span></div>
 </div>
@@ -176,262 +185,209 @@ footer a{color:var(--gold);text-decoration:none}
 <div class="form-divider" style="margin-top:16px">Pickup / Delivery Slot</div>
 <div class="form-row">
 <label>Select Your Day *</label>
-<select id="fSlot" onchange="updateSlotInfo()">
+<select id="fSlot">
 <option value="">&#8212; Choose a day &#8212;</option>
-<option value="tuesday">Tuesday &mdash; 6:00 PM &middot; 7725 Gateway, Irvine</option>
-<option value="saturday">Saturday &mdash; 3:00 PM &middot; Meadowood Park, Irvine</option>
+<option value="tuesday">Tuesday &#8212; 6:00 PM &#183; 7725 Gateway, Irvine</option>
+<option value="saturday">Saturday &#8212; 6:00 PM &#183; Meadowood Park, Irvine</option>
 </select>
-<div class="away-notice" id="awayNotice">&#9992;&#65039; We're Away &mdash; pickup dates below are after our return.</div>
+<div id="awaySlotNotice" style="display:none;font-size:.75rem;color:var(--gold);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:7px 11px;margin-top:7px;line-height:1.6">&#9992;&#65039; We're Away Right Now &#8212; dates shown are after our return.</div>
 </div>
 <div id="slotInfo" style="display:none;font-size:.82rem;padding:10px 14px;margin:6px 0 10px;background:rgba(181,132,58,.07);border-left:3px solid var(--gold);line-height:1.8;color:var(--ink)"></div>
 <input type="hidden" id="fDate" value="">
 <input type="hidden" id="fTime" value="">
 <div class="form-row"><label>Special Requests</label><textarea id="fNotes" placeholder="Allergies, gifting, flavor notes..."></textarea></div>
-<button class="submit-btn" id="submitBtn" disabled onclick="submitOrder()">Place Order</button>
+<button class="submit-btn" id="submitBtn" disabled>Place Order</button>
 </div>
 </div>
 </div>
 </div>
 <footer>
-<a href="index.html">&larr; Back to HooRay Bakery</a> &nbsp;&middot;&nbsp;
-<a href="tel:9494495962">(949) 449-5962</a> &nbsp;&middot;&nbsp;
+<a href="index.html">&larr; Back to HooRay Bakery</a> &nbsp;&#183;&nbsp;
+<a href="tel:9494495962">(949) 449-5962</a> &nbsp;&#183;&nbsp;
 <a href="mailto:hooraybakery@gmail.com">hooraybakery@gmail.com</a>
 </footer>
 <div class="toast" id="toast">&#127881; Order placed! We'll confirm via text soon.</div>
+
 <script>
-const GOOGLE_MAPS_KEY = 'AIzaSyBpIRFypFocZ6wLCFPAHyWob5tuJm3glVE';
-const STORE_ADDRESS = '7725 Gateway, Irvine, CA 92618';
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
-
-function getSettings() {
-  const defaults = { storeOpen:true, noticeText:'', deliveryEnabled:true, ratePerMile:1.00, maxMiles:20, freeDeliveryMin:20, awayStart:'', awayEnd:'' };
-  try { const saved = JSON.parse(localStorage.getItem('hooray_settings') || '{}'); return { ...defaults, ...saved }; } catch { return defaults; }
+(function(){
+var MAPS_KEY='AIzaSyBpIRFypFocZ6wLCFPAHyWob5tuJm3glVE';
+var STORE='7725 Gateway, Irvine, CA 92618';
+var SHEET='https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
+function getS(){var d={storeOpen:true,noticeText:'',deliveryEnabled:true,ratePerMile:1,maxMiles:20,freeDeliveryMin:30,awayStart:'',awayEnd:''};try{var s=JSON.parse(localStorage.getItem('hooray_settings')||'{}');return Object.assign({},d,s);}catch(e){return d;}}
+var S=getS();
+if(!S.storeOpen)document.getElementById('closedOverlay').classList.add('active');
+if(S.noticeText){var b=document.getElementById('noticeBanner');b.textContent=S.noticeText;b.classList.add('active');}
+function isAway(){if(!S.awayStart||!S.awayEnd)return false;var t=new Date();t.setHours(0,0,0,0);var s=new Date(S.awayStart+'T00:00:00'),e=new Date(S.awayEnd+'T00:00:00');return t>=s&&t<=e;}
+function retDate(){var e=new Date(S.awayEnd+'T00:00:00');e.setDate(e.getDate()+1);return e;}
+if(isAway()){
+  var bnr=document.getElementById('awayBanner');bnr.classList.add('active');
+  var rd=retDate();
+  var rf=rd.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('awayReturnLabel').textContent='Estimated Return: '+rf;
+  document.getElementById('awaySlotNotice').style.display='block';
 }
-const S = getSettings();
-
-if (!S.storeOpen) document.getElementById('closedOverlay').classList.add('active');
-if (S.noticeText) { const b = document.getElementById('noticeBanner'); b.textContent = S.noticeText; b.classList.add('active'); }
-
-function isAway() {
-  if (!S.awayStart || !S.awayEnd) return false;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const start = new Date(S.awayStart + 'T00:00:00');
-  const end = new Date(S.awayEnd + 'T00:00:00');
-  return today <= end && start <= end;
-}
-function getReturnDate() {
-  const end = new Date(S.awayEnd + 'T00:00:00');
-  end.setDate(end.getDate() + 1);
-  return end;
-}
-function getNextSlotDate(weekday) {
-  const now = new Date();
-  let d = new Date(now.getTime() + 48 * 60 * 60 * 1000); d.setHours(0,0,0,0);
-  while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
-  if (isAway()) { const ret = getReturnDate(); if (d < ret) { d = new Date(ret); while (d.getDay() !== weekday) d.setDate(d.getDate() + 1); } }
+function nextSlot(wd){
+  var d=new Date(Date.now()+48*3600000);d.setHours(0,0,0,0);
+  while(d.getDay()!==wd)d.setDate(d.getDate()+1);
+  if(isAway()){var r=retDate();if(d<r){d=new Date(r);while(d.getDay()!==wd)d.setDate(d.getDate()+1);}}
   return d;
 }
-function formatSlotDate(d) { return d.toLocaleDateString('en-US', {weekday:'long',month:'long',day:'numeric'}); }
-function updateSlotInfo() {
-  const slot = document.getElementById('fSlot').value;
-  const infoEl = document.getElementById('slotInfo');
-  if (!slot) { infoEl.style.display='none'; document.getElementById('fDate').value=''; document.getElementById('fTime').value=''; renderCart(); return; }
-  const isTue = slot === 'tuesday';
-  const weekday = isTue ? 2 : 6;
-  const time = isTue ? '6:00 PM' : '3:00 PM';
-  const location = isTue ? '7725 Gateway, Irvine, CA 92618' : 'Meadowood Park, Irvine, CA';
-  const nextDate = getNextSlotDate(weekday);
-  document.getElementById('fDate').value = nextDate.toISOString().split('T')[0];
-  document.getElementById('fTime').value = time;
-  infoEl.style.display = 'block';
-  infoEl.innerHTML = '&#128197; <strong>' + formatSlotDate(nextDate) + '</strong> at <strong>' + time + '</strong><br>&#128205; ' + location;
+function fmtDate(d){return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});}
+var fSlot=document.getElementById('fSlot');
+fSlot.addEventListener('change',function(){updateSlot();});
+function updateSlot(){
+  var v=fSlot.value,info=document.getElementById('slotInfo');
+  if(!v){info.style.display='none';document.getElementById('fDate').value='';document.getElementById('fTime').value='';renderCart();return;}
+  var isTue=v==='tuesday',wd=isTue?2:6,time='6:00 PM';
+  var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
+  var nd=nextSlot(wd);
+  document.getElementById('fDate').value=nd.toISOString().split('T')[0];
+  document.getElementById('fTime').value=time;
+  info.style.display='block';
+  info.innerHTML='&#128197; <strong>'+fmtDate(nd)+'</strong> at <strong>'+time+'</strong><br>&#128205; '+loc;
   renderCart();
 }
-if (isAway()) { document.getElementById('awayNotice').classList.add('active'); }
-
-const MENU = [
-  { id:'milkloaf', cat:'bread', emoji:'&#127838;', name:'Milk Loaf', desc:'15oz &middot; Soft, pillowy Japanese-style milk bread', requireFlavor:true, requireSlice:true, flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}] },
-  { id:'cookies', cat:'cookie', emoji:'&#127850;', name:'Butter Cookies', desc:'Piped butter cookies in a clear box &middot; melt-in-your-mouth', requireFlavor:true, requireSlice:false, flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}], variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}] },
+var MENU=[
+  {id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
+  {id:'cookies',cat:'cookie',emoji:'&#127850;',name:'Butter Cookies',desc:'Piped butter cookies in a clear box &#183; melt-in-your-mouth',requireFlavor:true,requireSlice:false,flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}],variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}]}
 ];
-
-let itemState = {};
-MENU.forEach(m => { itemState[m.id] = { flavor:null, slice:null, variant:0 }; });
-let cart = {}, deliveryMethod = 'pickup', deliveryFeeAmount = 0, deliveryChecked = false, activeFilter = 'all';
-
-function filterMenu(cat, btn) { activeFilter = cat; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); btn.classList.add('active'); renderMenu(); }
-function canAdd(item) { const st = itemState[item.id]; if (item.requireFlavor && st.flavor === null) return false; if (item.requireSlice && st.slice === null) return false; return true; }
-function getCartKey(item) { const st = itemState[item.id]; return item.id + '|' + (st.flavor !== null ? st.flavor : 0) + '|' + (item.requireSlice ? (st.slice || 'whole') : 'noslice') + '|' + (item.variants ? st.variant : 0); }
-function getItemPrice(item) { const st = itemState[item.id]; if (item.variants) return item.variants[st.variant].price; if (item.requireFlavor && st.flavor !== null) return item.flavors[st.flavor].price; return item.flavors[0].price; }
-
-function renderMenu() {
-  const grid = document.getElementById('menuGrid');
-  const items = activeFilter === 'all' ? MENU : MENU.filter(m => m.cat === activeFilter);
-  grid.innerHTML = '';
-  items.forEach(item => {
-    const st = itemState[item.id];
-    const key = getCartKey(item);
-    const qty = cart[key] || 0;
-    const price = getItemPrice(item);
-    const ready = canAdd(item);
-    let flavorHTML = '';
-    if (item.flavors && item.flavors.length > 0) {
-      flavorHTML = '<div><div class="opt-label required">Flavor</div><div class="pill-row">' +
-        item.flavors.map((f,i) => '<button class="pill' + (st.flavor===i?' selected':'') + '" onclick="selectFlavor(&#39;' + item.id + '&#39;,' + i + ')">' + f.label + (f.price?' &mdash; $'+f.price:'') + '</button>').join('') +
-        '</div></div>';
+var state={};MENU.forEach(function(m){state[m.id]={flavor:null,slice:null,variant:0};});
+var cart={},method='pickup',fee=0,feeOk=false,filter='all';
+document.getElementById('tabBar').addEventListener('click',function(e){var t=e.target.closest('.tab');if(!t)return;filter=t.dataset.cat;document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');renderMenu();});
+document.getElementById('clearAllBtn').addEventListener('click',function(){cart={};feeOk=false;fee=0;update();});
+document.getElementById('optPickup').addEventListener('click',function(){setM('pickup');});
+document.getElementById('optDelivery').addEventListener('click',function(){setM('delivery');});
+document.getElementById('checkBtn').addEventListener('click',checkDel);
+document.getElementById('submitBtn').addEventListener('click',submit);
+function canAdd(item){var s=state[item.id];if(item.requireFlavor&&s.flavor===null)return false;if(item.requireSlice&&s.slice===null)return false;return true;}
+function key(item){var s=state[item.id];return item.id+'|'+(s.flavor!==null?s.flavor:0)+'|'+(item.requireSlice?(s.slice||'whole'):'ns')+'|'+(item.variants?s.variant:0);}
+function price(item){var s=state[item.id];if(item.variants)return item.variants[s.variant].price;if(item.requireFlavor&&s.flavor!==null)return item.flavors[s.flavor].price;return item.flavors[0].price;}
+function mk(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function renderMenu(){
+  var g=document.getElementById('menuGrid');g.innerHTML='';
+  var items=filter==='all'?MENU:MENU.filter(function(m){return m.cat===filter;});
+  items.forEach(function(item){
+    var s=state[item.id],k=key(item),q=cart[k]||0,p=price(item),ready=canAdd(item);
+    var card=mk('div','product-card');
+    var em=mk('div','product-emoji');em.innerHTML=item.emoji;card.appendChild(em);
+    var body=mk('div','product-body');
+    var nm=mk('div','product-name',item.name);body.appendChild(nm);
+    var dc=mk('div','product-desc');dc.innerHTML=item.desc;body.appendChild(dc);
+    var og=mk('div','options-group');
+    if(item.flavors&&item.flavors.length){
+      var fd=mk('div');fd.appendChild(mk('div','opt-label required','Flavor'));
+      var pr=mk('div','pill-row');
+      item.flavors.forEach(function(f,i){
+        var pl=mk('button','pill'+(s.flavor===i?' selected':''));
+        pl.textContent=f.label+(f.price?' — $'+f.price:'');
+        pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
+        pr.appendChild(pl);
+      });
+      fd.appendChild(pr);og.appendChild(fd);
     }
-    let sizeHTML = '';
-    if (item.variants) {
-      sizeHTML = '<div><div class="opt-label required">Size</div><div class="pill-row">' +
-        item.variants.map((v,i) => '<button class="pill' + (st.variant===i?' selected':'') + '" onclick="selectVariant(&#39;' + item.id + '&#39;,' + i + ')">' + v.label + ' &mdash; $' + v.price + '</button>').join('') +
-        '</div></div>';
+    if(item.variants){
+      var sd=mk('div');sd.appendChild(mk('div','opt-label required','Size'));
+      var sr=mk('div','pill-row');
+      item.variants.forEach(function(v,i){
+        var pl=mk('button','pill'+(s.variant===i?' selected':''));
+        pl.textContent=v.label+' — $'+v.price;
+        pl.addEventListener('click',(function(ii){return function(){state[item.id].variant=ii;renderMenu();};})(i));
+        sr.appendChild(pl);
+      });
+      sd.appendChild(sr);og.appendChild(sd);
     }
-    let sliceHTML = '';
-    if (item.requireSlice) {
-      sliceHTML = '<div><div class="opt-label required">Sliced or Whole?</div><div class="slice-row">' +
-        '<button class="slice-pill' + (st.slice==='whole'?' selected':'') + '" onclick="selectSlice(&#39;' + item.id + '&#39;,&#39;whole&#39;)">Whole</button>' +
-        '<button class="slice-pill' + (st.slice==='sliced'?' selected':'') + '" onclick="selectSlice(&#39;' + item.id + '&#39;,&#39;sliced&#39;)">Sliced</button>' +
-        '</div>' + (st.slice==='sliced'?'<div class="slice-note-text">&#9888;&#65039; Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.</div>':'') + '</div>';
+    if(item.requireSlice){
+      var sld=mk('div');sld.appendChild(mk('div','opt-label required','Sliced or Whole?'));
+      var slr=mk('div','slice-row');
+      ['whole','sliced'].forEach(function(v){
+        var pl=mk('button','slice-pill'+(s.slice===v?' selected':''));
+        pl.textContent=v.charAt(0).toUpperCase()+v.slice(1);
+        pl.addEventListener('click',(function(vv){return function(){state[item.id].slice=vv;renderMenu();};})(v));
+        slr.appendChild(pl);
+      });
+      sld.appendChild(slr);
+      if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
+      og.appendChild(sld);
     }
-    const ctrl = qty === 0
-      ? '<button class="add-btn"' + (ready?'':' disabled') + ' onclick="addItem(&#39;' + item.id + '&#39;)">Add</button>'
-      : '<div class="qty-row"><button class="qty-btn" onclick="changeQty(&#39;' + key + '&#39;,-1)">&#8722;</button><span class="qty-num">' + qty + '</span><button class="qty-btn" onclick="changeQty(&#39;' + key + '&#39;,1)">+</button></div>';
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = '<div class="product-emoji">' + item.emoji + '</div><div class="product-body"><div class="product-name">' + item.name + '</div><div class="product-desc">' + item.desc + '</div><div class="options-group">' + flavorHTML + sizeHTML + sliceHTML + '</div></div><div class="product-right"><div class="product-price">$' + price.toFixed(2) + '</div>' + ctrl + '</div>';
-    grid.appendChild(card);
+    body.appendChild(og);card.appendChild(body);
+    var rt=mk('div','product-right');
+    rt.appendChild(mk('div','product-price','$'+p.toFixed(2)));
+    if(q===0){var ab=mk('button','add-btn','Add');if(!ready)ab.disabled=true;ab.addEventListener('click',(function(it){return function(){if(!canAdd(it))return;cart[key(it)]=1;update();};})(item));rt.appendChild(ab);}
+    else{var qr=mk('div','qty-row'),mi=mk('button','qty-btn','−'),qn=mk('span','qty-num',String(q)),pl2=mk('button','qty-btn','+');
+      mi.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)-1;if(cart[kk]<=0)delete cart[kk];update();};})(k));
+      pl2.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)+1;update();};})(k));
+      qr.appendChild(mi);qr.appendChild(qn);qr.appendChild(pl2);rt.appendChild(qr);
+    }
+    card.appendChild(rt);g.appendChild(card);
   });
 }
-
-function selectFlavor(id,idx) { itemState[id].flavor=idx; renderMenu(); }
-function selectVariant(id,idx) { itemState[id].variant=idx; renderMenu(); }
-function selectSlice(id,val) { itemState[id].slice=val; renderMenu(); }
-function addItem(id) { const item=MENU.find(m=>m.id===id); if(!canAdd(item))return; cart[getCartKey(item)]=1; update(); }
-function changeQty(key,d) { cart[key]=(cart[key]||0)+d; if(cart[key]<=0)delete cart[key]; update(); }
-function removeItem(key) { delete cart[key]; update(); }
-function clearCart() { cart={}; deliveryChecked=false; deliveryFeeAmount=0; update(); }
-
-function parseKey(key) {
-  const p=key.split('|'); const id=p[0], flavorIdx=parseInt(p[1]), slice=p[2], variantIdx=parseInt(p[3]);
-  const item=MENU.find(m=>m.id===id);
-  let price = item.variants ? item.variants[variantIdx].price : item.flavors[flavorIdx].price;
-  return {item,flavorIdx,slice,variantIdx,price};
+function parseK(k){var p=k.split('|'),id=p[0],fi=parseInt(p[1]),sl=p[2],vi=parseInt(p[3]),item=MENU.find(function(m){return m.id===id;});var pr=item.variants?item.variants[vi].price:item.flavors[fi].price;return{item:item,fi:fi,sl:sl,vi:vi,pr:pr};}
+function subtotal(){return Object.keys(cart).reduce(function(s,k){var d=parseK(k);return s+d.pr*cart[k];},0);}
+function update(){renderMenu();renderCart();}
+function setM(m){method=m;feeOk=false;fee=0;document.getElementById('optPickup').classList.toggle('active',m==='pickup');document.getElementById('optDelivery').classList.toggle('active',m==='delivery');document.getElementById('addressWrap').classList.toggle('show',m==='delivery');document.getElementById('deliveryResult').innerHTML='';renderCart();}
+function checkDel(){
+  var addr=document.getElementById('deliveryAddress').value.trim(),res=document.getElementById('deliveryResult');
+  if(!addr){res.innerHTML='<div class="delivery-result error">Please enter your address.</div>';return;}
+  res.innerHTML='<div class="delivery-result">Checking distance...</div>';
+  var sub=subtotal();
+  fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key='+MAPS_KEY)
+  .then(function(r){return r.json();}).then(function(g){
+    if(!g.results||!g.results.length)throw new Error('not found');
+    var c=g.results[0].geometry.location,fmt=g.results[0].formatted_address;
+    return fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+encodeURIComponent(STORE)+'&destinations='+c.lat+','+c.lng+'&units=imperial&key='+MAPS_KEY)
+    .then(function(r){return r.json();}).then(function(d){
+      var el=d.rows&&d.rows[0]&&d.rows[0].elements&&d.rows[0].elements[0];
+      if(!el||el.status!=='OK')throw new Error('dist fail');
+      var miles=el.distance.value/1609.34,mr=Math.round(miles*10)/10;
+      if(miles>S.maxMiles){feeOk=false;fee=0;res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';}
+      else{fee=sub>=S.freeDeliveryMin?0:Math.round(miles*S.ratePerMile*100)/100;feeOk=true;var ft=fee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+fee.toFixed(2);res.innerHTML='<div class="delivery-result">&#128205; '+fmt+'<br>&#128207; '+mr+' mi away<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text.</small></div>';}
+      renderCart();
+    });
+  }).catch(function(){res.innerHTML='<div class="delivery-result error">Could not find address. Try full address with city and state.</div>';feeOk=false;});
 }
-function getSubtotal() { return Object.keys(cart).reduce((s,key)=>{ const {price}=parseKey(key); return s+price*cart[key]; },0); }
-function update() { renderMenu(); renderCart(); }
-
-function setMethod(method) {
-  deliveryMethod=method; deliveryChecked=false; deliveryFeeAmount=0;
-  document.getElementById('optPickup').classList.toggle('active',method==='pickup');
-  document.getElementById('optDelivery').classList.toggle('active',method==='delivery');
-  document.getElementById('addressWrap').classList.toggle('show',method==='delivery');
-  document.getElementById('deliveryResult').innerHTML='';
-  renderCart();
-}
-
-async function checkDelivery() {
-  const addr=document.getElementById('deliveryAddress').value.trim();
-  const resultEl=document.getElementById('deliveryResult');
-  if(!addr){resultEl.innerHTML='<div class="delivery-result error">Please enter your address.</div>';return;}
-  resultEl.innerHTML='<div class="delivery-result">Checking distance...</div>';
-  try {
-    const subtotal=getSubtotal();
-    const geoRes=await fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key='+GOOGLE_MAPS_KEY);
-    const geoData=await geoRes.json();
-    if(!geoData.results||geoData.results.length===0) throw new Error('Address not found');
-    const destCoords=geoData.results[0].geometry.location;
-    const destFmt=geoData.results[0].formatted_address;
-    const distRes=await fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+encodeURIComponent(STORE_ADDRESS)+'&destinations='+destCoords.lat+','+destCoords.lng+'&units=imperial&key='+GOOGLE_MAPS_KEY);
-    const distData=await distRes.json();
-    const element=distData.rows?.[0]?.elements?.[0];
-    if(!element||element.status!=='OK') throw new Error('Could not calculate distance');
-    const miles=element.distance.value/1609.34;
-    const milesRounded=Math.round(miles*10)/10;
-    if(miles>S.maxMiles){
-      deliveryChecked=false; deliveryFeeAmount=0;
-      resultEl.innerHTML='<div class="delivery-result error">Sorry, '+milesRounded+' miles is outside our delivery range (max '+S.maxMiles+' miles). Please select pickup instead.</div>';
-    } else {
-      const fee=subtotal>=S.freeDeliveryMin?0:Math.round(miles*S.ratePerMile*100)/100;
-      deliveryFeeAmount=fee; deliveryChecked=true;
-      const feeText=fee===0?'&#127881; Free (order over $'+S.freeDeliveryMin+')':'$'+fee.toFixed(2);
-      resultEl.innerHTML='<div class="delivery-result">&#128205; '+destFmt+'<br>&#128207; '+milesRounded+' miles away<br>&#128663; Delivery fee: <strong>'+feeText+'</strong></div>';
-    }
-    renderCart();
-  } catch(e) {
-    resultEl.innerHTML='<div class="delivery-result error">Could not find address. Please try again with a full address including city and state.</div>';
-    deliveryChecked=false;
-  }
-}
-
-function renderCart() {
-  const container=document.getElementById('orderItems');
-  const summary=document.getElementById('orderSummary');
-  const delivSection=document.getElementById('deliverySection');
-  const submitBtn=document.getElementById('submitBtn');
-  const keys=Object.keys(cart);
-  if(!keys.length){container.innerHTML='<div class="empty-state"><span class="ei">&#127838;</span>Pick something from the menu!</div>';summary.style.display='none';delivSection.style.display='none';submitBtn.disabled=true;return;}
-  let html='',total=0;
-  keys.forEach(key=>{
-    const {item,flavorIdx,slice,variantIdx,price}=parseKey(key);
-    const sub=price*cart[key]; total+=sub;
-    const flavorName=item.flavors?item.flavors[flavorIdx].label:'';
-    const variantName=item.variants?item.variants[variantIdx].label:'';
-    const sliceName=item.requireSlice&&slice==='sliced'?' &middot; Sliced':(item.requireSlice?' &middot; Whole':'');
-    const meta=[flavorName,variantName].filter(Boolean).join(' &middot; ')+sliceName;
-    html+='<div class="order-item"><div><div class="oi-name">'+item.name+'</div><div class="oi-meta">'+meta+' &times; '+cart[key]+'</div></div><div class="oi-right"><span class="oi-price">$'+sub.toFixed(2)+'</span><span class="oi-remove" onclick="removeItem(&#39;'+key+'&#39;)">&#10005;</span></div></div>';
+function renderCart(){
+  var ci=document.getElementById('orderItems'),sm=document.getElementById('orderSummary'),ds=document.getElementById('deliverySection'),sb=document.getElementById('submitBtn');
+  var keys=Object.keys(cart);
+  if(!keys.length){ci.innerHTML='<div class="empty-state"><span class="ei">&#127838;</span>Pick something from the menu!</div>';sm.style.display='none';ds.style.display='none';sb.disabled=true;return;}
+  var frag=document.createDocumentFragment(),total=0;
+  keys.forEach(function(k){
+    var d=parseK(k),sub=d.pr*cart[k];total+=sub;
+    var fn=d.item.flavors?d.item.flavors[d.fi].label:'',vn=d.item.variants?d.item.variants[d.vi].label:'';
+    var sn=d.item.requireSlice&&d.sl==='sliced'?' &#183; Sliced':(d.item.requireSlice?' &#183; Whole':'');
+    var meta=[fn,vn].filter(Boolean).join(' &#183; ')+sn;
+    var row=mk('div','order-item'),lft=mk('div');
+    lft.appendChild(mk('div','oi-name',d.item.name));
+    var mt=mk('div','oi-meta');mt.innerHTML=meta+' &times; '+cart[k];lft.appendChild(mt);
+    var rgt=mk('div','oi-right'),pr=mk('span','oi-price','$'+sub.toFixed(2)),rm=mk('button','oi-remove','✕');
+    rm.addEventListener('click',(function(kk){return function(){delete cart[kk];update();};})(k));
+    rgt.appendChild(pr);rgt.appendChild(rm);row.appendChild(lft);row.appendChild(rgt);frag.appendChild(row);
   });
-  container.innerHTML=html;
-  delivSection.style.display='block'; summary.style.display='block';
-  const delivRow=document.getElementById('deliveryRow');
-  const freeRow=document.getElementById('freeDeliveryRow');
-  let grandTotal=total;
-  if(deliveryMethod==='delivery'&&deliveryChecked){
-    const isFree=total>=S.freeDeliveryMin;
-    delivRow.style.display=isFree?'none':'flex';
-    freeRow.style.display=isFree?'flex':'none';
-    if(!isFree){document.getElementById('deliveryFee').textContent='$'+deliveryFeeAmount.toFixed(2);grandTotal+=deliveryFeeAmount;}
-  } else {delivRow.style.display='none';freeRow.style.display='none';}
+  ci.innerHTML='';ci.appendChild(frag);ds.style.display='block';sm.style.display='block';
+  var dr=document.getElementById('deliveryRow'),fr=document.getElementById('freeDeliveryRow'),gt=total;
+  if(method==='delivery'&&feeOk){var isFr=total>=S.freeDeliveryMin;dr.style.display=isFr?'none':'flex';fr.style.display=isFr?'flex':'none';if(!isFr){document.getElementById('deliveryFee').textContent='$'+fee.toFixed(2);gt+=fee;}}
+  else{dr.style.display='none';fr.style.display='none';}
   document.getElementById('subtotalPrice').textContent='$'+total.toFixed(2);
-  document.getElementById('totalPrice').textContent='$'+grandTotal.toFixed(2);
-  submitBtn.disabled=!(deliveryMethod==='pickup'||(deliveryMethod==='delivery'&&deliveryChecked));
+  document.getElementById('totalPrice').textContent='$'+gt.toFixed(2);
+  sb.disabled=!(method==='pickup'||(method==='delivery'&&feeOk));
 }
-
-function submitOrder() {
-  const name=document.getElementById('fName').value.trim();
-  const phone=document.getElementById('fPhone').value.trim();
-  const date=document.getElementById('fDate').value;
-  const time=document.getElementById('fTime').value||'Flexible';
-  const notes=document.getElementById('fNotes').value.trim();
-  const slot=document.getElementById('fSlot').value;
+function submit(){
+  var name=document.getElementById('fName').value.trim(),phone=document.getElementById('fPhone').value.trim();
+  var date=document.getElementById('fDate').value,time=document.getElementById('fTime').value||'Flexible';
+  var notes=document.getElementById('fNotes').value.trim(),slot=fSlot.value;
   if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a pickup day!');return;}
-  const subtotal=getSubtotal();
-  const isFreeDelivery=deliveryMethod==='delivery'&&subtotal>=S.freeDeliveryMin;
-  const fee=deliveryMethod==='delivery'&&!isFreeDelivery?deliveryFeeAmount:0;
-  const grandTotal=subtotal+fee;
-  const deliveryAddr=document.getElementById('deliveryAddress').value.trim();
-  const itemLines=Object.keys(cart).map(key=>{
-    const {item,flavorIdx,slice,variantIdx,price}=parseKey(key);
-    const flavorName=item.flavors?item.flavors[flavorIdx].label:'';
-    const variantName=item.variants?item.variants[variantIdx].label:'';
-    const sliceTag=item.requireSlice?(slice==='sliced'?' (Sliced)':' (Whole)'):'';
-    const desc=[flavorName,variantName].filter(Boolean).join(' / ');
-    return item.name+' - '+desc+sliceTag+' x'+cart[key]+' = $'+(price*cart[key]).toFixed(2);
-  });
-  const params=new URLSearchParams({name,phone,date,time,method:deliveryMethod,
-    address:deliveryMethod==='delivery'?deliveryAddr:(slot==='tuesday'?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA'),
-    items:itemLines.join(' | '),subtotal:'$'+subtotal.toFixed(2),
-    deliveryFee:deliveryMethod==='delivery'?(isFreeDelivery?'Free':'$'+fee.toFixed(2)):'N/A',
-    total:'$'+grandTotal.toFixed(2),notes});
-  fetch(SHEET_URL+'?'+params.toString(),{mode:'no-cors'});
-  cart={}; deliveryChecked=false; deliveryFeeAmount=0; update();
-  ['fName','fPhone','fDate','fNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fTime').value='';
-  document.getElementById('deliveryAddress').value='';
-  document.getElementById('deliveryResult').innerHTML='';
-  setMethod('pickup');
-  const toast=document.getElementById('toast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),3800);
+  var sub=subtotal(),isFr=method==='delivery'&&sub>=S.freeDeliveryMin,f2=(method==='delivery'&&!isFr)?fee:0,gt=sub+f2;
+  var dAddr=document.getElementById('deliveryAddress').value.trim();
+  var pAddr=slot==='tuesday'?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA';
+  var lines=Object.keys(cart).map(function(k){var d=parseK(k),fn=d.item.flavors?d.item.flavors[d.fi].label:'',vn=d.item.variants?d.item.variants[d.vi].label:'',st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'',desc=[fn,vn].filter(Boolean).join(' / ');return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);});
+  fetch(SHEET+'?'+new URLSearchParams({name:name,phone:phone,date:date,time:time,method:method,address:method==='delivery'?dAddr:pAddr,items:lines.join(' | '),subtotal:'$'+sub.toFixed(2),deliveryFee:method==='delivery'?(isFr?'Free':'$'+f2.toFixed(2)):'N/A',total:'$'+gt.toFixed(2),notes:notes}).toString(),{mode:'no-cors'});
+  cart={};feeOk=false;fee=0;update();
+  ['fName','fPhone','fDate','fNotes'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('fTime').value='';document.getElementById('deliveryAddress').value='';document.getElementById('deliveryResult').innerHTML='';
+  setM('pickup');fSlot.value='';document.getElementById('slotInfo').style.display='none';
+  var t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3800);
 }
-
 renderMenu();
+})();
 </script>
 </body>
 </html>
