@@ -489,40 +489,36 @@ var res=document.getElementById('deliveryResult');
 if(!addr){res.innerHTML='<div class="delivery-result error">Please enter your address.</div>';return;}
 res.innerHTML='<div class="delivery-result">Checking distance...</div>';
 var sub=subtotal();
-fetch('https://maps.googleapis.com/maps/api/geocode/json?address='+encodeURIComponent(addr)+'&key='+MAPS_KEY)
+var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(addr);
+fetch(url,{headers:{'Accept':'application/json','User-Agent':'HooRayBakery/1.0'}})
 .then(function(r){return r.json();})
-.then(function(g){
-if(!g.results||!g.results.length)throw new Error('not found');
-var c=g.results[0].geometry.location,fmt=g.results[0].formatted_address;
-return fetch('https://maps.googleapis.com/maps/api/distancematrix/json?origins='+encodeURIComponent(STORE)+'&destinations='+c.lat+','+c.lng+'&units=imperial&key='+MAPS_KEY)
-.then(function(r){return r.json();})
-.then(function(d){
-var el=d.rows&&d.rows[0]&&d.rows[0].elements&&d.rows[0].elements[0];
-if(!el||el.status!=='OK')throw new Error('dist fail');
-var miles=el.distance.value/1609.34,mr=Math.round(miles*10)/10;
+.then(function(data){
+if(!data||!data.length)throw new Error('not found');
+var lat=parseFloat(data[0].lat),lon=parseFloat(data[0].lon);
+var fmt=data[0].display_name;
+var storeLat=33.6694,storeLon=-117.8568;
+var R=3958.8;
+var dLat=(lat-storeLat)*Math.PI/180;
+var dLon=(lon-storeLon)*Math.PI/180;
+var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(storeLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+var miles=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+var mr=Math.round(miles*10)/10;
 if(miles>S.maxMiles){
 feeOk=false;fee=0;
 res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';
 }else{
-var calFee;
-if(sub>=S.freeDeliveryMin){
-calFee=0;
-}else{
-calFee=Math.round(miles*S.ratePerMile*100)/100;
-}
+var calFee=sub>=S.freeDeliveryMin?0:Math.round(miles*S.ratePerMile*100)/100;
 fee=calFee;feeOk=true;
 var ft=calFee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+calFee.toFixed(2);
-res.innerHTML='<div class="delivery-result">&#128205; '+fmt+'<br>&#128207; '+mr+' mi away<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.</small></div>';
+res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.</small></div>';
 }
 renderCart();
-});
 })
 .catch(function(){
-res.innerHTML='<div class="delivery-result error">Could not find address. Try full address with city and state.</div>';
+res.innerHTML='<div class="delivery-result error">Could not find address. Please include city and state (e.g., 123 Main St, Irvine, CA).</div>';
 feeOk=false;
 });
 }
-
 function renderCart(){
 var ci=document.getElementById('orderItems');
 var sm=document.getElementById('orderSummary');
