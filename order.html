@@ -219,7 +219,7 @@ var STORE='7725 Gateway, Irvine, CA 92618';
 var SHEET='https://script.google.com/macros/s/AKfycbxJ2hZAwsVYAnHzi8S3mUboGR9kGX93w_qpJtvJiHinKdPsm_u3S0zs8ARkr9VC01rn/exec';
 
 function getS(){
-var d={storeOpen:true,noticeText:'',deliveryEnabled:true,ratePerMile:1,maxMiles:20,freeDeliveryMin:30,awayStart:'',awayEnd:''};
+var d={storeOpen:true,noticeText:'',deliveryEnabled:true,ratePerMile:1,maxMiles:20,freeDeliveryMin:30,awayStart:'2026-06-19',awayEnd:'2026-06-29'};
 try{var s=JSON.parse(localStorage.getItem('hooray_settings')||'{}');return Object.assign({},d,s);}
 catch(e){return d;}
 }
