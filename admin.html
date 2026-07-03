@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HooRay Bakery — Admin</title>
+<title>HooRay Bakery â Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -72,7 +72,7 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 <body>
 
 <!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
+<div class="login-screen" id="loginScreen" style="display:none">
 <div class="login-card">
 <div class="login-logo">HooRay Bakery</div>
 <div class="login-sub">Admin Panel</div>
@@ -83,7 +83,7 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 </div>
 
 <!-- ADMIN UI -->
-<div class="admin-ui" id="adminUI">
+<div class="admin-ui" id="adminUI" style="display:block">
 <nav>
 <div class="nav-logo">HooRay Admin</div>
 <div class="nav-right">
@@ -113,7 +113,7 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 </div>
 <div class="field">
 <label>Notice Banner (optional)</label>
-<input type="text" id="noticeText" placeholder="e.g. Closed this weekend — back Monday!">
+<input type="text" id="noticeText" placeholder="e.g. Closed this weekend â back Monday!">
 <div class="field-hint">Shows a gold banner at the top of the order page</div>
 </div>
 </div>
@@ -145,7 +145,7 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 <!-- AWAY PERIOD -->
 <div class="card full">
 <div class="card-title">Away Period</div>
-<div class="card-sub">Set dates when you're out of town — pickup slots will automatically skip to after your return</div>
+<div class="card-sub">Set dates when you're out of town â pickup slots will automatically skip to after your return</div>
 <div class="field-row">
 <div class="field">
 <label>Away From</label>
@@ -337,8 +337,8 @@ if (s.freeDeliveryMin) document.getElementById('freeDeliveryMin').value = s.free
 if (s.bakeDays) { selectedDays = s.bakeDays; renderDays(); }
 if (s.minHours) document.getElementById('minHours').value = s.minHours;
 if (s.storeAddress) document.getElementById('storeAddr').value = s.storeAddress;
-if (s.awayStart) document.getElementById('awayStart').value = s.awayStart;
-if (s.awayEnd) document.getElementById('awayEnd').value = s.awayEnd;
+document.getElementById('awayStart').value = s.awayStart || '2026-07-04';
+document.getElementById('awayEnd').value = s.awayEnd || '2026-07-12';
 updateDeliveryPreview();
 updateAwayPreview();
 } catch(e) {}
