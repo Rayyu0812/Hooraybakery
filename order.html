@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HooRay Bakery â Order</title>
+<title>HooRay Bakery — Order</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -283,8 +283,8 @@ var dateStr=day.date.toISOString().split('T')[0];
 var time=isDelivery?'':(isTue?'6:00 PM':'6:00 PM');
 var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
 var label=day.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-if(!isDelivery)label+=' â '+time;
-label+=' Â· '+(isTue?'Irvine':'Meadowood Park');
+if(!isDelivery)label+=' — '+time;
+label+=' · '+(isTue?'Irvine':'Meadowood Park');
 slots.push({
 value:dateStr+'|'+(isTue?'tuesday':'saturday'),
 label:label,
@@ -320,7 +320,7 @@ sel.appendChild(opt);
 // Add custom option
 var customOpt=document.createElement('option');
 customOpt.value='custom';
-customOpt.textContent='Custom / Special Request â Contact me to arrange';
+customOpt.textContent='Custom / Special Request — Contact me to arrange';
 sel.appendChild(customOpt);
 // Try to restore selection
 if(current)sel.value=current;
@@ -399,7 +399,7 @@ var dateObj=new Date(dateStr+'T12:00:00');
 var fmt=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 var infoHTML='&#128197; <strong>'+fmt+'</strong>';
 if(method==='delivery'){
-infoHTML+='<br>&#128663; Delivery â time confirmed via text';
+infoHTML+='<br>&#128663; Delivery — time confirmed via text';
 }else{
 infoHTML+=' at <strong>'+time+'</strong>';
 }
@@ -430,7 +430,7 @@ var fd=mk('div');fd.appendChild(mk('div','opt-label required','Flavor'));
 var pr=mk('div','pill-row');
 item.flavors.forEach(function(f,i){
 var pl=mk('button','pill'+(s.flavor===i?' selected':''));
-pl.textContent=f.label+(f.price?' â $'+f.price:'');
+pl.textContent=f.label+(f.price?' — $'+f.price:'');
 pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
 pr.appendChild(pl);
 });
@@ -441,7 +441,7 @@ var sd=mk('div');sd.appendChild(mk('div','opt-label required','Size'));
 var sr=mk('div','pill-row');
 item.variants.forEach(function(v,i){
 var pl=mk('button','pill'+(s.variant===i?' selected':''));
-pl.textContent=v.label+' â $'+v.price;
+pl.textContent=v.label+' — $'+v.price;
 pl.addEventListener('click',(function(ii){return function(){state[item.id].variant=ii;renderMenu();};})(i));
 sr.appendChild(pl);
 });
@@ -457,7 +457,7 @@ pl.addEventListener('click',(function(vv){return function(){state[item.id].slice
 slr.appendChild(pl);
 });
 sld.appendChild(slr);
-if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','â ï¸ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
+if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
 og.appendChild(sld);
 }
 body.appendChild(og);card.appendChild(body);
@@ -623,3 +623,9 @@ renderMenu();
 </script>
 </body>
 </html>
+
+      
+        
+      
+      Stop Claude
+    
