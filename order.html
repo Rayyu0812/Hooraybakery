@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HooRay Bakery — Order</title>
+<title>HooRay Bakery â Order</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -256,9 +256,10 @@ var now=new Date();
 var minDate=new Date(now.getTime()+48*3600000);
 minDate.setHours(0,0,0,0);
 // If away, shift minDate to after return
-if(isAway()){
-var ret=awayReturnDate();
-if(minDate<ret)minDate=new Date(ret);
+// Handle away period: shift minDate if currently in away range
+if(S.awayStart&&S.awayEnd){
+var awayS=new Date(S.awayStart+'T00:00:00'),awayE=new Date(S.awayEnd+'T00:00:00');
+if(minDate>=awayS&&minDate<=awayE){var ret=awayReturnDate();minDate=new Date(ret);}
 }
 // Generate next 8 Tuesdays and 8 Saturdays
 var days=[];
@@ -266,8 +267,11 @@ var d=new Date(minDate);
 var tueCnt=0,satCnt=0;
 for(var i=0;i<200&&(tueCnt<8||satCnt<8);i++){
 var wd=d.getDay();
+var inAway=S.awayStart&&S.awayEnd&&d>=new Date(S.awayStart+'T00:00:00')&&d<=new Date(S.awayEnd+'T00:00:00');
+if(!inAway){
 if(wd===2&&tueCnt<8){days.push({date:new Date(d),wd:2});tueCnt++;}
 else if(wd===6&&satCnt<8){days.push({date:new Date(d),wd:6});satCnt++;}
+}
 d.setDate(d.getDate()+1);
 }
 // Sort by date
@@ -279,8 +283,8 @@ var dateStr=day.date.toISOString().split('T')[0];
 var time=isDelivery?'':(isTue?'6:00 PM':'6:00 PM');
 var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
 var label=day.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-if(!isDelivery)label+=' — '+time;
-label+=' · '+(isTue?'Irvine':'Meadowood Park');
+if(!isDelivery)label+=' â '+time;
+label+=' Â· '+(isTue?'Irvine':'Meadowood Park');
 slots.push({
 value:dateStr+'|'+(isTue?'tuesday':'saturday'),
 label:label,
@@ -316,7 +320,7 @@ sel.appendChild(opt);
 // Add custom option
 var customOpt=document.createElement('option');
 customOpt.value='custom';
-customOpt.textContent='Custom / Special Request — Contact me to arrange';
+customOpt.textContent='Custom / Special Request â Contact me to arrange';
 sel.appendChild(customOpt);
 // Try to restore selection
 if(current)sel.value=current;
@@ -395,7 +399,7 @@ var dateObj=new Date(dateStr+'T12:00:00');
 var fmt=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 var infoHTML='&#128197; <strong>'+fmt+'</strong>';
 if(method==='delivery'){
-infoHTML+='<br>&#128663; Delivery — time confirmed via text';
+infoHTML+='<br>&#128663; Delivery â time confirmed via text';
 }else{
 infoHTML+=' at <strong>'+time+'</strong>';
 }
@@ -426,7 +430,7 @@ var fd=mk('div');fd.appendChild(mk('div','opt-label required','Flavor'));
 var pr=mk('div','pill-row');
 item.flavors.forEach(function(f,i){
 var pl=mk('button','pill'+(s.flavor===i?' selected':''));
-pl.textContent=f.label+(f.price?' — $'+f.price:'');
+pl.textContent=f.label+(f.price?' â $'+f.price:'');
 pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
 pr.appendChild(pl);
 });
@@ -437,7 +441,7 @@ var sd=mk('div');sd.appendChild(mk('div','opt-label required','Size'));
 var sr=mk('div','pill-row');
 item.variants.forEach(function(v,i){
 var pl=mk('button','pill'+(s.variant===i?' selected':''));
-pl.textContent=v.label+' — $'+v.price;
+pl.textContent=v.label+' â $'+v.price;
 pl.addEventListener('click',(function(ii){return function(){state[item.id].variant=ii;renderMenu();};})(i));
 sr.appendChild(pl);
 });
@@ -453,7 +457,7 @@ pl.addEventListener('click',(function(vv){return function(){state[item.id].slice
 slr.appendChild(pl);
 });
 sld.appendChild(slr);
-if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
+if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','â ï¸ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
 og.appendChild(sld);
 }
 body.appendChild(og);card.appendChild(body);
@@ -465,7 +469,7 @@ if(!ready)ab.disabled=true;
 ab.addEventListener('click',(function(it){return function(){if(!canAdd(it))return;cart[key(it)]=1;update();};})(item));
 rt.appendChild(ab);
 }else{
-var qr=mk('div','qty-row'),mi=mk('button','qty-btn','−'),qn=mk('span','qty-num',String(q)),pl2=mk('button','qty-btn','+');
+var qr=mk('div','qty-row'),mi=mk('button','qty-btn','â'),qn=mk('span','qty-num',String(q)),pl2=mk('button','qty-btn','+');
 mi.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)-1;if(cart[kk]<=0)delete cart[kk];update();};})(k));
 pl2.addEventListener('click',(function(kk){return function(){cart[kk]=(cart[kk]||0)+1;update();};})(k));
 qr.appendChild(mi);qr.appendChild(qn);qr.appendChild(pl2);rt.appendChild(qr);
@@ -542,7 +546,7 @@ lft.appendChild(mk('div','oi-name',d.item.name));
 var mt=mk('div','oi-meta');mt.innerHTML=meta+' &times; '+cart[k];lft.appendChild(mt);
 var rgt=mk('div','oi-right');
 var pr2=mk('span','oi-price','$'+sub.toFixed(2));
-var rm=mk('button','oi-remove','✕');
+var rm=mk('button','oi-remove','â');
 rm.addEventListener('click',(function(kk){return function(){delete cart[kk];update();};})(k));
 rgt.appendChild(pr2);rgt.appendChild(rm);row.appendChild(lft);row.appendChild(rgt);frag.appendChild(row);
 });
