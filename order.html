@@ -593,7 +593,7 @@ var st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'';
 var desc=[fn,vn].filter(Boolean).join(' / ');
 return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);
 });
-fetch(SHEET+'?'+new URLSearchParams({
+var NL=String.fromCharCode(10);var dObj=slot==='custom'?null:new Date(date+'T12:00:00');var whenText=slot==='custom'?'Date/Time: to be confirmed - see notes below':((method==='delivery'?'Delivery date: ':'Pickup date: ')+dObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+(method==='delivery'?' (time confirmed via text)':' at '+time));var whereText=method==='delivery'?('Delivery to: '+(dAddr||'address to be confirmed via text')):('Pickup at: '+pAddr);var itemsMsg=lines.map(function(l){return '- '+l;}).join(NL);var confirmationEmail='Hi '+name+'! Thank you so much for your order from HooRay Bakery.'+NL+NL+itemsMsg+NL+NL+whenText+NL+whereText+NL+'Total: $'+gt.toFixed(2)+NL+NL+(notes?('Notes: '+notes+NL+NL):'')+'We are excited to bake for you! If anything needs to change, just reply to this text.'+NL+NL+'- HooRay Bakery';fetch(SHEET+'?'+new URLSearchParams({
 name:name,phone:phone,date:date,time:time,
 method:method,
 address:method==='delivery'?dAddr:pAddr,
@@ -601,7 +601,7 @@ items:lines.join(' | '),
 subtotal:'$'+sub.toFixed(2),
 deliveryFee:method==='delivery'?(isFr?'Free':'$'+f2.toFixed(2)):'N/A',
 total:'$'+gt.toFixed(2),
-notes:notes
+notes:notes,confirmationEmail:confirmationEmail
 }).toString(),{mode:'no-cors'});
 cart={};feeOk=false;fee=0;isCustom=false;update();
 ['fName','fPhone','fDate','fNotes'].forEach(function(id){document.getElementById(id).value='';});
