@@ -480,6 +480,14 @@ var url='https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+enco
 fetch(url,{headers:{'Accept':'application/json','User-Agent':'HooRayBakery/1.0'}})
 .then(function(r){return r.json();})
 .then(function(data){
+if(!data||!data.length)return data;
+var sLat=33.6569,sLon=-117.7499;
+var ru='https://router.project-osrm.org/route/v1/driving/'+sLon+','+sLat+';'+data[0].lon+','+data[0].lat+'?overview=false';
+return fetch(ru).then(function(r){return r.json();}).then(function(j){
+if(j&&j.routes&&j.routes.length&&j.routes[0].distance>0){data.__rm=j.routes[0].distance/1609.344;}
+return data;}).catch(function(){return data;});
+})
+.then(function(data){
 if(!data||!data.length)throw new Error('not found');
 var lat=parseFloat(data[0].lat),lon=parseFloat(data[0].lon);
 var fmt=data[0].display_name;
@@ -488,7 +496,7 @@ var R=3958.8;
 var dLat=(lat-storeLat)*Math.PI/180;
 var dLon=(lon-storeLon)*Math.PI/180;
 var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(storeLat*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-var miles=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+var miles=(data.__rm!=null)?data.__rm:R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))*1.3;
 var mr=Math.round(miles*10)/10;
 if(miles>S.maxMiles){
 feeOk=false;fee=0;
@@ -497,7 +505,7 @@ res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside
 delMiles=miles;var zipM=fmt.match(/\b(9\d{4})\b/);inIrvine=fmt.toLowerCase().indexOf('irvine')>-1||!!(zipM&&['92602','92603','92604','92606','92612','92614','92617','92618','92620','92623'].indexOf(zipM[1])>-1);var calFee=Math.max(3,Math.round(miles*S.ratePerMile*100)/100);
 fee=calFee;feeOk=true;
 var ft=inIrvine?'Free on orders of $'+S.freeDeliveryMin+'+ (otherwise $'+calFee.toFixed(2)+')':'$'+calFee.toFixed(2);
-res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.'+(inIrvine?'':'<br>Free delivery applies to Irvine addresses only.')+'</small></div>';
+res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi driving from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.'+(inIrvine?'':'<br>Free delivery applies to Irvine addresses only.')+'</small></div>';
 }
 renderCart();
 })
