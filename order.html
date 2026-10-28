@@ -279,7 +279,7 @@ return slots;
 
 // ---- Menu ----
 var MENU=[
-{id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,wholeOnlyFlavor:1,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
+{id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,wholeOnlyFlavor:1,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
 {id:'cookies',cat:'cookie',emoji:'&#127850;',name:'Butter Cookies',desc:'Piped butter cookies in a clear box &#183; melt-in-your-mouth',requireFlavor:true,requireSlice:false,flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}],variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}]}
 ];
 var state={};MENU.forEach(function(m){state[m.id]={flavor:null,slice:null,variant:0};});
@@ -378,7 +378,7 @@ var fmt=fmtLongDate(dateStr);
 var infoHTML='&#128197; <strong>'+fmt+'</strong>';
 if(method==='delivery'){infoHTML+='<br>&#128663; Delivery — time confirmed via text';}
 else{infoHTML+=' · <strong>5 PM</strong>';}
-infoHTML+='<br>&#128205; '+loc;
+infoHTML+='<br>&#128205; '+(method==='delivery'?loc:'<a href="https://www.google.com/maps/search/?api=1&amp;query=7725+Gateway%2C+Irvine%2C+CA+92618" target="_blank" rel="noopener" style="color:var(--gold)">'+loc+'</a>');
 info.style.display='block';
 info.innerHTML=infoHTML;
 renderCart();
@@ -573,7 +573,7 @@ fee=Math.round(delMiles*S.ratePerMile*100)/100;var isFr=method==='delivery'&&inI
 var f2=(method==='delivery'&&!isFr)?fee:0;
 var gt=sub+f2;
 var dAddr=document.getElementById('deliveryAddress').value.trim();
-var pAddr='Irvine, CA 92618';
+var pAddr='7725 Gateway, Irvine, CA 92618';
 if(slot==='custom')pAddr='Custom/TBD';
 var lines=Object.keys(cart).map(function(k){
 var d=parseK(k);
@@ -583,7 +583,32 @@ var st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'';
 var desc=[fn,vn].filter(Boolean).join(' / ');
 return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);
 });
-var NL=String.fromCharCode(10);var dObj=slot==='custom'?null:new Date(date+'T12:00:00');var whenText=slot==='custom'?'Date/Time: to be confirmed - see notes below':((method==='delivery'?'Delivery date: ':'Pickup date: ')+fmtLongDate(date)+(method==='delivery'?' (time confirmed via text)':' at '+time));var whereText=method==='delivery'?('Delivery to: '+(dAddr||'address to be confirmed via text')):('Pickup at: '+pAddr);var itemsMsg=lines.map(function(l){return '- '+l;}).join(NL);var confirmationEmail='Hi '+name+'! Thank you so much for your order from HooRay Bakery.'+NL+NL+itemsMsg+NL+NL+whenText+NL+whereText+NL+'Total: $'+gt.toFixed(2)+NL+NL+(notes?('Notes: '+notes+NL+NL):'')+'We are excited to bake for you! If anything needs to change, just reply to this text.'+NL+NL+'- HooRay Bakery';fetch(SHEET+'?'+new URLSearchParams({
+var NL=String.fromCharCode(10);
+var isCust=slot==='custom';
+var dateTxt=isCust?'To be confirmed (we’ll text you)':new Date(date+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',timeZone:'UTC'});
+var itemLines=Object.keys(cart).map(function(k){
+var d=parseK(k);
+var fn=d.item.flavors?d.item.flavors[d.fi].label:'';
+var vn=d.item.variants?d.item.variants[d.vi].label:'';
+if(d.item.requireSlice){return cart[k]+' × '+fn+' '+d.item.name+' — '+(d.sl==='sliced'?'Sliced':'Whole');}
+return cart[k]+' × '+d.item.name+' ('+[fn,vn].filter(Boolean).join(', ')+')';
+});
+var totalsLines=[];
+if(method==='delivery'&&!isFr){totalsLines.push('Subtotal: $'+sub.toFixed(2));totalsLines.push('Delivery fee: $'+f2.toFixed(2));}
+totalsLines.push('Total: $'+gt.toFixed(2));
+var whenLines;
+if(method==='delivery'){
+whenLines=['Delivery date: '+dateTxt];
+if(!isCust)whenLines.push('Estimated delivery time: 5–6 PM');
+whenLines.push('Address: '+(dAddr||'to be confirmed via text'));
+}else{
+whenLines=['Pickup date: '+dateTxt];
+if(!isCust){whenLines.push('Estimated ready time: 5 PM');whenLines.push('Pickup window: 5–6 PM');}
+whenLines.push('Address: 7725 Gateway, Irvine, CA 92618');
+}
+var earlyTxt=method==='delivery'?'If your order is ready earlier, we’ll text you before heading out for an earlier delivery.':'If your order is ready earlier, we’ll text you so you can pick it up sooner. You’re still welcome to come anytime between 5–6 PM.';
+var yesTxt='Please reply YES to confirm your order and '+(method==='delivery'?'delivery':'pickup')+' details. We’ll begin preparing your order only after receiving your confirmation.';
+var confirmationEmail=['Hi '+name+'! Thank you for ordering from HooRay Bakery 🤍','','Your order:'].concat(itemLines,['']).concat(totalsLines,['']).concat(whenLines,['',earlyTxt,'',yesTxt]).join(NL);fetch(SHEET+'?'+new URLSearchParams({
 name:name,phone:phone,date:date,time:time,
 method:method,
 address:method==='delivery'?dAddr:pAddr,
