@@ -117,6 +117,9 @@ nav{background:var(--white);border-bottom:1px solid rgba(181,132,58,.15);padding
 .toast.show{transform:translateX(-50%) translateY(0)}
 footer{text-align:center;padding:28px;font-size:.77rem;color:var(--muted);border-top:1px solid rgba(181,132,58,.15)}
 footer a{color:var(--gold);text-decoration:none}
+.whole-only{background:rgba(181,132,58,.07);border-left:3px solid var(--gold);padding:8px 11px;margin-top:2px}
+.whole-only-title{font-size:.78rem;font-weight:500;letter-spacing:.04em;margin-bottom:3px;color:var(--ink)}
+.free-note{font-size:.76rem;color:var(--ink);background:rgba(181,132,58,.09);border-left:3px solid var(--gold);padding:8px 11px;margin:8px 0;line-height:1.5}
 </style>
 </head>
 <body>
@@ -166,7 +169,7 @@ footer a{color:var(--gold);text-decoration:none}
 <button class="delivery-opt" id="optDelivery">Delivery</button>
 </div>
 <div class="delivery-address-wrap" id="addressWrap">
-<div style="font-size:.77rem;color:var(--muted);margin-bottom:8px;line-height:1.5">Delivery is available Tuesday &amp; Saturday. Delivery time will be confirmed via text after your order.</div>
+<div style="font-size:.77rem;color:var(--muted);margin-bottom:8px;line-height:1.5">Delivery is available on Fridays. Free within Irvine on orders of $30 or more. Delivery time will be confirmed via text after your order.</div>
 <div class="address-input-row">
 <input type="text" id="deliveryAddress" placeholder="Enter your full address...">
 <button class="check-btn" id="checkBtn">Check</button>
@@ -176,9 +179,11 @@ footer a{color:var(--gold);text-decoration:none}
 </div>
 <div id="orderSummary" style="display:none">
 <hr class="order-divider">
+<div class="summary-row" id="whenRow" style="display:none;gap:12px"><span id="whenLabel">Pickup</span><span id="whenVal" style="text-align:right;color:var(--ink)"></span></div>
 <div class="summary-row"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
 <div class="summary-row" id="deliveryRow" style="display:none"><span>Delivery fee</span><span id="deliveryFee">$0.00</span></div>
 <div class="summary-row free-delivery" id="freeDeliveryRow" style="display:none"><span>&#127881; Free delivery</span><span>$0.00</span></div>
+<div class="free-note" id="freeNote" style="display:none"></div>
 <div class="summary-total"><span>Total</span><span class="summary-total-price" id="totalPrice">$0.00</span></div>
 </div>
 <div class="form-section">
@@ -247,63 +252,38 @@ document.getElementById('awayReturnLabel').textContent='Estimated Return: '+rf;
 document.getElementById('awaySlotNotice').style.display='block';
 }
 
-// Build upcoming Tue/Sat slots (up to 8 each = 16 total)
-// Returns array of {value, label, date, time, isDelivery, weekday}
+// Build upcoming Friday slots (next 8). Irvine local time (America/Los_Angeles); orders need 48h notice before Friday 5 PM.
+var DAY_MS=86400000;
+function laWallNow(){
+var parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+var o={};parts.forEach(function(p){o[p.type]=p.value;});
+return Date.UTC(+o.year,+o.month-1,+o.day,+o.hour,+o.minute,+o.second);
+}
+function fmtLongDate(dateStr){return new Date(dateStr+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'UTC'});}
 function buildSlots(isDelivery){
 var slots=[];
-var now=new Date();
-// Min 48h ahead for standard, 0h for just showing options
-var minDate=new Date(now.getTime()+48*3600000);
-minDate.setHours(0,0,0,0);
-// If away, shift minDate to after return
-// Handle away period: shift minDate if currently in away range
-if(S.awayStart&&S.awayEnd){
-var awayS=new Date(S.awayStart+'T00:00:00'),awayE=new Date(S.awayEnd+'T00:00:00');
-if(minDate>=awayS&&minDate<=awayE){var ret=awayReturnDate();minDate=new Date(ret);}
+var nowWall=laWallNow();
+var dayStart=new Date(nowWall);dayStart.setUTCHours(0,0,0,0);
+for(var i=0;i<400&&slots.length<8;i++){
+var day=new Date(dayStart.getTime()+i*DAY_MS);
+if(day.getUTCDay()!==5)continue;
+var fridayAt5=day.getTime()+17*3600000;
+if(fridayAt5-48*3600000<nowWall)continue;
+var dateStr=day.toISOString().slice(0,10);
+if(S.awayStart&&S.awayEnd&&dateStr>=S.awayStart&&dateStr<=S.awayEnd)continue;
+var label=fmtLongDate(dateStr)+' · '+(isDelivery?'Time confirmed via text':'5 PM');
+slots.push({value:dateStr+'|friday',label:label,date:dateStr,time:isDelivery?'':'5 PM',loc:'Irvine, CA 92618',wd:'friday'});
 }
-// Generate next 8 Tuesdays and 8 Saturdays
-var days=[];
-var d=new Date(minDate);
-var tueCnt=0,satCnt=0;
-for(var i=0;i<200&&(tueCnt<8||satCnt<8);i++){
-var wd=d.getDay();
-var inAway=S.awayStart&&S.awayEnd&&d>=new Date(S.awayStart+'T00:00:00')&&d<=new Date(S.awayEnd+'T00:00:00');
-if(!inAway){
-if(wd===2&&tueCnt<8){days.push({date:new Date(d),wd:2});tueCnt++;}
-else if(wd===6&&satCnt<8){days.push({date:new Date(d),wd:6});satCnt++;}
-}
-d.setDate(d.getDate()+1);
-}
-// Sort by date
-days.sort(function(a,b){return a.date-b.date;});
-// Build slot objects
-days.forEach(function(day){
-var isTue=day.wd===2;
-var dateStr=day.date.toISOString().split('T')[0];
-var time=isDelivery?'':(isTue?'6:00 PM':'6:00 PM');
-var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
-var label=day.date.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
-if(!isDelivery)label+=' — '+time;
-label+=' · '+(isTue?'Irvine':'Meadowood Park');
-slots.push({
-value:dateStr+'|'+(isTue?'tuesday':'saturday'),
-label:label,
-date:dateStr,
-time:time,
-loc:loc,
-wd:isTue?'tuesday':'saturday'
-});
-});
 return slots;
 }
 
 // ---- Menu ----
 var MENU=[
-{id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
+{id:'milkloaf',cat:'bread',emoji:'&#127838;',name:'Milk Loaf',desc:'15oz &#183; Soft, pillowy Japanese-style milk bread',requireFlavor:true,requireSlice:true,wholeOnlyFlavor:1,flavors:[{label:'Classic',price:10},{label:'Matcha',price:12},{label:'Earl Grey',price:12}]},
 {id:'cookies',cat:'cookie',emoji:'&#127850;',name:'Butter Cookies',desc:'Piped butter cookies in a clear box &#183; melt-in-your-mouth',requireFlavor:true,requireSlice:false,flavors:[{label:'Original Butter',price:null},{label:'Matcha',price:null},{label:'Chocolate',price:null}],variants:[{label:'4 pcs',price:6},{label:'8 pcs',price:10}]}
 ];
 var state={};MENU.forEach(function(m){state[m.id]={flavor:null,slice:null,variant:0};});
-var cart={},method='pickup',fee=0,feeOk=false,filter='all',isCustom=false;
+var cart={},method='pickup',fee=0,feeOk=false,filter='all',isCustom=false,delMiles=0,inIrvine=false;
 
 // Build initial slot dropdown
 function populateSlots(){
@@ -389,20 +369,15 @@ return;
 }
 customBox.classList.remove('show');
 notesLabel.textContent='Special Requests';
-var parts=v.split('|'),dateStr=parts[0],wd=parts[1];
-var isTue=wd==='tuesday';
-var time=method==='delivery'?'TBD (confirmed via text)':(isTue?'6:00 PM':'6:00 PM');
-var loc=isTue?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA (TBD*)';
+var dateStr=v.split('|')[0];
+var time=method==='delivery'?'TBD (confirmed via text)':'5:00 PM';
+var loc='Irvine, CA 92618';
 document.getElementById('fDate').value=dateStr;
 document.getElementById('fTime').value=time;
-var dateObj=new Date(dateStr+'T12:00:00');
-var fmt=dateObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+var fmt=fmtLongDate(dateStr);
 var infoHTML='&#128197; <strong>'+fmt+'</strong>';
-if(method==='delivery'){
-infoHTML+='<br>&#128663; Delivery — time confirmed via text';
-}else{
-infoHTML+=' at <strong>'+time+'</strong>';
-}
+if(method==='delivery'){infoHTML+='<br>&#128663; Delivery — time confirmed via text';}
+else{infoHTML+=' · <strong>5 PM</strong>';}
 infoHTML+='<br>&#128205; '+loc;
 info.style.display='block';
 info.innerHTML=infoHTML;
@@ -431,7 +406,7 @@ var pr=mk('div','pill-row');
 item.flavors.forEach(function(f,i){
 var pl=mk('button','pill'+(s.flavor===i?' selected':''));
 pl.textContent=f.label+(f.price?' — $'+f.price:'');
-pl.addEventListener('click',(function(ii){return function(){state[item.id].flavor=ii;renderMenu();};})(i));
+pl.addEventListener('click',(function(ii){return function(){var st=state[item.id],prev=st.flavor;st.flavor=ii;if(item.wholeOnlyFlavor===ii){st.slice='whole';}else if(item.wholeOnlyFlavor===prev){st.slice=null;}renderMenu();};})(i));
 pr.appendChild(pl);
 });
 fd.appendChild(pr);og.appendChild(fd);
@@ -448,7 +423,14 @@ sr.appendChild(pl);
 sd.appendChild(sr);og.appendChild(sd);
 }
 if(item.requireSlice){
-var sld=mk('div');sld.appendChild(mk('div','opt-label required','Sliced or Whole?'));
+var sld=mk('div');
+if(item.wholeOnlyFlavor!==undefined&&s.flavor===item.wholeOnlyFlavor){
+var wo=mk('div','whole-only');
+wo.appendChild(mk('div','whole-only-title','Available whole only'));
+wo.appendChild(mk('div','slice-note-text','Matcha’s natural green color can fade with exposure to light and air. We offer this loaf unsliced to help preserve its color and freshness. For the best experience, slice only what you’re ready to enjoy and keep the rest tightly wrapped.'));
+sld.appendChild(wo);
+}else{
+sld.appendChild(mk('div','opt-label required','Sliced or Whole?'));
 var slr=mk('div','slice-row');
 ['whole','sliced'].forEach(function(v){
 var pl=mk('button','slice-pill'+(s.slice===v?' selected':''));
@@ -457,7 +439,8 @@ pl.addEventListener('click',(function(vv){return function(){state[item.id].slice
 slr.appendChild(pl);
 });
 sld.appendChild(slr);
-if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','⚠️ Bread needs 2+ hrs to cool. Sliced loaves may be ready next morning.'));
+if(s.slice==='sliced')sld.appendChild(mk('div','slice-note-text','Whole loaves are typically ready between 4–5 PM on your order date. Please allow at least 2 extra hours for sliced loaves, as the bread needs to cool before slicing.'));
+}
 og.appendChild(sld);
 }
 body.appendChild(og);card.appendChild(body);
@@ -511,10 +494,10 @@ if(miles>S.maxMiles){
 feeOk=false;fee=0;
 res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';
 }else{
-var calFee=sub>=S.freeDeliveryMin?0:Math.round(miles*S.ratePerMile*100)/100;
+delMiles=miles;inIrvine=fmt.toLowerCase().indexOf('irvine')>-1;var calFee=(inIrvine&&sub>=S.freeDeliveryMin)?0:Math.round(miles*S.ratePerMile*100)/100;
 fee=calFee;feeOk=true;
 var ft=calFee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+calFee.toFixed(2);
-res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.</small></div>';
+res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.'+(inIrvine?'':'<br>Free delivery applies to Irvine addresses only.')+'</small></div>';
 }
 renderCart();
 })
@@ -554,11 +537,18 @@ ci.innerHTML='';ci.appendChild(frag);
 ds.style.display='block';sm.style.display='block';
 var dr=document.getElementById('deliveryRow'),fr=document.getElementById('freeDeliveryRow'),gt=total;
 if(method==='delivery'&&feeOk){
-var isFr=total>=S.freeDeliveryMin;
+var isFr=inIrvine&&total>=S.freeDeliveryMin;fee=Math.round(delMiles*S.ratePerMile*100)/100;
 dr.style.display=isFr?'none':'flex';
 fr.style.display=isFr?'flex':'none';
 if(!isFr){document.getElementById('deliveryFee').textContent='$'+fee.toFixed(2);gt+=fee;}
 }else{dr.style.display='none';fr.style.display='none';}
+var fn2=document.getElementById('freeNote');
+if(total>=S.freeDeliveryMin){fn2.textContent='Your order qualifies for free delivery within Irvine!';fn2.style.display='block';}
+else if(total>=20){fn2.textContent='Free delivery in Irvine on orders of $'+S.freeDeliveryMin+' or more.';fn2.style.display='block';}
+else{fn2.style.display='none';}
+var wr=document.getElementById('whenRow'),dv0=document.getElementById('fDate').value;
+if(!dv0){wr.style.display='none';}
+else{wr.style.display='flex';document.getElementById('whenLabel').textContent=method==='delivery'?'Delivery':'Pickup';document.getElementById('whenVal').textContent=dv0==='custom'?'Custom — confirmed by text':fmtLongDate(dv0)+' · '+(method==='delivery'?'Time confirmed via text':'5 PM');}
 document.getElementById('subtotalPrice').textContent='$'+total.toFixed(2);
 document.getElementById('totalPrice').textContent='$'+gt.toFixed(2);
 var dateVal=document.getElementById('fDate').value;
@@ -579,11 +569,11 @@ var slot=fSlot.value;
 if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a date!');return;}
 if(isCustom&&!notes){alert('Please describe your custom date/time request in the Special Requests field.');return;}
 var sub=subtotal();
-var isFr=method==='delivery'&&sub>=S.freeDeliveryMin;
+fee=Math.round(delMiles*S.ratePerMile*100)/100;var isFr=method==='delivery'&&inIrvine&&sub>=S.freeDeliveryMin;
 var f2=(method==='delivery'&&!isFr)?fee:0;
 var gt=sub+f2;
 var dAddr=document.getElementById('deliveryAddress').value.trim();
-var pAddr=slot.includes('tuesday')?'7725 Gateway, Irvine, CA 92618':'Meadowood Park, Irvine, CA';
+var pAddr='Irvine, CA 92618';
 if(slot==='custom')pAddr='Custom/TBD';
 var lines=Object.keys(cart).map(function(k){
 var d=parseK(k);
@@ -593,7 +583,7 @@ var st2=d.item.requireSlice?(d.sl==='sliced'?' (Sliced)':' (Whole)'):'';
 var desc=[fn,vn].filter(Boolean).join(' / ');
 return d.item.name+' - '+desc+st2+' x'+cart[k]+' = $'+(d.pr*cart[k]).toFixed(2);
 });
-var NL=String.fromCharCode(10);var dObj=slot==='custom'?null:new Date(date+'T12:00:00');var whenText=slot==='custom'?'Date/Time: to be confirmed - see notes below':((method==='delivery'?'Delivery date: ':'Pickup date: ')+dObj.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+(method==='delivery'?' (time confirmed via text)':' at '+time));var whereText=method==='delivery'?('Delivery to: '+(dAddr||'address to be confirmed via text')):('Pickup at: '+pAddr);var itemsMsg=lines.map(function(l){return '- '+l;}).join(NL);var confirmationEmail='Hi '+name+'! Thank you so much for your order from HooRay Bakery.'+NL+NL+itemsMsg+NL+NL+whenText+NL+whereText+NL+'Total: $'+gt.toFixed(2)+NL+NL+(notes?('Notes: '+notes+NL+NL):'')+'We are excited to bake for you! If anything needs to change, just reply to this text.'+NL+NL+'- HooRay Bakery';fetch(SHEET+'?'+new URLSearchParams({
+var NL=String.fromCharCode(10);var dObj=slot==='custom'?null:new Date(date+'T12:00:00');var whenText=slot==='custom'?'Date/Time: to be confirmed - see notes below':((method==='delivery'?'Delivery date: ':'Pickup date: ')+fmtLongDate(date)+(method==='delivery'?' (time confirmed via text)':' at '+time));var whereText=method==='delivery'?('Delivery to: '+(dAddr||'address to be confirmed via text')):('Pickup at: '+pAddr);var itemsMsg=lines.map(function(l){return '- '+l;}).join(NL);var confirmationEmail='Hi '+name+'! Thank you so much for your order from HooRay Bakery.'+NL+NL+itemsMsg+NL+NL+whenText+NL+whereText+NL+'Total: $'+gt.toFixed(2)+NL+NL+(notes?('Notes: '+notes+NL+NL):'')+'We are excited to bake for you! If anything needs to change, just reply to this text.'+NL+NL+'- HooRay Bakery';fetch(SHEET+'?'+new URLSearchParams({
 name:name,phone:phone,date:date,time:time,
 method:method,
 address:method==='delivery'?dAddr:pAddr,
