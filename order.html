@@ -494,7 +494,7 @@ if(miles>S.maxMiles){
 feeOk=false;fee=0;
 res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';
 }else{
-delMiles=miles;var zipM=fmt.match(/\b(9\d{4})\b/);inIrvine=fmt.toLowerCase().indexOf('irvine')>-1||!!(zipM&&['92602','92603','92604','92606','92612','92614','92617','92618','92620','92623'].indexOf(zipM[1])>-1);var calFee=Math.round(miles*S.ratePerMile*100)/100;
+delMiles=miles;var zipM=fmt.match(/\b(9\d{4})\b/);inIrvine=fmt.toLowerCase().indexOf('irvine')>-1||!!(zipM&&['92602','92603','92604','92606','92612','92614','92617','92618','92620','92623'].indexOf(zipM[1])>-1);var calFee=Math.max(3,Math.round(miles*S.ratePerMile*100)/100);
 fee=calFee;feeOk=true;
 var ft=inIrvine?'Free on orders of $'+S.freeDeliveryMin+'+ (otherwise $'+calFee.toFixed(2)+')':'$'+calFee.toFixed(2);
 res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.'+(inIrvine?'':'<br>Free delivery applies to Irvine addresses only.')+'</small></div>';
@@ -537,7 +537,7 @@ ci.innerHTML='';ci.appendChild(frag);
 ds.style.display='block';sm.style.display='block';
 var dr=document.getElementById('deliveryRow'),fr=document.getElementById('freeDeliveryRow'),gt=total;
 if(method==='delivery'&&feeOk){
-var isFr=inIrvine&&total>=S.freeDeliveryMin;fee=Math.round(delMiles*S.ratePerMile*100)/100;
+var isFr=inIrvine&&total>=S.freeDeliveryMin;fee=Math.max(3,Math.round(delMiles*S.ratePerMile*100)/100);
 dr.style.display=isFr?'none':'flex';
 fr.style.display=isFr?'flex':'none';
 if(!isFr){document.getElementById('deliveryFee').textContent='$'+fee.toFixed(2);gt+=fee;}
@@ -569,7 +569,7 @@ var slot=fSlot.value;
 if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a date!');return;}
 if(isCustom&&!notes){alert('Please describe your custom date/time request in the Special Requests field.');return;}
 var sub=subtotal();
-fee=Math.round(delMiles*S.ratePerMile*100)/100;var isFr=method==='delivery'&&inIrvine&&sub>=S.freeDeliveryMin;
+fee=Math.max(3,Math.round(delMiles*S.ratePerMile*100)/100);var isFr=method==='delivery'&&inIrvine&&sub>=S.freeDeliveryMin;
 var f2=(method==='delivery'&&!isFr)?fee:0;
 var gt=sub+f2;
 var dAddr=document.getElementById('deliveryAddress').value.trim();
