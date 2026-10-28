@@ -1,4 +1,4 @@
-bu t t<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -177,7 +177,12 @@ section,footer{padding:64px 24px}
 .products-grid{grid-template-columns:1fr;gap:2px}
 .product-item.featured{grid-column:span 1}
 .faq-grid{grid-template-columns:1fr;gap:2px}
-.faq-card{aspect-ratio:16/9}
+.faq-card{aspect-ratio:auto;display:flex;flex-direction:column;background:#241c16;overflow:hidden}
+.faq-card img{width:100%;height:auto;object-fit:contain;opacity:.92;display:block;flex:0 0 auto}
+.faq-card:hover img{transform:none;opacity:.92}
+.faq-overlay{position:static;background:none;padding:22px 20px 28px;justify-content:flex-start}
+.faq-question{font-size:1.3rem}
+.faq-answer{font-size:.85rem;line-height:1.7}
 .values-grid{grid-template-columns:1fr 1fr;gap:32px}
 .instagram-grid{grid-template-columns:repeat(2,1fr)}
 .info-inner{grid-template-columns:1fr;gap:48px}
@@ -275,12 +280,12 @@ and a gentle sweetness from everyday life.</p>
 </div>
 <div class="product-item reveal">
 <div class="product-img-wrap">
-<img src="square loaf.jpg" alt="Matcha Milk Loaf">
+<img src="matcha_dough.jpg" alt="Matcha Milk Loaf">
 </div>
 <div class="product-info">
 <p class="product-cat">Specialty Bread</p>
 <h3 class="product-name">Matcha Milk Loaf</h3>
-<p class="product-desc">15oz · Earthy ceremonial matcha swirled into our signature milk bread dough.</p>
+<p class="product-desc">Soft, fluffy milk bread with the earthy flavor and gentle sweetness of matcha.</p>
 <div class="product-price">$12</div>
 </div>
 </div>
@@ -290,8 +295,8 @@ and a gentle sweetness from everyday life.</p>
 </div>
 <div class="product-info">
 <p class="product-cat">Specialty Bread</p>
-<h3 class="product-name">Earl Grey Tea Milk Loaf</h3>
-<p class="product-desc">15oz · Fragrant bergamot Earl Grey steeped into every bite.</p>
+<h3 class="product-name">Earl Grey Milk Loaf</h3>
+<p class="product-desc">A tender loaf filled with the delicate aroma of Earl Grey tea.</p>
 <div class="product-price">$12</div>
 </div>
 </div>
@@ -331,7 +336,7 @@ and a gentle sweetness from everyday life.</p>
 <div class="faq-overlay">
 <p class="faq-num">02</p>
 <h3 class="faq-question">When are products available?</h3>
-<p class="faq-answer">We are made-to-order with two fixed pickup windows: Tuesday at 6 PM and Saturday at 6 PM. Orders over $30 qualify for delivery on those same days (time confirmed via text). Please order at least 48 hours in advance.</p>
+<p class="faq-answer">We bake to order, with pickup every Friday at 5 PM in Irvine, CA 92618. Free delivery within Irvine is available for orders of $30 or more on Fridays, with delivery timing confirmed by text. Please place your order at least 48 hours in advance.</p>
 </div>
 </div>
 <div class="faq-card reveal">
@@ -396,7 +401,7 @@ and a gentle sweetness from everyday life.</p>
 <div class="info-inner">
 <div class="info-block reveal-left">
 <h3>Contact &amp; <em style="font-family:'Cormorant Garamond',serif;font-style:italic">Location</em></h3>
-<p>All orders are pickup from our home kitchen in Irvine, CA. Delivery available on Tuesday and Saturday for orders over $30. Please order at least 48 hours in advance.</p>
+<p>All orders are baked to order in our home kitchen in Irvine, CA, with pickup every Friday at 5 PM. Free delivery within Irvine is available on Fridays for orders of $30 or more. Please order at least 48 hours in advance.</p>
 <div class="info-detail">
 <div class="info-row">
 <span class="info-row-label">Location</span>
@@ -404,7 +409,7 @@ and a gentle sweetness from everyday life.</p>
 </div>
 <div class="info-row">
 <span class="info-row-label">Hours</span>
-<span class="info-row-val">Tuesday &amp; Saturday — pickup times selected at checkout</span>
+<span class="info-row-val">Every Friday at 5 PM — delivery time confirmed by text</span>
 </div>
 <div class="info-row">
 <span class="info-row-label">Lead Time</span>
@@ -478,7 +483,7 @@ a.addEventListener('click', () => navLinks.classList.remove('open'));
 var products = [
 'Classic Milk Loaf',
 'Matcha Milk Loaf',
-'Earl Grey Tea Loaf',
+'Earl Grey Milk Loaf',
 'Butter Cookies'
 ];
 var track = document.getElementById('marqueeTrack');
