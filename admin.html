@@ -121,17 +121,11 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 <!-- BAKE DAYS -->
 <div class="card">
 <div class="card-title">Bake Schedule</div>
-<div class="card-sub">Days you bake each week</div>
+<div class="card-sub">We bake and deliver on Fridays only</div>
 <div class="field">
 <label>Bake Days</label>
 <div class="day-picker" id="dayPicker">
-<button class="day-btn" data-day="0" onclick="toggleDay(0)">Sun</button>
-<button class="day-btn" data-day="1" onclick="toggleDay(1)">Mon</button>
-<button class="day-btn" data-day="2" onclick="toggleDay(2)">Tue</button>
-<button class="day-btn" data-day="3" onclick="toggleDay(3)">Wed</button>
-<button class="day-btn" data-day="4" onclick="toggleDay(4)">Thu</button>
 <button class="day-btn" data-day="5" onclick="toggleDay(5)">Fri</button>
-<button class="day-btn" data-day="6" onclick="toggleDay(6)">Sat</button>
 </div>
 <div class="field-hint" style="margin-top:8px">Selected days shown to customers as bake days</div>
 </div>
@@ -186,8 +180,8 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 <div class="field-row">
 <div class="field">
 <label>Free Delivery Minimum ($)</label>
-<input type="number" id="freeDeliveryMin" value="20" min="0">
-<div class="field-hint">Orders over this amount get free delivery</div>
+<input type="number" id="freeDeliveryMin" value="30" min="0">
+<div class="field-hint">Irvine orders at or above this amount get free delivery</div>
 </div>
 <div class="field">
 <label>Your Store Address</label>
@@ -197,7 +191,7 @@ input:checked+.toggle-slider::before{transform:translateX(23px)}
 <div class="hours-preview" id="deliveryPreview">
 &#128207; Max range: <strong>20 miles</strong><br>
 &#128181; Fee: <strong>$1.00/mile</strong> (e.g. 5 miles = $5.00)<br>
-&#127881; Free delivery on orders over <strong>$20</strong>
+&#127881; Free delivery on orders over <strong>$30</strong>
 </div>
 </div>
 
@@ -229,7 +223,7 @@ document.getElementById('adminUI').style.display = 'none';
 document.getElementById('pwInput').value = '';
 }
 
-let selectedDays = [3, 6];
+let selectedDays = [5];
 
 function toggleDay(day) {
 const idx = selectedDays.indexOf(day);
@@ -255,7 +249,7 @@ badge.innerHTML = '<span class="status-dot"></span> ' + (isOpen ? 'Open for Orde
 function updateDeliveryPreview() {
 const rate = parseFloat(document.getElementById('ratePerMile').value) || 1;
 const max = parseInt(document.getElementById('maxMiles').value) || 20;
-const freeMin = parseFloat(document.getElementById('freeDeliveryMin').value) || 20;
+const freeMin = parseFloat(document.getElementById('freeDeliveryMin').value) || 30;
 document.getElementById('deliveryPreview').innerHTML =
 '&#128207; Max range: <strong>' + max + ' miles</strong><br>' +
 '&#128181; Fee: <strong>$' + rate.toFixed(2) + '/mile</strong> (e.g. 5 miles = $' + (5*rate).toFixed(2) + ')<br>' +
@@ -278,7 +272,7 @@ if (e < s) { preview.innerHTML = '<span style="color:var(--rose)">&#9888; End da
 const fmtOpts = {month:'short', day:'numeric'};
 const sStr = s.toLocaleDateString('en-US', fmtOpts);
 const eStr = e.toLocaleDateString('en-US', fmtOpts);
-// Calculate first available Tue and Sat after return
+// Calculate first available Friday after return
 const returnAfter = new Date(end + 'T00:00:00');
 returnAfter.setDate(returnAfter.getDate() + 1);
 function nextWeekday(fromDate, weekday) {
@@ -286,15 +280,12 @@ const d = new Date(fromDate);
 while (d.getDay() !== weekday) d.setDate(d.getDate() + 1);
 return d;
 }
-const nextTue = nextWeekday(returnAfter, 2);
-const nextSat = nextWeekday(returnAfter, 6);
-const tueFmt = nextTue.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
-const satFmt = nextSat.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+const nextFri = nextWeekday(returnAfter, 5);
+const friFmt = nextFri.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
 preview.innerHTML =
 '&#9992; Away: <strong>' + sStr + ' &#8594; ' + eStr + '</strong><br>' +
-'&#128197; First available Tuesday pickup: <strong>' + tueFmt + '</strong><br>' +
-'&#128197; First available Saturday pickup: <strong>' + satFmt + '</strong><br>' +
-'<span style="color:var(--muted);font-size:.75rem">Customers will see &ldquo;We\'re Away&rdquo; note and only these dates or later.</span>';
+'&#128197; First available Friday pickup: <strong>' + friFmt + '</strong><br>' +
+'<span style="color:var(--muted);font-size:.75rem">Customers will see &ldquo;We\'re Away&rdquo; note and only Fridays on or after this date.</span>';
 preview.classList.add('active');
 clearBtn.style.display = 'inline-block';
 }
@@ -312,7 +303,7 @@ noticeText: document.getElementById('noticeText').value.trim(),
 deliveryEnabled: document.getElementById('deliveryEnabled').checked,
 ratePerMile: parseFloat(document.getElementById('ratePerMile').value) || 1,
 maxMiles: parseInt(document.getElementById('maxMiles').value) || 20,
-freeDeliveryMin: parseFloat(document.getElementById('freeDeliveryMin').value) || 20,
+freeDeliveryMin: parseFloat(document.getElementById('freeDeliveryMin').value) || 30,
 bakeDays: selectedDays,
 minHours: parseInt(document.getElementById('minHours').value) || 48,
 storeAddress: document.getElementById('storeAddr').value.trim(),
@@ -334,7 +325,7 @@ if (s.deliveryEnabled !== undefined) document.getElementById('deliveryEnabled').
 if (s.ratePerMile) document.getElementById('ratePerMile').value = s.ratePerMile;
 if (s.maxMiles) document.getElementById('maxMiles').value = s.maxMiles;
 if (s.freeDeliveryMin) document.getElementById('freeDeliveryMin').value = s.freeDeliveryMin;
-if (s.bakeDays) { selectedDays = s.bakeDays; renderDays(); }
+selectedDays = [5]; renderDays();
 if (s.minHours) document.getElementById('minHours').value = s.minHours;
 if (s.storeAddress) document.getElementById('storeAddr').value = s.storeAddress;
 document.getElementById('awayStart').value = s.awayStart || '2026-07-04';
