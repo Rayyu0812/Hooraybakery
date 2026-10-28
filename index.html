@@ -125,10 +125,10 @@ section{padding:96px 48px}
 .instagram-section{padding:96px 48px;background:var(--warm)}
 .instagram-inner{max-width:1200px;margin:0 auto;text-align:center}
 .instagram-handle{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;margin-top:12px;margin-bottom:48px;border-bottom:1px solid var(--gold);padding-bottom:2px}
-.instagram-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
-.insta-placeholder{aspect-ratio:1;background:var(--warm);border:1px dashed rgba(181,132,58,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--gold);opacity:.5}
-.insta-placeholder svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5}
-.insta-placeholder span{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+.instagram-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:960px;margin:0 auto}
+.instagram-grid a{display:block;aspect-ratio:4/5;overflow:hidden;background:var(--warm)}
+.instagram-grid a img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.instagram-grid a:hover img{transform:scale(1.04)}
 
 /* ── CONTACT (was Visit/Info) ── */
 .info-section{padding:96px 48px;border-top:1px solid rgba(181,132,58,.2)}
@@ -186,7 +186,7 @@ section,footer{padding:64px 24px}
 .faq-question{font-size:1.3rem}
 .faq-answer{font-size:.85rem;line-height:1.7}
 .values-grid{grid-template-columns:1fr 1fr;gap:32px}
-.instagram-grid{grid-template-columns:repeat(2,1fr)}
+.instagram-grid{grid-template-columns:repeat(3,1fr);gap:4px}
 .info-inner{grid-template-columns:1fr;gap:48px}
 .footer-top{flex-direction:column}
 .products-section{padding:64px 24px}
@@ -390,10 +390,9 @@ and a gentle sweetness from everyday life.</p>
 <h2 class="section-title">Find us on <em>Instagram</em></h2>
 <a href="https://www.instagram.com/hooraysbakery/" target="_blank" class="instagram-handle">@hooraysbakery</a>
 <div class="instagram-grid">
-<div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
-<div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
-<div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
-<div class="insta-placeholder"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1"/></svg><span>Add photo</span></div>
+<a href="https://www.instagram.com/p/DYGNoOtGpR4/" target="_blank" rel="noopener"><img src="insta1.jpg" alt="Fresh bakes from HooRay Bakery at the market" loading="lazy"></a>
+<a href="https://www.instagram.com/p/DX8TuOFJKls/" target="_blank" rel="noopener"><img src="insta2.jpg" alt="HooRay Bakery is popping up at Modern Makers Mart" loading="lazy"></a>
+<a href="https://www.instagram.com/reel/DXu2hVvy1vs/" target="_blank" rel="noopener"><img src="insta3.jpg" alt="Freshly baked, soft and warm - video from HooRay Bakery" loading="lazy"></a>
 </div>
 </div>
 </section>
