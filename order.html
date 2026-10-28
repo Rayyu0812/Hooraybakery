@@ -483,7 +483,7 @@ fetch(url,{headers:{'Accept':'application/json','User-Agent':'HooRayBakery/1.0'}
 if(!data||!data.length)throw new Error('not found');
 var lat=parseFloat(data[0].lat),lon=parseFloat(data[0].lon);
 var fmt=data[0].display_name;
-var storeLat=33.6694,storeLon=-117.8568;
+var storeLat=33.6569,storeLon=-117.7499;
 var R=3958.8;
 var dLat=(lat-storeLat)*Math.PI/180;
 var dLon=(lon-storeLon)*Math.PI/180;
