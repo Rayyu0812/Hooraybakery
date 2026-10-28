@@ -494,9 +494,9 @@ if(miles>S.maxMiles){
 feeOk=false;fee=0;
 res.innerHTML='<div class="delivery-result error">Sorry, '+mr+' miles is outside our range (max '+S.maxMiles+' mi).</div>';
 }else{
-delMiles=miles;inIrvine=fmt.toLowerCase().indexOf('irvine')>-1;var calFee=(inIrvine&&sub>=S.freeDeliveryMin)?0:Math.round(miles*S.ratePerMile*100)/100;
+delMiles=miles;var zipM=fmt.match(/\b(9\d{4})\b/);inIrvine=fmt.toLowerCase().indexOf('irvine')>-1||!!(zipM&&['92602','92603','92604','92606','92612','92614','92617','92618','92620','92623'].indexOf(zipM[1])>-1);var calFee=Math.round(miles*S.ratePerMile*100)/100;
 fee=calFee;feeOk=true;
-var ft=calFee===0?'&#127881; Free (orders $'+S.freeDeliveryMin+'+)':'$'+calFee.toFixed(2);
+var ft=inIrvine?'Free on orders of $'+S.freeDeliveryMin+'+ (otherwise $'+calFee.toFixed(2)+')':'$'+calFee.toFixed(2);
 res.innerHTML='<div class="delivery-result">&#128205; '+fmt.split(',').slice(0,3).join(',')+'<br>&#128207; ~'+mr+' mi from us<br>&#128663; Delivery fee: <strong>'+ft+'</strong><br><small style="color:var(--muted)">Delivery time confirmed via text after order.'+(inIrvine?'':'<br>Free delivery applies to Irvine addresses only.')+'</small></div>';
 }
 renderCart();
