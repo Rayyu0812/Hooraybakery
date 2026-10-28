@@ -57,6 +57,7 @@ nav.scrolled{background:rgba(248,244,238,0.92);backdrop-filter:blur(12px);border
 .marquee-track{display:flex;white-space:nowrap;will-change:transform}
 .marquee-item{font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--white);padding:0 32px;opacity:.9;flex-shrink:0}
 .marquee-dot{color:rgba(255,255,255,.5);padding:0 8px;flex-shrink:0}
+.marquee-set{display:flex;flex:0 0 auto}
 
 /* ── SECTIONS ── */
 section{padding:96px 48px}
@@ -479,56 +480,47 @@ navLinks.querySelectorAll('a').forEach(a => {
 a.addEventListener('click', () => navLinks.classList.remove('open'));
 });
 
-// Marquee - build from product list, true seamless loop
+// Marquee - seamless loop that always fills the full viewport width
 (function() {
-var products = [
-'Classic Milk Loaf',
-'Matcha Milk Loaf',
-'Earl Grey Milk Loaf',
-'Butter Cookies'
-];
+var products = ['Classic Milk Loaf','Matcha Milk Loaf','Earl Grey Milk Loaf','Butter Cookies'];
 var track = document.getElementById('marqueeTrack');
 if (!track) return;
-// Build one set of items
+var speed = 0.6, pos = 0, setW = 0;
 function buildSet() {
-var frag = document.createDocumentFragment();
-products.forEach(function(name, i) {
+var set = document.createElement('div');
+set.className = 'marquee-set';
+products.forEach(function(name) {
 var item = document.createElement('span');
 item.className = 'marquee-item';
 item.textContent = name;
-frag.appendChild(item);
-if (i < products.length - 1) {
+set.appendChild(item);
 var dot = document.createElement('span');
 dot.className = 'marquee-dot';
 dot.textContent = '·';
-frag.appendChild(dot);
-}
+set.appendChild(dot);
 });
-return frag;
+return set;
 }
-// Append two identical sets for seamless loop
-track.appendChild(buildSet());
-// Separator dot between the two sets
-var sep = document.createElement('span');
-sep.className = 'marquee-dot';
-sep.textContent = '·';
-track.appendChild(sep);
-track.appendChild(buildSet());
-
-// Animate via requestAnimationFrame for smooth loop
-var speed = 0.6; // px per frame
-var pos = 0;
-var halfWidth = null;
-function animate() {
-if (halfWidth === null) {
-// Calculate the width of one set (half of track)
-halfWidth = track.scrollWidth / 2;
-}
-pos -= speed;
-if (Math.abs(pos) >= halfWidth) {
+function rebuild() {
+track.innerHTML = '';
+var first = buildSet();
+track.appendChild(first);
+setW = first.getBoundingClientRect().width;
+if (!setW) return;
+var copies = Math.ceil(window.innerWidth / setW) + 1;
+for (var i = 1; i < copies; i++) track.appendChild(buildSet());
 pos = 0;
 }
+rebuild();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(rebuild);
+var rt;
+window.addEventListener('resize', function() { clearTimeout(rt); rt = setTimeout(rebuild, 150); });
+function animate() {
+if (setW) {
+pos -= speed;
+if (-pos >= setW) pos += setW;
 track.style.transform = 'translateX(' + pos + 'px)';
+}
 requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
