@@ -356,7 +356,7 @@ and a gentle sweetness from everyday life.</p>
 <div class="faq-overlay">
 <p class="faq-num">02</p>
 <h3 class="faq-question">When are products available?</h3>
-<p class="faq-answer">We bake to order, with pickup every Friday at 5 PM in Irvine, CA 92618. Free delivery within Irvine is available for orders of $30 or more on Fridays, with delivery timing confirmed by text. Please place your order at least 48 hours in advance.</p>
+<p class="faq-answer">We bake to order, with pickup <span data-sched="every">every Friday at 5 PM</span> in Irvine, CA 92618. Free delivery within Irvine is available for orders of <span data-sched="free">$30</span> or more on <span data-sched="days">Fridays</span>, with delivery timing confirmed by text. Please place your order at least <span data-sched="notice">48 hours</span> in advance.</p>
 </div>
 </div>
 <div class="faq-card reveal">
@@ -469,7 +469,7 @@ see you soon ☁️
 <div class="info-inner">
 <div class="info-block reveal-left">
 <h3>Contact &amp; <em style="font-family:'Cormorant Garamond',serif;font-style:italic">Location</em></h3>
-<p>All orders are baked to order in our home kitchen in Irvine, CA, with pickup every Friday at 5 PM. Free delivery within Irvine is available on Fridays for orders of $30 or more. Please order at least 48 hours in advance.</p>
+<p>All orders are baked to order in our home kitchen in Irvine, CA, with pickup <span data-sched="every">every Friday at 5 PM</span>. Free delivery within Irvine is available on <span data-sched="days">Fridays</span> for orders of <span data-sched="free">$30</span> or more. Please order at least <span data-sched="notice">48 hours</span> in advance.</p>
 <div class="info-detail">
 <div class="info-row">
 <span class="info-row-label">Location</span>
@@ -477,11 +477,11 @@ see you soon ☁️
 </div>
 <div class="info-row">
 <span class="info-row-label">Hours</span>
-<span class="info-row-val">Every Friday at 5 PM — delivery time confirmed by text</span>
+<span class="info-row-val"><span data-sched="every-cap">Every Friday at 5 PM</span> — delivery time confirmed by text</span>
 </div>
 <div class="info-row">
 <span class="info-row-label">Lead Time</span>
-<span class="info-row-val">Minimum 48 hours advance notice required</span>
+<span class="info-row-val">Minimum <span data-sched="notice">48 hours</span> advance notice required</span>
 </div>
 <div class="info-row">
 <span class="info-row-label">Contact</span>
@@ -609,6 +609,27 @@ document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => 
 </script>
 <script>
 document.querySelectorAll('.ig-like').forEach(function(b){b.addEventListener('click',function(){b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');});});
+</script>
+<script>
+(function(){
+var URL='https://script.google.com/macros/s/AKfycbzYu2fXrMrX7Z38zVelTMYoxKlkcPrB9d5cKe3OdXv_R6BecpfWqYS08JR5pxb7cMik/exec';
+var SN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function lt(h,m){var ap=h>=12?'PM':'AM';var hh=h%12===0?12:h%12;return hh+(m?':'+('0'+m).slice(-2):'')+' '+ap;}
+function join(a){return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
+function fill(j){
+var days=j.days.slice().sort(function(a,b){return ((a+6)%7)-((b+6)%7);});
+if(!days.length)return;
+var sing=join(days.map(function(d){return SN[d];}));
+var plur=join(days.map(function(d){return SN[d]+'s';}));
+var t=lt(j.timeHour,j.timeMinute);
+var vals={'every':'every '+sing+' at '+t,'every-cap':'Every '+sing+' at '+t,'days':plur,'notice':j.noticeHours+' hours','free':'$'+j.freeDeliveryMin};
+document.querySelectorAll('[data-sched]').forEach(function(e){var v=vals[e.getAttribute('data-sched')];if(v)e.textContent=v;});
+}
+try{var c=JSON.parse(localStorage.getItem('hooray_settings_cache')||'null');if(c&&Array.isArray(c.days))fill(c);}catch(e){}
+fetch(URL,{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+if(j&&!j.error&&Array.isArray(j.days)){fill(j);try{localStorage.setItem('hooray_settings_cache',JSON.stringify(j));}catch(e){}}
+}).catch(function(){});
+})();
 </script>
 </body>
 </html>
