@@ -189,7 +189,7 @@ footer a{color:var(--gold);text-decoration:none}
 <div class="form-section">
 <div class="form-divider">Your Details</div>
 <div class="form-row"><label>Name *</label><input type="text" id="fName" placeholder="Jessica Chen"></div>
-<div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234"></div>
+<div class="form-row"><label>Phone *</label><input type="tel" id="fPhone" placeholder="(949) 555-1234" inputmode="tel" autocomplete="tel"><div id="phoneErr" style="display:none;color:var(--rose);font-size:.75rem;margin-top:5px;line-height:1.4">Please enter a valid 10-digit phone number.</div></div>
 <div class="form-divider" style="margin-top:16px">Select Your Date</div>
 <div class="form-row" id="slotSection">
 <label id="slotLabel">Pickup Date *</label>
@@ -317,6 +317,9 @@ document.getElementById('optPickup').addEventListener('click',function(){setM('p
 document.getElementById('optDelivery').addEventListener('click',function(){setM('delivery');});
 document.getElementById('checkBtn').addEventListener('click',checkDel);
 document.getElementById('submitBtn').addEventListener('click',submit);
+var fPhone=document.getElementById('fPhone');
+fPhone.addEventListener('blur',function(){var v=fPhone.value.trim();showPhoneErr(v.length>0&&!normPhone(v));});
+fPhone.addEventListener('input',function(){if(document.getElementById('phoneErr').style.display==='block')showPhoneErr(!normPhone(fPhone.value.trim()));});
 
 var fSlot=document.getElementById('fSlot');
 fSlot.addEventListener('change',function(){updateSlot();});
@@ -567,14 +570,27 @@ var customOk=!isCustom||(isCustom&&hasNotes);
 sb.disabled=!(hasDate&&hasDeliveryOk&&customOk);
 }
 
+function normPhone(raw){
+if(!/^\+?[\d\s().\-]+$/.test(raw))return null;
+var d=raw.replace(/\D/g,'');
+if(d.length===11&&d.charAt(0)==='1')d=d.slice(1);
+return d.length===10?d:null;
+}
+function showPhoneErr(on){
+document.getElementById('phoneErr').style.display=on?'block':'none';
+document.getElementById('fPhone').style.borderColor=on?'var(--rose)':'';
+}
 function submit(){
 var name=document.getElementById('fName').value.trim();
-var phone=document.getElementById('fPhone').value.trim();
+var phoneRaw=document.getElementById('fPhone').value.trim();
+var phone=normPhone(phoneRaw);
 var date=document.getElementById('fDate').value;
 var time=document.getElementById('fTime').value||'Flexible';
 var notes=document.getElementById('fNotes').value.trim();
 var slot=fSlot.value;
-if(!name||!phone||!slot){alert('Please fill in your name, phone, and select a date!');return;}
+if(!name||!phoneRaw||!slot){alert('Please fill in your name, phone, and select a date!');return;}
+if(!phone){showPhoneErr(true);document.getElementById('fPhone').focus();return;}
+showPhoneErr(false);
 if(isCustom&&!notes){alert('Please describe your custom date/time request in the Special Requests field.');return;}
 var sub=subtotal();
 fee=Math.max(3,Math.round(delMiles*S.ratePerMile*100)/100);var isFr=method==='delivery'&&inIrvine&&sub>=S.freeDeliveryMin;
@@ -628,6 +644,7 @@ notes:notes,confirmationEmail:confirmationEmail
 }).toString(),{mode:'no-cors'});
 cart={};feeOk=false;fee=0;isCustom=false;update();
 ['fName','fPhone','fDate','fNotes'].forEach(function(id){document.getElementById(id).value='';});
+showPhoneErr(false);
 document.getElementById('fTime').value='';
 document.getElementById('deliveryAddress').value='';
 document.getElementById('deliveryResult').innerHTML='';
